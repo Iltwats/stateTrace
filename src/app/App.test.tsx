@@ -41,4 +41,25 @@ describe("App", () => {
     expect(state.lockedFields).toContain("shippingMethod");
     expect(screen.getByLabelText("Unlock shipping method")).toBeInTheDocument();
   });
+
+  it("captures and replays a regression fixture", async () => {
+    const user = userEvent.setup();
+    useStateTraceStore
+      .getState()
+      .commitHumanField("internalNote", "Captured regression note");
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /save 1 event as fixture/i }));
+    expect(useStateTraceStore.getState().state.savedFixtures).toHaveLength(1);
+    expect(screen.getByText("Concurrent order recovery")).toBeInTheDocument();
+
+    useStateTraceStore
+      .getState()
+      .commitHumanField("internalNote", "A later temporary note");
+    await user.click(screen.getByRole("button", { name: "Replay" }));
+
+    expect(useStateTraceStore.getState().state.order.internalNote).toBe(
+      "Captured regression note",
+    );
+  });
 });

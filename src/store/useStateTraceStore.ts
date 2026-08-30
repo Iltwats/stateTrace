@@ -9,6 +9,7 @@ import type {
   Transaction,
 } from "../domain/types";
 import { createEffectScheduler } from "../engine/effectScheduler";
+import { replayRegressionFixture } from "../engine/replayEngine";
 import {
   commitHumanChange,
   retryFailedTransaction,
@@ -47,6 +48,7 @@ type StateTraceStore = {
     description: string;
     expectedOutcome: RegressionFixture["expectedOutcome"];
   }) => RegressionFixture | null;
+  replayFixture: (fixtureId: string) => boolean;
   clearError: () => void;
   reset: () => void;
 };
@@ -178,6 +180,27 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
       } catch (error) {
         set({ lastError: toError(error) });
         return null;
+      }
+    },
+
+    replayFixture(fixtureId) {
+      try {
+        const current = get().state;
+        const fixture = current.savedFixtures.find(({ id }) => id === fixtureId);
+        if (!fixture) {
+          throw new TransactionEngineError(
+            "FIXTURE_NOT_FOUND",
+            `Regression fixture ${fixtureId} does not exist.`,
+          );
+        }
+        scheduler.cancelAll();
+        const replayed = replayRegressionFixture(fixture);
+        replayed.savedFixtures = structuredClone(current.savedFixtures);
+        set({ state: replayed, lastError: null });
+        return true;
+      } catch (error) {
+        set({ lastError: toError(error) });
+        return false;
       }
     },
 

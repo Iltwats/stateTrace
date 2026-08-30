@@ -1,5 +1,6 @@
 {
   "name": "statetrace",
+  "description": "A WebMCP-native transaction debugger for visible, recoverable human-agent workflows.",
   "private": true,
   "version": "0.1.0",
   "type": "module",

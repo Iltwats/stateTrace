@@ -1,6 +1,7 @@
 import { ErrorToast } from "../components/ErrorToast/ErrorToast";
 import { FailureControls } from "../components/FailureControls/FailureControls";
 import { OrderWorkspace } from "../components/OrderWorkspace/OrderWorkspace";
+import { RegressionPanel } from "../components/RegressionPanel/RegressionPanel";
 import { TransactionTimeline } from "../components/TransactionTimeline/TransactionTimeline";
 import { TruthInspector } from "../components/TruthInspector/TruthInspector";
 import { VerificationPanel } from "../components/VerificationPanel/VerificationPanel";
@@ -53,6 +54,7 @@ export function App() {
       </div>
 
       <TransactionTimeline />
+      <RegressionPanel />
       <ErrorToast />
     </main>
   );

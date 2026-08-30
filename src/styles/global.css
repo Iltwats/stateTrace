@@ -503,6 +503,110 @@ button:focus-visible {
   margin-top: 20px;
 }
 
+.regression-panel {
+  margin-top: 20px;
+}
+
+.regression-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.75fr) minmax(0, 1.25fr);
+  min-height: 360px;
+}
+
+.fixture-form {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 24px;
+  border-right: 1px solid #172b46;
+  background: rgb(5 16 31 / 28%);
+}
+
+.fixture-form p,
+.fixture-card-heading + p {
+  margin: 5px 0 0;
+  color: #7487a1;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.fixture-form label {
+  display: grid;
+  gap: 7px;
+  color: #aebdd2;
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.fixture-form input,
+.fixture-form textarea,
+.fixture-form select {
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid #294469;
+  border-radius: 9px;
+  outline: none;
+  color: #e8edf6;
+  background: #071629;
+}
+
+.fixture-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.fixture-library {
+  padding: 20px;
+}
+
+.compact-empty {
+  min-height: 300px;
+  padding: 30px;
+}
+
+.fixture-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fixture-list li {
+  padding: 16px;
+  border: 1px solid #1c3456;
+  border-radius: 12px;
+  background: #091a30;
+}
+
+.fixture-card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.fixture-card-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.fixture-card-heading span {
+  color: #65dba3;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.fixture-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  color: #5f738f;
+  font-size: 0.66rem;
+}
+
 .empty-state {
   display: grid;
   justify-items: center;
@@ -697,6 +801,15 @@ button:focus-visible {
 
   .mode-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .regression-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fixture-form {
+    border-right: 0;
+    border-bottom: 1px solid #172b46;
   }
 }
 
