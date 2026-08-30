@@ -4,6 +4,7 @@ import type {
   FailureMode,
   FieldValue,
   MutableField,
+  RegressionFixture,
   StateTraceState,
   Transaction,
 } from "../domain/types";
@@ -13,10 +14,11 @@ import {
   retryFailedTransaction,
   setFailureMode,
   setFieldLock,
+  saveRegressionFixture,
   stageOrderChange,
   TransactionEngineError,
 } from "../engine/transactionEngine";
-import { createBaselineState } from "../fixtures/baseline";
+import { baselineOrder, createBaselineState } from "../fixtures/baseline";
 
 type StageRequest = {
   field: MutableField;
@@ -40,6 +42,11 @@ type StateTraceStore = {
   toggleFieldLock: (field: MutableField) => void;
   chooseFailureMode: (mode: FailureMode) => void;
   cancelTransaction: (transactionId: string) => boolean;
+  saveFixture: (input: {
+    name: string;
+    description: string;
+    expectedOutcome: RegressionFixture["expectedOutcome"];
+  }) => RegressionFixture | null;
   clearError: () => void;
   reset: () => void;
 };
@@ -160,6 +167,20 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
       return cancelled;
     },
 
+    saveFixture(input) {
+      try {
+        const saved = saveRegressionFixture(get().state, {
+          ...input,
+          startingOrder: baselineOrder,
+        });
+        set({ state: saved.state, lastError: null });
+        return saved.fixture;
+      } catch (error) {
+        set({ lastError: toError(error) });
+        return null;
+      }
+    },
+
     clearError() {
       set({ lastError: null });
     },
@@ -170,4 +191,3 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
     },
   };
 });
-

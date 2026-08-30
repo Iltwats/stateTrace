@@ -93,6 +93,16 @@ h1 {
   box-shadow: 0 0 18px #5ee1a2;
 }
 
+.protocol-checking {
+  background: #78aaff;
+  box-shadow: 0 0 18px #78aaff;
+}
+
+.protocol-unavailable {
+  background: #e7b85e;
+  box-shadow: 0 0 18px #e7b85e;
+}
+
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);

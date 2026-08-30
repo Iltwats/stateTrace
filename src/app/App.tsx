@@ -4,8 +4,11 @@ import { OrderWorkspace } from "../components/OrderWorkspace/OrderWorkspace";
 import { TransactionTimeline } from "../components/TransactionTimeline/TransactionTimeline";
 import { TruthInspector } from "../components/TruthInspector/TruthInspector";
 import { VerificationPanel } from "../components/VerificationPanel/VerificationPanel";
+import { useWebMCPTools } from "../webmcp/useWebMCPTools";
 
 export function App() {
+  const webMCP = useWebMCPTools();
+
   return (
     <main className="app-shell">
       <header className="hero-panel">
@@ -18,10 +21,23 @@ export function App() {
           </p>
         </div>
         <div className="protocol-card">
-          <span className="protocol-light" aria-hidden="true" />
+          <span
+            className={`protocol-light protocol-${webMCP.state}`}
+            aria-hidden="true"
+          />
           <div>
-            <strong>Shared-state workspace</strong>
-            <p>Human UI and semantic tools use one transaction engine.</p>
+            <strong>
+              {webMCP.state === "available"
+                ? `${webMCP.toolCount} WebMCP tools available`
+                : webMCP.state === "checking"
+                  ? "Checking WebMCP support"
+                  : "Manual mode available"}
+            </strong>
+            <p>
+              {webMCP.state === "available"
+                ? "Human UI and semantic tools share one transaction engine."
+                : "The complete human interface works without protocol support."}
+            </p>
           </div>
         </div>
       </header>

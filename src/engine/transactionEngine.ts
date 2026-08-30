@@ -3,6 +3,8 @@ import type {
   FailureMode,
   FieldValue,
   MutableField,
+  Order,
+  RegressionFixture,
   ShippingMethod,
   StateTraceState,
   TraceEvent,
@@ -30,6 +32,13 @@ export type ResolveOutcome =
   | { type: "commit" }
   | { type: "fail"; code?: string; message?: string }
   | { type: "cancel"; message?: string };
+
+export type SaveFixtureInput = {
+  name: string;
+  description: string;
+  expectedOutcome: RegressionFixture["expectedOutcome"];
+  startingOrder: Order;
+};
 
 export class TransactionEngineError extends Error {
   readonly code: string;
@@ -504,3 +513,56 @@ export function getPendingTransactions(state: StateTraceState) {
   );
 }
 
+export function saveRegressionFixture(
+  currentState: StateTraceState,
+  input: SaveFixtureInput,
+  runtime: EngineRuntime = defaultRuntime,
+): { state: StateTraceState; fixture: RegressionFixture } {
+  const state = cloneState(currentState);
+  const name = input.name.trim();
+  const description = input.description.trim();
+
+  if (!name || name.length > 80) {
+    throw new TransactionEngineError(
+      "INVALID_FIXTURE_NAME",
+      "Fixture name must contain between 1 and 80 characters.",
+    );
+  }
+  if (!description || description.length > 240) {
+    throw new TransactionEngineError(
+      "INVALID_FIXTURE_DESCRIPTION",
+      "Fixture description must contain between 1 and 240 characters.",
+    );
+  }
+  if (state.events.length === 0) {
+    throw new TransactionEngineError(
+      "EMPTY_TRACE",
+      "Create at least one trace event before saving a regression fixture.",
+    );
+  }
+
+  const fixture: RegressionFixture = {
+    id: runtime.id(),
+    name,
+    description,
+    expectedOutcome: input.expectedOutcome,
+    createdAt: runtime.now(),
+    startingOrder: structuredClone(input.startingOrder),
+    events: structuredClone(state.events),
+  };
+  state.savedFixtures.push(fixture);
+  appendEvent(state, runtime, {
+    actor: "agent",
+    type: "fixture_saved",
+    revisionBefore: state.committedRevision,
+    revisionAfter: state.committedRevision,
+    summary: `Saved regression fixture “${name}”.`,
+    payload: {
+      fixtureId: fixture.id,
+      expectedOutcome: fixture.expectedOutcome,
+      capturedEvents: fixture.events.length,
+    },
+  });
+
+  return { state, fixture: structuredClone(fixture) };
+}
