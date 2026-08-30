@@ -264,6 +264,24 @@ h1 {
 }
 .demo-actions { padding: 12px 14px; background: #0b1016; }
 .demo-actions > div:first-child strong { color: #b7c1ce; font-family: var(--mono); font-size: 0.72rem; }
+.demo-actions code { color: #6f7e8f; font-family: var(--mono); }
+.subsection-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  min-height: 30px;
+  padding: 7px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--subtle);
+  background: #090d12;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.subsection-bar code { color: #768596; font-size: 0.57rem; letter-spacing: 0; text-transform: none; }
 .customer-row {
   display: flex;
   align-items: center;
@@ -306,6 +324,22 @@ h1 {
 .editable-field { padding: 14px 16px; background: var(--panel); transition: background 160ms ease, box-shadow 160ms ease; }
 .editable-field.is-optimistic { background: #102033; box-shadow: inset 3px 0 var(--blue); }
 .field-heading label { color: #b7c1cd; font-family: var(--mono); font-size: 0.68rem; font-weight: 680; }
+.field-identity { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+.field-identity > div { display: grid; gap: 3px; min-width: 0; }
+.field-path { overflow: hidden; color: var(--subtle); font-family: var(--mono); font-size: 0.54rem; text-overflow: ellipsis; }
+.diff-prefix {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: #596676;
+  font-family: var(--mono);
+  font-size: 0.57rem;
+}
+.diff-prefix.is-modified { border-color: #745c2d; color: var(--amber); background: var(--amber-muted); }
 .editable-field input, .editable-field textarea, .editable-field select,
 .fixture-form input, .fixture-form textarea, .fixture-form select {
   width: 100%;
@@ -396,7 +430,19 @@ h1 {
 .timeline-content > strong { color: #bdc7d3; font-size: 0.72rem; font-weight: 600; line-height: 1.45; }
 .timeline-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; color: var(--subtle); font-family: var(--mono); font-size: 0.55rem; }
 .actor-badge { color: #a6b2c0; font-weight: 700; }
-.event-type { margin-top: 6px; color: #687586; font-family: var(--mono); font-size: 0.55rem; text-transform: uppercase; }
+.commit-ref { color: #83a9d7; }
+.head-ref {
+  padding: 1px 4px;
+  border: 1px solid #327047;
+  border-radius: 3px;
+  color: var(--green);
+  background: var(--green-muted);
+  font-size: 0.5rem;
+  font-weight: 800;
+}
+.timeline-footer { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-top: 6px; }
+.event-type { color: #687586; font-family: var(--mono); font-size: 0.55rem; text-transform: uppercase; }
+.transaction-ref { overflow: hidden; color: #536171; font-family: var(--mono); font-size: 0.52rem; text-overflow: ellipsis; white-space: nowrap; }
 .text-button { margin-top: 7px; padding: 0; color: var(--blue); background: transparent; font-family: var(--mono); font-size: 0.6rem; }
 
 .empty-state { display: grid; min-height: 280px; align-content: center; justify-items: center; padding: 38px 22px; color: #758191; text-align: center; }

@@ -41,7 +41,15 @@ export function EditableField({
   return (
     <div className={`editable-field ${isOptimistic ? "is-optimistic" : ""}`}>
       <div className="field-heading">
-        <label htmlFor={`field-${field}`}>{label}</label>
+        <div className="field-identity">
+          <span className={`diff-prefix ${isOptimistic || isDirty ? "is-modified" : ""}`} aria-hidden="true">
+            {isOptimistic || isDirty ? "M" : "·"}
+          </span>
+          <div>
+            <label htmlFor={`field-${field}`}>{label}</label>
+            <code className="field-path">order.{field}</code>
+          </div>
+        </div>
         <FieldLockButton
           locked={locked}
           fieldLabel={label}
@@ -58,10 +66,10 @@ export function EditableField({
       <div className="field-footer">
         <span>
           {isOptimistic
-            ? `Pending view: ${visibleValue}`
+            ? `unstaged diff: ${visibleValue}`
             : locked
-              ? "Protected from human and agent writes"
-              : "Committed value"}
+              ? "path protected by human lock"
+              : "matches HEAD"}
         </span>
         {isDirty && !locked ? (
           <div className="inline-actions">
@@ -70,14 +78,14 @@ export function EditableField({
               className="button-ghost"
               onClick={() => setDraft(committedValue)}
             >
-              Discard
+              Discard diff
             </button>
             <button
               type="button"
               className="button-secondary"
               onClick={() => onCommit(draft)}
             >
-              Commit edit
+              Commit change
             </button>
           </div>
         ) : null}

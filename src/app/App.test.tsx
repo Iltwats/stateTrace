@@ -21,9 +21,9 @@ describe("App", () => {
     expect(
       screen.getByText(/inspect the working tree/i),
     ).toBeInTheDocument();
-    expect(screen.getByText("ORD-2048")).toBeInTheDocument();
-    expect(screen.getByText("State inspector")).toBeInTheDocument();
-    expect(screen.getByText("Transaction timeline")).toBeInTheDocument();
+    expect(screen.getByText("order/ORD-2048")).toBeInTheDocument();
+    expect(screen.getByText("Working tree ↔ HEAD")).toBeInTheDocument();
+    expect(screen.getByText("Commit graph")).toBeInTheDocument();
   });
 
   it("lets the human commit and lock a shipping choice", async () => {
@@ -49,7 +49,7 @@ describe("App", () => {
       .commitHumanField("internalNote", "Captured regression note");
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: /save 1 event as fixture/i }));
+    await user.click(screen.getByRole("button", { name: /commit 1 event to fixture/i }));
     expect(useStateTraceStore.getState().state.savedFixtures).toHaveLength(1);
     expect(screen.getByText("Concurrent order recovery")).toBeInTheDocument();
 

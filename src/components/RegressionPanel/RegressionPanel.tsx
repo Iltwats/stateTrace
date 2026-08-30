@@ -30,8 +30,8 @@ export function RegressionPanel() {
     <section className="panel regression-panel" aria-labelledby="regression-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Repeatable evidence</p>
-          <h2 id="regression-heading">Regression library</h2>
+          <p className="section-kicker">Saved traces</p>
+          <h2 id="regression-heading">Replay registry</h2>
         </div>
         <span className="event-count">{fixtures.length} saved</span>
       </div>
@@ -39,10 +39,10 @@ export function RegressionPanel() {
       <div className="regression-grid">
         <form className="fixture-form" onSubmit={handleSubmit}>
           <div>
-            <strong>Capture the current trace</strong>
+            <strong>Commit trace fixture</strong>
             <p>
-              Save its starting order, actions, failure evidence, and expected
-              outcome as a deterministic fixture.
+              Snapshot the starting resource, event graph, failure evidence,
+              and expected health checks.
             </p>
           </div>
           <label>
@@ -80,7 +80,7 @@ export function RegressionPanel() {
             </select>
           </label>
           <button className="button-primary" type="submit" disabled={!events.length}>
-            Save {events.length} event{events.length === 1 ? "" : "s"} as fixture
+            Commit {events.length} event{events.length === 1 ? "" : "s"} to fixture
           </button>
         </form>
 
@@ -88,8 +88,8 @@ export function RegressionPanel() {
           {fixtures.length === 0 ? (
             <div className="empty-state compact-empty">
               <span className="empty-glyph" aria-hidden="true">↻</span>
-              <strong>No regression fixtures yet</strong>
-              <p>Complete a trace, then capture it here or through WebMCP.</p>
+              <strong>No saved trace fixtures</strong>
+              <p>Generate a commit graph, then snapshot it here or through WebMCP.</p>
             </div>
           ) : (
             <ul className="fixture-list">
@@ -122,4 +122,3 @@ export function RegressionPanel() {
     </section>
   );
 }
-

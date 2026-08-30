@@ -25,7 +25,15 @@ export function ShippingMethodField({
       className={`editable-field ${visibleValue !== committedValue ? "is-optimistic" : ""}`}
     >
       <div className="field-heading">
-        <label htmlFor="field-shippingMethod">Shipping method</label>
+        <div className="field-identity">
+          <span className={`diff-prefix ${visibleValue !== committedValue ? "is-modified" : ""}`} aria-hidden="true">
+            {visibleValue !== committedValue ? "M" : "·"}
+          </span>
+          <div>
+            <label htmlFor="field-shippingMethod">Shipping method</label>
+            <code className="field-path">order.shippingMethod</code>
+          </div>
+        </div>
         <FieldLockButton
           locked={locked}
           fieldLabel="shipping method"
@@ -47,10 +55,10 @@ export function ShippingMethodField({
       <div className="field-footer">
         <span>
           {visibleValue !== committedValue
-            ? `Pending view: ${labels[visibleValue]}`
+            ? `unstaged diff: ${labels[visibleValue]}`
             : locked
-              ? "Protected from human and agent writes"
-              : "Committed value"}
+              ? "path protected by human lock"
+              : "matches HEAD"}
         </span>
       </div>
     </div>

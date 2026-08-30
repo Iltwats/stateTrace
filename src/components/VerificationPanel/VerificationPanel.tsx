@@ -10,11 +10,11 @@ export function VerificationPanel() {
     <section className="panel verification-panel" aria-labelledby="verification-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Deterministic checks</p>
-          <h2 id="verification-heading">Postconditions</h2>
+          <p className="section-kicker">Health checks</p>
+          <h2 id="verification-heading">Invariant monitor</h2>
         </div>
         <strong className="verification-score">
-          {passed}/{checks.length}
+          {passed}/{checks.length} passing
         </strong>
       </div>
       <ul className="check-list">
@@ -33,4 +33,3 @@ export function VerificationPanel() {
     </section>
   );
 }
-

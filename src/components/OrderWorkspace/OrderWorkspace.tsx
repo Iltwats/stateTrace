@@ -17,17 +17,26 @@ export function OrderWorkspace() {
   const toggleFieldLock = useStateTraceStore(
     ({ toggleFieldLock }) => toggleFieldLock,
   );
+  const modifiedFields = [
+    state.visibleOrder.shippingAddress !== state.order.shippingAddress,
+    state.visibleOrder.shippingMethod !== state.order.shippingMethod,
+    state.visibleOrder.internalNote !== state.order.internalNote,
+  ].filter(Boolean).length;
 
   return (
     <section className="panel order-workspace" aria-labelledby="order-heading">
       <div className="panel-heading">
         <div>
-          <p className="section-kicker">Live order</p>
-          <h2 id="order-heading">{state.order.id}</h2>
+          <p className="section-kicker">Tracked resource</p>
+          <h2 id="order-heading">order/{state.order.id}</h2>
         </div>
-        <span className="revision-badge">Revision {state.committedRevision}</span>
+        <span className="revision-badge">HEAD · r{state.committedRevision}</span>
       </div>
 
+      <div className="subsection-bar">
+        <span>Resource context</span>
+        <code>commerce.order</code>
+      </div>
       <div className="customer-row">
         <div className="avatar" aria-hidden="true">MC</div>
         <div>
@@ -49,6 +58,12 @@ export function OrderWorkspace() {
         ))}
       </div>
 
+      <div className="subsection-bar">
+        <span>Working tree</span>
+        <code className={modifiedFields ? "signal-pending" : "signal-good"}>
+          {modifiedFields} modified
+        </code>
+      </div>
       <div className="field-stack">
         <EditableField
           field="shippingAddress"
@@ -82,4 +97,3 @@ export function OrderWorkspace() {
     </section>
   );
 }
-

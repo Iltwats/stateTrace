@@ -27,21 +27,21 @@ export function TransactionTimeline() {
     <section className="panel transaction-timeline" aria-labelledby="timeline-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Append-only evidence</p>
-          <h2 id="timeline-heading">Transaction timeline</h2>
+          <p className="section-kicker">Distributed trace</p>
+          <h2 id="timeline-heading">Commit graph</h2>
         </div>
-        <span className="event-count">{events.length} events</span>
+        <span className="event-count">{events.length} events · live</span>
       </div>
 
       {newestFirst.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-glyph" aria-hidden="true">◎</span>
-          <strong>No transaction evidence yet</strong>
-          <p>Stage an agent change or edit the order to create the trace.</p>
+          <span className="empty-glyph" aria-hidden="true">○</span>
+          <strong>No commits in trace</strong>
+          <p><code>$ statetrace watch --resource ORD-2048</code></p>
         </div>
       ) : (
         <ol className="timeline-list">
-          {newestFirst.map((event) => {
+          {newestFirst.map((event, index) => {
             const transaction = event.transactionId
               ? transactions.find(({ id }) => id === event.transactionId)
               : undefined;
@@ -51,7 +51,8 @@ export function TransactionTimeline() {
                 <div className="timeline-content">
                   <div className="timeline-meta">
                     <span className="actor-badge">{actorLabels[event.actor]}</span>
-                    <span>#{event.sequence}</span>
+                    <code className="commit-ref">evt-{event.sequence.toString().padStart(4, "0")}</code>
+                    {index === 0 ? <span className="head-ref">HEAD</span> : null}
                     <time>{eventTime(event)}</time>
                     <span>
                       r{event.revisionBefore}
@@ -61,7 +62,14 @@ export function TransactionTimeline() {
                     </span>
                   </div>
                   <strong>{event.summary}</strong>
-                  <div className="event-type">{event.type.replaceAll("_", " ")}</div>
+                  <div className="timeline-footer">
+                    <span className="event-type">{event.type.replaceAll("_", " ")}</span>
+                    {transaction ? (
+                      <code className="transaction-ref">
+                        tx/{transaction.id.slice(-8)} · {transaction.status}
+                      </code>
+                    ) : null}
+                  </div>
                   {transaction?.status === "pending" &&
                   event.type === "optimistic_applied" ? (
                     <button
@@ -81,4 +89,3 @@ export function TransactionTimeline() {
     </section>
   );
 }
-

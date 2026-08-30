@@ -7,16 +7,16 @@ const modes: Array<{
   label: string;
   description: string;
 }> = [
-  { value: "normal", label: "Normal", description: "Commit after 800 ms" },
+  { value: "normal", label: "Healthy", description: "Commit after 800 ms" },
   {
     value: "slow_next_write",
-    label: "Slow next",
-    description: "Hold the next effect for 5 seconds",
+    label: "Latency",
+    description: "Hold next effect for 5 seconds",
   },
   {
     value: "fail_next_write",
-    label: "Fail next",
-    description: "Reject the next effect",
+    label: "Reject",
+    description: "Fail the next effect",
   },
   {
     value: "duplicate_response",
@@ -25,7 +25,7 @@ const modes: Array<{
   },
   {
     value: "out_of_order",
-    label: "Out of order",
+    label: "Reorder",
     description: "Reverse completion timing",
   },
 ];
@@ -46,11 +46,11 @@ export function FailureControls() {
     <section className="panel failure-controls" aria-labelledby="failure-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Deterministic chaos</p>
-          <h2 id="failure-heading">Next agent write</h2>
+          <p className="section-kicker">Scenario controls</p>
+          <h2 id="failure-heading">Fault injector</h2>
         </div>
         <button className="button-ghost" type="button" onClick={reset}>
-          Reset trace
+          Reset workspace
         </button>
       </div>
 
@@ -71,8 +71,8 @@ export function FailureControls() {
 
       <div className="demo-actions">
         <div>
-          <strong>Manual demo harness</strong>
-          <p>Uses the same store action that WebMCP will invoke.</p>
+          <strong>Agent command runner</strong>
+          <p><code>$ statetrace apply --field shippingAddress</code></p>
         </div>
         <div className="inline-actions">
           {retryable ? (
@@ -81,7 +81,7 @@ export function FailureControls() {
               className="button-secondary"
               onClick={() => retryTransaction(retryable.id)}
             >
-              Retry failed address
+              Retry failed transaction
             </button>
           ) : null}
           <button
@@ -96,11 +96,10 @@ export function FailureControls() {
               })
             }
           >
-            Stage agent address change
+            Stage address transaction
           </button>
         </div>
       </div>
     </section>
   );
 }
-

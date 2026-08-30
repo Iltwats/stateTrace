@@ -8,9 +8,9 @@ import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { StatusPill } from "../Shared/StatusPill";
 
 const fieldLabels: Record<MutableField, string> = {
-  shippingAddress: "Address",
-  shippingMethod: "Shipping",
-  internalNote: "Internal note",
+  shippingAddress: "address",
+  shippingMethod: "shipping",
+  internalNote: "note",
 };
 
 export function TruthInspector() {
@@ -25,8 +25,8 @@ export function TruthInspector() {
     <section className="panel truth-inspector" aria-labelledby="truth-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Canonical truth</p>
-          <h2 id="truth-heading">State inspector</h2>
+          <p className="section-kicker">git diff --stat</p>
+          <h2 id="truth-heading">Working tree ↔ HEAD</h2>
         </div>
         <StatusPill
           status={allPassed ? "verified" : "diverged"}
@@ -36,24 +36,24 @@ export function TruthInspector() {
 
       <div className="metric-grid">
         <div className="metric-card">
-          <span>Committed revision</span>
-          <strong>{state.committedRevision}</strong>
+          <span>HEAD revision</span>
+          <strong>r{state.committedRevision}</strong>
         </div>
         <div className="metric-card">
-          <span>Pending effects</span>
+          <span>In-flight</span>
           <strong>{pendingCount}</strong>
         </div>
         <div className="metric-card">
-          <span>Failed / superseded</span>
+          <span>Exceptions</span>
           <strong>{failedCount}</strong>
         </div>
       </div>
 
-      <div className="truth-table" role="table" aria-label="Visible and committed state">
+      <div className="truth-table" role="table" aria-label="Working tree and HEAD state">
         <div className="truth-row truth-header" role="row">
-          <span role="columnheader">Field</span>
-          <span role="columnheader">Visible</span>
-          <span role="columnheader">Committed</span>
+          <span role="columnheader">Path</span>
+          <span role="columnheader">Working tree</span>
+          <span role="columnheader">HEAD</span>
         </div>
         {fields.map((field) => {
           const diverged = state.visibleOrder[field] !== state.order[field];
@@ -72,7 +72,7 @@ export function TruthInspector() {
       </div>
 
       <div className="lock-summary">
-        <span>Human locks</span>
+        <span>Protected paths</span>
         <strong>
           {state.lockedFields.length
             ? state.lockedFields.map((field) => fieldLabels[field]).join(", ")
@@ -82,4 +82,3 @@ export function TruthInspector() {
     </section>
   );
 }
-
