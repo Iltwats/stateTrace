@@ -19,7 +19,7 @@ describe("App", () => {
       screen.getByRole("heading", { name: "StateTrace" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/what actually committed/i),
+      screen.getByText(/inspect the working tree/i),
     ).toBeInTheDocument();
     expect(screen.getByText("ORD-2048")).toBeInTheDocument();
     expect(screen.getByText("State inspector")).toBeInTheDocument();
