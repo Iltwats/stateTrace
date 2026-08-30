@@ -27,3 +27,16 @@ This keeps the evidence split cleanly:
 
 - Live Chrome verifies native discovery, registration lifecycle, visible state, and browser diagnostics.
 - Vitest verifies tool inputs, read/write handlers, deterministic verification, cancellation cleanup, and failure behavior.
+
+## Observability console verification
+
+The Git-like observability redesign was browser-tested against the complete recovery scenario:
+
+| Check | Result |
+| --- | --- |
+| Desktop hierarchy | Pass — repository identity, branch, HEAD, working tree, effect health, commit graph, diff inspector, and invariant monitor are visible at 1280×720. |
+| Failure evidence | Pass — rejecting the address transaction produced six events, one exception, a clean rolled-back working tree, and 7/7 passing invariants. |
+| Targeted recovery | Pass — retry advanced HEAD from `r3` to `r4`, committed the address, and preserved the human-protected pickup path. |
+| Commit graph | Pass — the recovered trace contains nine actor-attributed events and marks the newest event as `HEAD`. |
+| Responsive layout | Pass — at 390×844 the console retained its resource, branch, graph, and invariant information with no horizontal overflow. |
+| Browser diagnostics | Pass — the redesigned workflow produced no warning or error console entries. |
