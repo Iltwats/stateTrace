@@ -79,6 +79,32 @@ describe("StateTrace WebMCP tools", () => {
     registration.cleanup();
   });
 
+  it("lists a bounded transaction event slice", async () => {
+    const context = new FakeModelContext();
+    const registration = await registerStateTraceTools(context.asModelContext());
+    useStateTraceStore
+      .getState()
+      .commitHumanField("internalNote", "First trace event");
+    useStateTraceStore
+      .getState()
+      .commitHumanField("shippingMethod", "express");
+
+    const result = (await execute(context, "list_transaction_events", {
+      afterSequence: 0,
+      limit: 1,
+    })) as {
+      events: Array<{ sequence: number }>;
+      returned: number;
+      totalMatching: number;
+    };
+
+    expect(result.returned).toBe(1);
+    expect(result.totalMatching).toBe(2);
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0]?.sequence).toBe(1);
+    registration.cleanup();
+  });
+
   it("rejects unknown schema properties in executable validation", async () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());
@@ -177,4 +203,3 @@ describe("StateTrace WebMCP tools", () => {
     registration.cleanup();
   });
 });
-
