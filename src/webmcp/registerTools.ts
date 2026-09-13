@@ -31,8 +31,8 @@ export type WebMCPRegistration = {
 
 let activeController: AbortController | null = null;
 
-function ensureNotCancelled(signal: AbortSignal) {
-  if (signal.aborted) {
+function ensureNotCancelled(signal?: AbortSignal) {
+  if (signal?.aborted) {
     throw new DOMException("Tool call cancelled", "AbortError");
   }
 }
@@ -52,7 +52,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Read the current committed order revision, optimistic differences, locks, pending effects, failed effects, and verification summary shared with the user.",
       inputSchema: inputSchemas.getTransactionState,
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(getTransactionStateInput, input);
         return serializeTransactionState(
@@ -68,7 +69,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Inspect a bounded ordered section of the visible StateTrace event history when diagnosing a pending, failed, superseded, or committed transaction.",
       inputSchema: inputSchemas.listTransactionEvents,
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(listTransactionEventsInput, input);
         const state = useStateTraceStore.getState().state;
@@ -111,7 +113,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Run deterministic StateTrace invariants and optional exact postconditions after an order workflow without changing application state.",
       inputSchema: inputSchemas.verifyTransactionState,
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(verifyTransactionStateInput, input);
         const state = useStateTraceStore.getState().state;
@@ -176,7 +179,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Stage one validated optimistic change to the address, shipping method, or internal note at an observed revision and show it in the human-visible trace.",
       inputSchema: inputSchemas.stageOrderChange,
       annotations: { readOnlyHint: false, untrustedContentHint: false },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(stageOrderChangeInput, input);
         const transaction = useStateTraceStore.getState().stageChange({
@@ -203,7 +207,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Retry one failed or superseded StateTrace transaction at the current observed revision while preserving newer human edits and field locks.",
       inputSchema: inputSchemas.retryFailedTransaction,
       annotations: { readOnlyHint: false, untrustedContentHint: false },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(retryFailedTransactionInput, input);
         const transaction = useStateTraceStore
@@ -234,7 +239,8 @@ function createTools(): WebMCP.ModelContextTool[] {
         "Save the current visible trace as a local deterministic regression fixture after diagnosing or recovering a transaction failure.",
       inputSchema: inputSchemas.saveRegressionFixture,
       annotations: { readOnlyHint: false, untrustedContentHint: true },
-      execute: async (input, { signal }) => {
+      execute: async (input, options) => {
+        const signal = options?.signal;
         ensureNotCancelled(signal);
         const parsed = parseToolInput(saveRegressionFixtureInput, input);
         const fixture = useStateTraceStore.getState().saveFixture(parsed);
@@ -306,4 +312,3 @@ export function getTransactionStatus(
     "not_found"
   );
 }
-

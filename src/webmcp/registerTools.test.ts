@@ -79,6 +79,21 @@ describe("StateTrace WebMCP tools", () => {
     registration.cleanup();
   });
 
+  it("accepts hosts that omit the optional execution signal", async () => {
+    const context = new FakeModelContext();
+    const registration = await registerStateTraceTools(context.asModelContext());
+    const tool = context.tools.get("get_transaction_state");
+
+    if (!tool) throw new Error("Missing get_transaction_state tool");
+    const result = (await (
+      tool.execute as (input: Record<string, unknown>) => Promise<unknown>
+    )({ includeRecentEvents: false })) as Record<string, unknown>;
+
+    expect(result.orderId).toBe("ORD-2048");
+    expect(result.committedRevision).toBe(1);
+    registration.cleanup();
+  });
+
   it("lists a bounded transaction event slice", async () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());
