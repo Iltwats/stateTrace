@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { useStateTraceStore } from "../store/useStateTraceStore";
@@ -33,6 +33,18 @@ describe("App", () => {
       screen.getByRole("button", { name: "Open checkout demo" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Checkout" })).not.toBeInTheDocument();
+  });
+
+  it("moves the landing glow with the pointer", () => {
+    render(<App />);
+
+    const landing = screen.getByRole("main");
+    fireEvent.pointerMove(landing, { clientX: 320, clientY: 180 });
+
+    expect(landing).toHaveStyle({
+      "--landing-glow-x": "320px",
+      "--landing-glow-y": "180px",
+    });
   });
 
   it("opens a complete ecommerce checkout demo", async () => {

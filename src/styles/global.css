@@ -975,6 +975,8 @@ h1 {
 }
 
 .landing-shell {
+  --landing-glow-x: 88vw;
+  --landing-glow-y: 8vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   width: min(1240px, calc(100% - 48px));
@@ -984,14 +986,28 @@ h1 {
 
 .landing-glow {
   position: fixed;
-  top: -22rem;
-  right: -14rem;
-  width: 58rem;
-  height: 58rem;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 52rem;
+  height: 52rem;
   border-radius: 50%;
   pointer-events: none;
+  transform: translate3d(
+    calc(var(--landing-glow-x) - 50%),
+    calc(var(--landing-glow-y) - 50%),
+    0
+  );
+  transition: transform 110ms ease-out;
+  will-change: transform;
+}
+.landing-glow::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   background: radial-gradient(circle, rgb(245 158 11 / 17%), transparent 66%);
   filter: blur(10px);
+  content: "";
   animation: glow-arrive 1.8s ease-out both;
 }
 
@@ -2277,7 +2293,7 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .landing-glow,
+  .landing-glow::after,
   .landing-kicker,
   .animated-title span,
   .landing-tagline,
@@ -2288,4 +2304,15 @@ h1 {
   .order-complete-overlay,
   .order-complete-dialog,
   .order-complete-mark span { animation: none; }
+  .landing-glow {
+    transform: translate3d(calc(88vw - 50%), calc(8vh - 50%), 0);
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .landing-glow {
+    transform: translate3d(calc(88vw - 50%), calc(8vh - 50%), 0);
+    transition: none;
+  }
 }

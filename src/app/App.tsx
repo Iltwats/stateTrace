@@ -36,7 +36,19 @@ export function App() {
 
   if (!demoOpen) {
     return (
-      <main className="landing-shell">
+      <main
+        className="landing-shell"
+        onPointerMove={(event) => {
+          event.currentTarget.style.setProperty(
+            "--landing-glow-x",
+            `${event.clientX}px`,
+          );
+          event.currentTarget.style.setProperty(
+            "--landing-glow-y",
+            `${event.clientY}px`,
+          );
+        }}
+      >
         <div className="landing-glow" aria-hidden="true" />
         <header className="landing-header">
           <div className="landing-monogram" aria-hidden="true">ST</div>
