@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useStateTraceStore } from "../store/useStateTraceStore";
 import { App } from "./App";
@@ -99,7 +99,7 @@ describe("App", () => {
     expect(screen.getByText("Shipping address is changing")).toBeInTheDocument();
   });
 
-  it("saves and restores checkout form details from a checkpoint", async () => {
+  it("auto-saves and restores checkout form details from a checkpoint", async () => {
     const user = userEvent.setup();
     render(<App />);
     await openCheckout(user);
@@ -107,7 +107,15 @@ describe("App", () => {
     const coupon = screen.getByLabelText("Coupon code");
     await user.clear(coupon);
     await user.type(coupon, "SHIPFREE");
-    await user.click(screen.getByRole("button", { name: "Save change" }));
+    expect(screen.getByText("Auto-saving…")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Save change" }),
+    ).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /^activity/i })).toHaveTextContent(
+        "1",
+      ),
+    );
     expect(coupon).toHaveValue("SHIPFREE");
 
     await user.click(screen.getByRole("button", { name: /^activity/i }));

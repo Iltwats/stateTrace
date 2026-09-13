@@ -84,8 +84,9 @@ applied.
 | Check | Result |
 | --- | --- |
 | Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
-| Visual system | Pass — the page uses Manrope and IBM Plex Mono with a black `#060504` base and true gold-orange `#f59e0b` / `#ffb52b` accents. |
+| Visual system | Pass — the StateTrace entrance retains its black and gold-orange identity, while the embedded Aurum store uses a separate porcelain, ink, electric-indigo, and mint commerce palette. |
 | Complete checkout | Pass — the Aurum demo uses familiar retail navigation, checkout progress, contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals. |
+| Field auto-save | Pass — valid text edits display `Auto-saving…`, commit after a short debounce, update Activity, and create a restore point without rendering Cancel or Save buttons. Invalid drafts remain local and explain what must be corrected. |
 | Native WebMCP write | Pass — the browser discovered six page tools, read revision `2`, staged an agent-owned address change, and observed it commit at revision `3`. |
 | Human/agent activity | Pass — the drawer separately showed the human coupon edit and the agent address edit, including actor, old value, new value, and applied status. No internal safety panel or system-event stream is shown. |
 | Automatic restore points | Pass — human changes, agent writes, and retries create a restore point before mutation. There is no manual save control. Restoring revision `1` retained the original action and added the reverse diff to activity instead of erasing history. |
