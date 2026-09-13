@@ -3,7 +3,7 @@
   "description": "A WebMCP-native transaction debugger for visible, recoverable human-agent workflows.",
   "version": "0.1.0",
   "private": true,
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "Atul Sharma",
   "type": "module",
   "homepage": "https://state-trace.vercel.app/",
