@@ -285,6 +285,7 @@ export function App() {
 
         <section
           className="landing-faq"
+          id="faq"
           aria-labelledby="faq-title"
           onPointerEnter={(event) => {
             event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "0");

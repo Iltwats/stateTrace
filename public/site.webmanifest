@@ -1,0 +1,22 @@
+{
+  "name": "StateTrace",
+  "short_name": "StateTrace",
+  "description": "Observability for human and WebMCP agent updates.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#060504",
+  "theme_color": "#060504",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

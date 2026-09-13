@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="70%" cy="28%" r="72%">
+      <stop offset="0" stop-color="#9a5608" stop-opacity=".44" />
+      <stop offset=".48" stop-color="#4b2805" stop-opacity=".22" />
+      <stop offset="1" stop-color="#060504" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#d18a1a" stroke-opacity=".09" />
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#060504" />
+  <rect width="1200" height="630" fill="url(#grid)" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+  <g transform="translate(76 64)">
+    <rect width="66" height="66" rx="16" fill="#130d05" stroke="#84500e" stroke-width="2" />
+    <text x="33" y="42" fill="#ffb11b" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">ST</text>
+  </g>
+  <text x="76" y="250" fill="#fff8ec" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="800" letter-spacing="-6">State<tspan fill="#ffb11b">Trace</tspan></text>
+  <text x="82" y="331" fill="#fff8ec" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700">Observable WebMCP agent transactions.</text>
+  <text x="82" y="395" fill="#a89b87" font-family="Arial, Helvetica, sans-serif" font-size="26">See every update. Recover any checkpoint.</text>
+  <g transform="translate(82 492)">
+    <circle cx="10" cy="10" r="9" fill="#65d3a7" />
+    <text x="34" y="18" fill="#d6cab8" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="600">Human-visible agent actions</text>
+  </g>
+  <path d="M850 496c70-54 126-89 248-128" fill="none" stroke="#ffb11b" stroke-opacity=".65" stroke-width="3" />
+  <circle cx="1004" cy="406" r="36" fill="#ffb11b" />
+  <text x="1004" y="416" fill="#130d05" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" text-anchor="middle">A</text>
+</svg>

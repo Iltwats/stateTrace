@@ -3,20 +3,134 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StateTrace — Observable WebMCP Agent Transactions</title>
+    <meta
+      name="description"
+      content="StateTrace reveals every human and WebMCP agent update, separates pending from committed state, and restores forms from automatic checkpoints."
+    />
+    <meta name="author" content="Atul Sharma" />
+    <meta name="application-name" content="StateTrace" />
+    <meta name="apple-mobile-web-app-title" content="StateTrace" />
+    <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#060504" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
     <link rel="canonical" href="https://state-trace.vercel.app/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="StateTrace" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="StateTrace — Observable WebMCP Agent Transactions" />
     <meta
-      name="description"
-      content="StateTrace makes human and agent changes observable in a realistic WebMCP checkout experience."
+      property="og:description"
+      content="See what you changed, what an agent changed, and restore a form from any automatic checkpoint."
     />
     <meta property="og:url" content="https://state-trace.vercel.app/" />
-    <title>StateTrace</title>
+    <meta property="og:image" content="https://state-trace.vercel.app/og-image.png" />
+    <meta property="og:image:secure_url" content="https://state-trace.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="StateTrace: observability for human and WebMCP agent updates"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="StateTrace — Observable WebMCP Agent Transactions" />
+    <meta
+      name="twitter:description"
+      content="See what you changed, what an agent changed, and restore a form from any automatic checkpoint."
+    />
+    <meta name="twitter:image" content="https://state-trace.vercel.app/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="StateTrace: observability for human and WebMCP agent updates"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://state-trace.vercel.app/#website",
+            "url": "https://state-trace.vercel.app/",
+            "name": "StateTrace",
+            "description": "Observability for human and WebMCP agent updates.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://state-trace.vercel.app/#application",
+            "name": "StateTrace",
+            "url": "https://state-trace.vercel.app/",
+            "codeRepository": "https://github.com/Iltwats/stateTrace",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any modern web browser",
+            "isAccessibleForFree": true,
+            "license": "https://www.apache.org/licenses/LICENSE-2.0",
+            "author": {
+              "@type": "Person",
+              "name": "Atul Sharma"
+            },
+            "description": "An open-source reference implementation for observable, recoverable WebMCP transactions.",
+            "featureList": [
+              "Human and agent change attribution",
+              "Pending and committed state separation",
+              "Automatic form checkpoints",
+              "Transaction retry and recovery",
+              "Duplicate and stale write protection",
+              "Ordered activity traces"
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://state-trace.vercel.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What does StateTrace make observable?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "StateTrace records field-level changes with the responsible actor, previous value, new value, and revision so people can distinguish their changes from an agent's changes."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What can an agent do through WebMCP?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "An agent can inspect state, read the activity trace, verify outcomes, stage supported field changes, retry failed transactions, and capture recovered traces as regression fixtures."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to save checkpoints manually?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. StateTrace creates a restore point automatically before a person or agent changes the form."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
