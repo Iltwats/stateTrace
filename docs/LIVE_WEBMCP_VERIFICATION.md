@@ -21,12 +21,14 @@ This checkpoint records the manual Chrome verification for StateTrace after enab
 
 ## Invocation coverage
 
-Chrome's enabled host confirmed that the page successfully registered the six semantic tools. The browser-control test surface does not expose the host's consumer-side tool invocation channel, so execute-path coverage remains in `src/webmcp/registerTools.test.ts`, where every registered handler is invoked against the same production store and transaction engine used by the UI.
+The initial Chrome checkpoint verified discovery and registration. A later in-app browser checkpoint also exercised the consumer-side channel against the production page:
 
-This keeps the evidence split cleanly:
+- `get_transaction_state` returned revision `1`, no pending work, and `7/7` passing invariants.
+- `stage_order_change` staged a real agent-owned address update and the visible commerce form settled to revision `2` with three trace events.
+- `verify_transaction_state` passed the exact revision, address, shipping-method, transaction-status, and invariant postconditions.
+- The live host omitted the nominally required execution `AbortSignal`. StateTrace now treats that signal as optional while still honoring it when supplied; a regression test protects both host shapes.
 
-- Live Chrome verifies native discovery, registration lifecycle, visible state, and browser diagnostics.
-- Vitest verifies tool inputs, read/write handlers, deterministic verification, cancellation cleanup, and failure behavior.
+Vitest continues to cover schema rejection, read/write handlers, retries, deterministic verification, cancellation cleanup, idempotency, and failure behavior.
 
 ## Observability console verification
 
@@ -40,3 +42,20 @@ The Git-like observability redesign was browser-tested against the complete reco
 | Commit graph | Pass — the recovered trace contains nine actor-attributed events and marks the newest event as `HEAD`. |
 | Responsive layout | Pass — at 390×844 the console retained its resource, branch, graph, and invariant information with no horizontal overflow. |
 | Browser diagnostics | Pass — the redesigned workflow produced no warning or error console entries. |
+
+## Open-source commerce UI verification
+
+This checkpoint covers the black-and-gold commerce redesign and drawer interaction requested for the public demo.
+
+- Date: 2026-09-14
+- Browser: Codex in-app browser with native WebMCP discovery and invocation
+- App: Vite development server at `http://127.0.0.1:5173/`
+
+| Check | Result |
+| --- | --- |
+| Commerce framing | Pass — order context, line items, total, fulfillment form, and agent delivery simulator are visible in the primary workflow. |
+| Human/agent ownership | Pass — fields visibly distinguish shared, human-edited, agent-edited, and human-protected states. |
+| Trace drawer | Pass — the stack trace opens from the header, receives focus, closes on Escape, restores trigger focus, and renders the complete actor-attributed commit graph. |
+| Failure and retry | Pass — a rejected address update produced six events and one exception; retry advanced HEAD from `r3` to `r4` while preserving the locked pickup method. |
+| Mobile drawer | Pass — at 390×844 both the page and full-width trace drawer measured 390 pixels with no horizontal overflow. |
+| Browser diagnostics | Pass — no warning or error console entries were reported. |
