@@ -64,12 +64,7 @@ export function replayRegressionFixture(
       case "field_locked":
       case "field_unlocked":
         if (!field) throw new Error("Regression fixture is missing a lock field.");
-        state = setFieldLock(
-          state,
-          field,
-          event.type === "field_locked",
-          runtime,
-        );
+        state = setFieldLock(state, field, event.type === "field_locked", runtime);
         break;
 
       case "optimistic_applied": {
@@ -90,10 +85,7 @@ export function replayRegressionFixture(
             idempotencyKey: `replay-${event.transactionId}`,
             reason: `Replay of ${fixture.name}`,
             actor: (created?.actor ?? "agent") as Actor,
-            attempt:
-              typeof created?.payload.attempt === "number"
-                ? created.payload.attempt
-                : 1,
+            attempt: typeof created?.payload.attempt === "number" ? created.payload.attempt : 1,
           },
           runtime,
         );
@@ -117,31 +109,16 @@ export function replayRegressionFixture(
             replayId,
             {
               type: "fail",
-              code:
-                typeof event.payload.code === "string"
-                  ? event.payload.code
-                  : undefined,
+              code: typeof event.payload.code === "string" ? event.payload.code : undefined,
               message:
-                typeof event.payload.message === "string"
-                  ? event.payload.message
-                  : undefined,
+                typeof event.payload.message === "string" ? event.payload.message : undefined,
             },
             runtime,
           );
         } else if (event.type === "effect_cancelled") {
-          state = resolveTransaction(
-            state,
-            replayId,
-            { type: "cancel" },
-            runtime,
-          );
+          state = resolveTransaction(state, replayId, { type: "cancel" }, runtime);
         } else {
-          state = resolveTransaction(
-            state,
-            replayId,
-            { type: "commit" },
-            runtime,
-          );
+          state = resolveTransaction(state, replayId, { type: "commit" }, runtime);
         }
         break;
       }

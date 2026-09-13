@@ -1,10 +1,6 @@
 import { createBaselineState } from "../fixtures/baseline";
 import { verifyInvariants } from "./invariantEngine";
-import {
-  resolveTransaction,
-  stageOrderChange,
-  type EngineRuntime,
-} from "./transactionEngine";
+import { resolveTransaction, stageOrderChange, type EngineRuntime } from "./transactionEngine";
 
 const runtime: EngineRuntime = {
   now: (() => {
@@ -45,9 +41,7 @@ describe("invariant engine", () => {
     const corrupted = createBaselineState();
     corrupted.visibleOrder.shippingAddress = "Corrupted visible value";
 
-    const check = verifyInvariants(corrupted).find(
-      ({ id }) => id === "visible-settled",
-    );
+    const check = verifyInvariants(corrupted).find(({ id }) => id === "visible-settled");
     expect(check?.passed).toBe(false);
   });
 
@@ -66,10 +60,7 @@ describe("invariant engine", () => {
     );
     staged.state.events[1].sequence = 99;
 
-    const check = verifyInvariants(staged.state).find(
-      ({ id }) => id === "event-sequence",
-    );
+    const check = verifyInvariants(staged.state).find(({ id }) => id === "event-sequence");
     expect(check?.passed).toBe(false);
   });
 });
-

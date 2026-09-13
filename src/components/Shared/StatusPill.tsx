@@ -10,4 +10,3 @@ export function StatusPill({ status, label }: { status: Status; label?: string }
     </span>
   );
 }
-

@@ -6,9 +6,7 @@ const demoAddress = "44 River Road, Portland, OR 97209";
 export function AgentDemo() {
   const state = useStateTraceStore(({ state }) => state);
   const stageChange = useStateTraceStore(({ stageChange }) => stageChange);
-  const retryTransaction = useStateTraceStore(
-    ({ retryTransaction }) => retryTransaction,
-  );
+  const retryTransaction = useStateTraceStore(({ retryTransaction }) => retryTransaction);
   const reset = useStateTraceStore(({ reset }) => reset);
   const retryable = selectLatestRetryable(state);
 
@@ -19,8 +17,8 @@ export function AgentDemo() {
           Try this with your WebMCP agent
         </p>
         <p className="agent-prompt-text">
-          “Update the shipping address to <strong>{demoAddress}</strong>, then
-          verify that it committed.”
+          “Update the shipping address to <strong>{demoAddress}</strong>, then verify that it
+          committed.”
         </p>
       </div>
       <div className="agent-prompt-actions">

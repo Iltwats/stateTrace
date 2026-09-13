@@ -34,19 +34,9 @@ describe("regression replay", () => {
       },
       runtime,
     );
-    let state = commitHumanChange(
-      staged.state,
-      "shippingMethod",
-      "pickup",
-      runtime,
-    );
+    let state = commitHumanChange(staged.state, "shippingMethod", "pickup", runtime);
     state = setFieldLock(state, "shippingMethod", true, runtime);
-    state = resolveTransaction(
-      state,
-      staged.transaction.id,
-      { type: "commit" },
-      runtime,
-    );
+    state = resolveTransaction(state, staged.transaction.id, { type: "commit" }, runtime);
     const saved = saveRegressionFixture(
       state,
       {
@@ -58,10 +48,7 @@ describe("regression replay", () => {
       runtime,
     );
 
-    const replayed = replayRegressionFixture(
-      saved.fixture,
-      createRuntime("replay"),
-    );
+    const replayed = replayRegressionFixture(saved.fixture, createRuntime("replay"));
 
     expect(replayed.order.shippingAddress).toContain("44 River Road");
     expect(replayed.order.shippingMethod).toBe("pickup");
@@ -69,4 +56,3 @@ describe("regression replay", () => {
     expect(verifyInvariants(replayed).every(({ passed }) => passed)).toBe(true);
   });
 });
-

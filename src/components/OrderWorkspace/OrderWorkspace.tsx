@@ -22,24 +22,18 @@ export function pickSurpriseDiscount(randomValue = Math.random()) {
   return surpriseDiscounts[index];
 }
 
-function lastActorForField(
-  events: TraceEvent[],
-  field: MutableField,
-): Actor | undefined {
+function lastActorForField(events: TraceEvent[], field: MutableField): Actor | undefined {
   return [...events]
     .reverse()
     .find(
       (event) =>
-        event.payload.field === field &&
-        (event.actor === "human" || event.actor === "agent"),
+        event.payload.field === field && (event.actor === "human" || event.actor === "agent"),
     )?.actor;
 }
 
 export function OrderWorkspace() {
   const state = useStateTraceStore(({ state }) => state);
-  const commitHumanField = useStateTraceStore(
-    ({ commitHumanField }) => commitHumanField,
-  );
+  const commitHumanField = useStateTraceStore(({ commitHumanField }) => commitHumanField);
   const reset = useStateTraceStore(({ reset }) => reset);
   const [placed, setPlaced] = useState(false);
   const [paymentFormKey, setPaymentFormKey] = useState(0);
@@ -91,11 +85,7 @@ export function OrderWorkspace() {
   }
 
   return (
-    <section
-      id="checkout-products"
-      className="checkout-layout"
-      aria-label="Checkout demo"
-    >
+    <section id="checkout-products" className="checkout-layout" aria-label="Checkout demo">
       <form
         className="checkout-form"
         onSubmit={(event) => {
@@ -170,19 +160,13 @@ export function OrderWorkspace() {
             locked={state.lockedFields.includes("couponCode")}
             onCommit={(value) => commitHumanField("couponCode", value)}
             actionLabel="Apply"
-            actionStatus={
-              appliedDiscount
-                ? `${appliedDiscount.percent}% off applied`
-                : undefined
-            }
+            actionStatus={appliedDiscount ? `${appliedDiscount.percent}% off applied` : undefined}
             onAction={applyCoupon}
           />
         </section>
 
         <div className="checkout-submit">
-          <button type="submit">
-            Pay {formatCurrency(finalTotal)}
-          </button>
+          <button type="submit">Pay {formatCurrency(finalTotal)}</button>
           <p>This is a simulation. No payment or order is submitted.</p>
         </div>
       </form>
@@ -213,22 +197,31 @@ export function OrderWorkspace() {
         </ul>
 
         <div className="summary-totals">
-          <div><span>Subtotal</span><strong>{formatCurrency(state.order.totalCents)}</strong></div>
-          <div><span>Shipping</span><strong>Free</strong></div>
+          <div>
+            <span>Subtotal</span>
+            <strong>{formatCurrency(state.order.totalCents)}</strong>
+          </div>
+          <div>
+            <span>Shipping</span>
+            <strong>Free</strong>
+          </div>
           {appliedDiscount ? (
             <div className="discount-row">
               <span>Discount ({appliedDiscount.code})</span>
               <strong>−{formatCurrency(discountCents)}</strong>
             </div>
           ) : null}
-          <div className="summary-total"><span>Total</span><strong>{formatCurrency(finalTotal)}</strong></div>
+          <div className="summary-total">
+            <span>Total</span>
+            <strong>{formatCurrency(finalTotal)}</strong>
+          </div>
         </div>
 
         <div className="summary-observability">
           <span className="activity-state is-ready" aria-hidden="true" />
           <p>
-            Changes to this checkout are captured for you, whether they come
-            from the page or a WebMCP agent.
+            Changes to this checkout are captured for you, whether they come from the page or a
+            WebMCP agent.
           </p>
         </div>
       </aside>
@@ -247,9 +240,7 @@ export function OrderWorkspace() {
             </div>
             <p className="section-kicker">Order {state.order.id}</p>
             <h2 id="order-complete-title">Order complete</h2>
-            <p id="order-complete-description">
-              Your order has been confirmed.
-            </p>
+            <p id="order-complete-description">Your order has been confirmed.</p>
             <div className="order-complete-total">
               <span>Total</span>
               <strong>{formatCurrency(finalTotal)}</strong>

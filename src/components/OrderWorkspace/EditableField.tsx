@@ -5,18 +5,13 @@ function validateDraft(field: MutableField, value: string) {
   const trimmed = value.trim();
 
   if (field === "customerEmail") {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
-      ? null
-      : "Enter a valid email to auto-save";
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) ? null : "Enter a valid email to auto-save";
   }
   if (field === "couponCode") {
-    return trimmed.length <= 32
-      ? null
-      : "Use 32 characters or fewer to auto-save";
+    return trimmed.length <= 32 ? null : "Use 32 characters or fewer to auto-save";
   }
 
-  const maxLength =
-    field === "internalNote" ? 400 : field === "paymentName" ? 100 : 240;
+  const maxLength = field === "internalNote" ? 400 : field === "paymentName" ? 100 : 240;
   return trimmed && trimmed.length <= maxLength
     ? null
     : `Enter between 1 and ${maxLength} characters to auto-save`;
@@ -73,9 +68,8 @@ export function EditableField({
     id: `field-${field}`,
     value: draft,
     disabled: locked,
-    onChange: (
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => setDraft(event.target.value),
+    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setDraft(event.target.value),
   };
 
   return (
@@ -86,9 +80,7 @@ export function EditableField({
             <div className="field-title-line">
               <label htmlFor={`field-${field}`}>{label}</label>
               {actorLabel ? (
-                <span className={`field-actor actor-${activeActor ?? "shared"}`}>
-                  {actorLabel}
-                </span>
+                <span className={`field-actor actor-${activeActor ?? "shared"}`}>{actorLabel}</span>
               ) : null}
             </div>
           </div>
@@ -96,11 +88,7 @@ export function EditableField({
       </div>
 
       <div className={onAction ? "field-input-action" : undefined}>
-        {multiline ? (
-          <textarea {...inputProps} rows={3} />
-        ) : (
-          <input {...inputProps} />
-        )}
+        {multiline ? <textarea {...inputProps} rows={3} /> : <input {...inputProps} />}
         {onAction ? (
           <button
             type="button"
@@ -115,9 +103,7 @@ export function EditableField({
       {isOptimistic || isDirty ? (
         <div className="field-footer" aria-live="polite">
           <span className={draftError ? "field-save-error" : undefined}>
-            {isOptimistic
-              ? "Agent change is being applied…"
-              : draftError ?? "Auto-saving…"}
+            {isOptimistic ? "Agent change is being applied…" : (draftError ?? "Auto-saving…")}
           </span>
         </div>
       ) : actionStatus ? (

@@ -18,9 +18,7 @@ function eventTime(event: TraceEvent) {
 export function TransactionTimeline() {
   const events = useStateTraceStore(({ state }) => state.events);
   const transactions = useStateTraceStore(({ state }) => state.transactions);
-  const cancelTransaction = useStateTraceStore(
-    ({ cancelTransaction }) => cancelTransaction,
-  );
+  const cancelTransaction = useStateTraceStore(({ cancelTransaction }) => cancelTransaction);
   const newestFirst = [...events].reverse();
 
   return (
@@ -35,7 +33,9 @@ export function TransactionTimeline() {
 
       {newestFirst.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-glyph" aria-hidden="true">○</span>
+          <span className="empty-glyph" aria-hidden="true">
+            ○
+          </span>
           <strong>No activity yet</strong>
           <p>Ask an agent to update the order, or preview an agent action.</p>
         </div>
@@ -51,7 +51,9 @@ export function TransactionTimeline() {
                 <div className="timeline-content">
                   <div className="timeline-meta">
                     <span className="actor-badge">{actorLabels[event.actor]}</span>
-                    <code className="commit-ref">evt-{event.sequence.toString().padStart(4, "0")}</code>
+                    <code className="commit-ref">
+                      evt-{event.sequence.toString().padStart(4, "0")}
+                    </code>
                     {index === 0 ? <span className="head-ref">HEAD</span> : null}
                     <time>{eventTime(event)}</time>
                     <span>
@@ -70,8 +72,7 @@ export function TransactionTimeline() {
                       </code>
                     ) : null}
                   </div>
-                  {transaction?.status === "pending" &&
-                  event.type === "optimistic_applied" ? (
+                  {transaction?.status === "pending" && event.type === "optimistic_applied" ? (
                     <button
                       className="text-button"
                       type="button"

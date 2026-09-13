@@ -20,9 +20,7 @@ export function ShippingMethodField({
   onCommit: (value: ShippingMethod) => void;
 }) {
   return (
-    <div
-      className={`editable-field ${visibleValue !== committedValue ? "is-optimistic" : ""}`}
-    >
+    <div className={`editable-field ${visibleValue !== committedValue ? "is-optimistic" : ""}`}>
       <div className="field-heading">
         <div className="field-identity">
           <div>
@@ -51,9 +49,7 @@ export function ShippingMethodField({
       </select>
       {visibleValue !== committedValue ? (
         <div className="field-footer">
-          <span>
-            Agent change is being verified…
-          </span>
+          <span>Agent change is being verified…</span>
         </div>
       ) : null}
     </div>

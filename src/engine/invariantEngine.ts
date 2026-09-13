@@ -1,8 +1,4 @@
-import type {
-  InvariantResult,
-  MutableField,
-  StateTraceState,
-} from "../domain/types";
+import type { InvariantResult, MutableField, StateTraceState } from "../domain/types";
 import { getPendingTransactions } from "./transactionEngine";
 
 function result(
@@ -32,21 +28,15 @@ export function verifyInvariants(state: StateTraceState): InvariantResult[] {
   );
 
   const committedByKey = new Map<string, string[]>();
-  for (const transaction of state.transactions.filter(
-    ({ status }) => status === "committed",
-  )) {
+  for (const transaction of state.transactions.filter(({ status }) => status === "committed")) {
     const ids = committedByKey.get(transaction.idempotencyKey) ?? [];
     ids.push(transaction.id);
     committedByKey.set(transaction.idempotencyKey, ids);
   }
-  const duplicatedKeys = [...committedByKey.entries()].filter(
-    ([, ids]) => ids.length > 1,
-  );
+  const duplicatedKeys = [...committedByKey.entries()].filter(([, ids]) => ids.length > 1);
 
   const commitEventsByTransaction = new Map<string, number>();
-  for (const event of state.events.filter(
-    ({ type }) => type === "effect_committed",
-  )) {
+  for (const event of state.events.filter(({ type }) => type === "effect_committed")) {
     if (event.transactionId) {
       commitEventsByTransaction.set(
         event.transactionId,
@@ -63,9 +53,7 @@ export function verifyInvariants(state: StateTraceState): InvariantResult[] {
     .filter(({ id }) => (commitEventsByTransaction.get(id) ?? 0) > 0);
 
   const sequences = state.events.map(({ sequence }) => sequence);
-  const sequenceIsContinuous = sequences.every(
-    (sequence, index) => sequence === index + 1,
-  );
+  const sequenceIsContinuous = sequences.every((sequence, index) => sequence === index + 1);
 
   const revisionsAreMonotonic = state.events.every((event, index, events) => {
     if (event.revisionAfter < event.revisionBefore) return false;

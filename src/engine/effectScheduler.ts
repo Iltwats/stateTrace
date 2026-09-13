@@ -37,9 +37,7 @@ export function createEffectScheduler(adapter: SchedulerAdapter) {
 
     if (failureMode === "duplicate_response") {
       const duplicateId = window.setTimeout(() => {
-        adapter.setState(
-          resolveTransaction(adapter.getState(), transactionId, { type: "commit" }),
-        );
+        adapter.setState(resolveTransaction(adapter.getState(), transactionId, { type: "commit" }));
         scheduled.delete(transactionId);
       }, 120);
       const effect = scheduled.get(transactionId);
@@ -60,10 +58,7 @@ export function createEffectScheduler(adapter: SchedulerAdapter) {
         delay = outOfOrderCount % 2 === 0 ? 450 : 1_600;
       }
 
-      const timeoutId = window.setTimeout(
-        () => finish(transactionId, failureMode),
-        delay,
-      );
+      const timeoutId = window.setTimeout(() => finish(transactionId, failureMode), delay);
       scheduled.set(transactionId, { transactionId, timeoutIds: [timeoutId] });
     },
 
@@ -92,4 +87,3 @@ export function createEffectScheduler(adapter: SchedulerAdapter) {
     },
   };
 }
-

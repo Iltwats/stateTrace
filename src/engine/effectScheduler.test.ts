@@ -60,4 +60,3 @@ describe("effect scheduler", () => {
     expect(state.transactions[0].status).toBe("failed");
   });
 });
-

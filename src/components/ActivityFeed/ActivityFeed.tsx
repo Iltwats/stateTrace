@@ -1,9 +1,4 @@
-import type {
-  Actor,
-  MutableField,
-  StateTraceState,
-  TransactionStatus,
-} from "../../domain/types";
+import type { Actor, MutableField, StateTraceState, TransactionStatus } from "../../domain/types";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 
 const fieldLabels: Record<MutableField, string> = {
@@ -82,9 +77,7 @@ function createActivityItems(state: StateTraceState): ActivityItem[] {
     return [];
   });
 
-  return [...agentChanges, ...humanChanges].sort(
-    (left, right) => right.timestamp - left.timestamp,
-  );
+  return [...agentChanges, ...humanChanges].sort((left, right) => right.timestamp - left.timestamp);
 }
 
 function formatTime(timestamp: number) {

@@ -1,8 +1,4 @@
-import type {
-  MutableField,
-  StateTraceState,
-  TraceEvent,
-} from "../domain/types";
+import type { MutableField, StateTraceState, TraceEvent } from "../domain/types";
 import { verifyInvariants } from "../engine/invariantEngine";
 
 const mutableFields: MutableField[] = [
@@ -27,10 +23,7 @@ export function serializeEvent(event: TraceEvent) {
   };
 }
 
-export function serializeTransactionState(
-  state: StateTraceState,
-  includeRecentEvents = false,
-) {
+export function serializeTransactionState(state: StateTraceState, includeRecentEvents = false) {
   const differences = mutableFields
     .filter((field) => state.visibleOrder[field] !== state.order[field])
     .map((field) => ({
@@ -80,8 +73,6 @@ export function serializeTransactionState(
         .filter(({ severity }) => severity === "hard")
         .every(({ passed }) => passed),
     },
-    recentEvents: includeRecentEvents
-      ? state.events.slice(-10).map(serializeEvent)
-      : undefined,
+    recentEvents: includeRecentEvents ? state.events.slice(-10).map(serializeEvent) : undefined,
   };
 }

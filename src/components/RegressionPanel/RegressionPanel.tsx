@@ -41,17 +41,13 @@ export function RegressionPanel() {
           <div>
             <strong>Commit trace fixture</strong>
             <p>
-              Snapshot the starting resource, event graph, failure evidence,
-              and expected health checks.
+              Snapshot the starting resource, event graph, failure evidence, and expected health
+              checks.
             </p>
           </div>
           <label>
             Fixture name
-            <input
-              value={name}
-              maxLength={80}
-              onChange={(event) => setName(event.target.value)}
-            />
+            <input value={name} maxLength={80} onChange={(event) => setName(event.target.value)} />
           </label>
           <label>
             Description
@@ -67,9 +63,7 @@ export function RegressionPanel() {
             <select
               value={expectedOutcome}
               onChange={(event) =>
-                setExpectedOutcome(
-                  event.target.value as RegressionFixture["expectedOutcome"],
-                )
+                setExpectedOutcome(event.target.value as RegressionFixture["expectedOutcome"])
               }
             >
               {Object.entries(outcomeLabels).map(([value, label]) => (
@@ -87,7 +81,9 @@ export function RegressionPanel() {
         <div className="fixture-library">
           {fixtures.length === 0 ? (
             <div className="empty-state compact-empty">
-              <span className="empty-glyph" aria-hidden="true">↻</span>
+              <span className="empty-glyph" aria-hidden="true">
+                ↻
+              </span>
               <strong>No saved trace fixtures</strong>
               <p>Generate a commit graph, then snapshot it here or through WebMCP.</p>
             </div>

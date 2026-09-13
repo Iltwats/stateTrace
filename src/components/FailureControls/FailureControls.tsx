@@ -32,13 +32,9 @@ const modes: Array<{
 
 export function FailureControls() {
   const state = useStateTraceStore(({ state }) => state);
-  const chooseFailureMode = useStateTraceStore(
-    ({ chooseFailureMode }) => chooseFailureMode,
-  );
+  const chooseFailureMode = useStateTraceStore(({ chooseFailureMode }) => chooseFailureMode);
   const stageChange = useStateTraceStore(({ stageChange }) => stageChange);
-  const retryTransaction = useStateTraceStore(
-    ({ retryTransaction }) => retryTransaction,
-  );
+  const retryTransaction = useStateTraceStore(({ retryTransaction }) => retryTransaction);
   const reset = useStateTraceStore(({ reset }) => reset);
   const retryable = selectLatestRetryable(state);
 
@@ -72,7 +68,9 @@ export function FailureControls() {
       <div className="demo-actions">
         <div>
           <strong>Ask the agent to correct the delivery address</strong>
-          <p><code>44 River Road, Portland, OR 97209</code></p>
+          <p>
+            <code>44 River Road, Portland, OR 97209</code>
+          </p>
         </div>
         <div className="inline-actions">
           {retryable ? (

@@ -79,24 +79,9 @@ describe("transaction engine", () => {
   it("preserves an unrelated human edit while retrying a failed transaction", () => {
     const runtime = createRuntime();
     const staged = stageAddress(runtime);
-    const humanEdited = commitHumanChange(
-      staged.state,
-      "shippingMethod",
-      "pickup",
-      runtime,
-    );
-    const locked = setFieldLock(
-      humanEdited,
-      "shippingMethod",
-      true,
-      runtime,
-    );
-    const failed = resolveTransaction(
-      locked,
-      staged.transaction.id,
-      { type: "fail" },
-      runtime,
-    );
+    const humanEdited = commitHumanChange(staged.state, "shippingMethod", "pickup", runtime);
+    const locked = setFieldLock(humanEdited, "shippingMethod", true, runtime);
+    const failed = resolveTransaction(locked, staged.transaction.id, { type: "fail" }, runtime);
     const retry = retryFailedTransaction(
       failed,
       staged.transaction.id,
@@ -141,18 +126,8 @@ describe("transaction engine", () => {
   it("does not commit a field that becomes locked while pending", () => {
     const runtime = createRuntime();
     const staged = stageAddress(runtime);
-    const locked = setFieldLock(
-      staged.state,
-      "shippingAddress",
-      true,
-      runtime,
-    );
-    const resolved = resolveTransaction(
-      locked,
-      staged.transaction.id,
-      { type: "commit" },
-      runtime,
-    );
+    const locked = setFieldLock(staged.state, "shippingAddress", true, runtime);
+    const resolved = resolveTransaction(locked, staged.transaction.id, { type: "commit" }, runtime);
 
     expect(resolved.order.shippingAddress).toContain("18 Cedar Lane");
     expect(resolved.transactions[0].status).toBe("superseded");
@@ -181,12 +156,7 @@ describe("transaction engine", () => {
 
   it("rejects a stale revision before staging", () => {
     const runtime = createRuntime();
-    const state = commitHumanChange(
-      createBaselineState(),
-      "shippingMethod",
-      "pickup",
-      runtime,
-    );
+    const state = commitHumanChange(createBaselineState(), "shippingMethod", "pickup", runtime);
 
     expect(() =>
       stageOrderChange(
@@ -205,12 +175,7 @@ describe("transaction engine", () => {
 
   it("rejects writes to a locked field", () => {
     const runtime = createRuntime();
-    const state = setFieldLock(
-      createBaselineState(),
-      "shippingMethod",
-      true,
-      runtime,
-    );
+    const state = setFieldLock(createBaselineState(), "shippingMethod", true, runtime);
 
     expect(() =>
       stageOrderChange(
@@ -254,36 +219,18 @@ describe("transaction engine", () => {
       "maya.updated@example.com",
       runtime,
     );
-    const couponCleared = commitHumanChange(
-      emailChanged,
-      "couponCode",
-      "",
-      runtime,
-    );
-    const paymentChanged = commitHumanChange(
-      couponCleared,
-      "paymentName",
-      "Maya L. Chen",
-      runtime,
-    );
+    const couponCleared = commitHumanChange(emailChanged, "couponCode", "", runtime);
+    const paymentChanged = commitHumanChange(couponCleared, "paymentName", "Maya L. Chen", runtime);
 
     expect(paymentChanged.order.customerEmail).toBe("maya.updated@example.com");
     expect(paymentChanged.order.couponCode).toBe("");
     expect(paymentChanged.order.paymentName).toBe("Maya L. Chen");
-    expect(paymentChanged.events.map(({ actor }) => actor)).toEqual([
-      "human",
-      "human",
-      "human",
-    ]);
+    expect(paymentChanged.events.map(({ actor }) => actor)).toEqual(["human", "human", "human"]);
   });
 
   it("rejects an invalid checkout email", () => {
     expect(() =>
-      commitHumanChange(
-        createBaselineState(),
-        "customerEmail",
-        "not-an-email",
-      ),
+      commitHumanChange(createBaselineState(), "customerEmail", "not-an-email"),
     ).toThrowError(/valid email/i);
   });
 });

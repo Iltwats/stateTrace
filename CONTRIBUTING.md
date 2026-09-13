@@ -63,7 +63,7 @@ Both must pass. CI runs exactly these two commands on every pull request.
 3. Shape the response through `src/webmcp/serializers.ts`. Mark any
    user-generated content as untrusted.
 4. Add a case to `evals/statetrace.json` covering both correct selection and
-   the requests that must *not* reach your tool.
+   the requests that must _not_ reach your tool.
 5. Update the tool table in [`README.md`](README.md).
 
 ## Commit and PR style

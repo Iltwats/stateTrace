@@ -131,10 +131,8 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
         const staged = stageOrderChange(checkpointed, {
           field: request.field,
           value: request.value,
-          expectedRevision:
-            request.expectedRevision ?? current.committedRevision,
-          idempotencyKey:
-            request.idempotencyKey ?? makeIdempotencyKey(request.field),
+          expectedRevision: request.expectedRevision ?? current.committedRevision,
+          idempotencyKey: request.idempotencyKey ?? makeIdempotencyKey(request.field),
           reason: request.reason,
           actor,
         });
@@ -198,11 +196,7 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
     toggleFieldLock(field) {
       const current = get().state;
       set({
-        state: setFieldLock(
-          current,
-          field,
-          !current.lockedFields.includes(field),
-        ),
+        state: setFieldLock(current, field, !current.lockedFields.includes(field)),
         lastError: null,
       });
     },
@@ -262,9 +256,7 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
 
     restoreCheckpoint(fixtureId) {
       try {
-        const checkpoint = get().state.checkpoints.find(
-          ({ id }) => id === fixtureId,
-        );
+        const checkpoint = get().state.checkpoints.find(({ id }) => id === fixtureId);
         if (!checkpoint) {
           throw new TransactionEngineError(
             "FIXTURE_NOT_FOUND",

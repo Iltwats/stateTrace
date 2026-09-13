@@ -26,9 +26,7 @@ describe("StateTrace shared store", () => {
       "44 River Road",
     );
 
-    useStateTraceStore
-      .getState()
-      .commitHumanField("shippingMethod", "pickup");
+    useStateTraceStore.getState().commitHumanField("shippingMethod", "pickup");
     useStateTraceStore.getState().toggleFieldLock("shippingMethod");
     vi.advanceTimersByTime(900);
 
@@ -71,14 +69,10 @@ describe("StateTrace shared store", () => {
     useStateTraceStore.getState().commitHumanField("couponCode", "SHIPFREE");
     const checkpoint = useStateTraceStore.getState().state.checkpoints[0];
 
-    const restored = useStateTraceStore
-      .getState()
-      .restoreCheckpoint(checkpoint.id);
+    const restored = useStateTraceStore.getState().restoreCheckpoint(checkpoint.id);
     const state = useStateTraceStore.getState().state;
     const couponChanges = state.events.filter(
-      (event) =>
-        event.type === "human_change_committed" &&
-        event.payload.field === "couponCode",
+      (event) => event.type === "human_change_committed" && event.payload.field === "couponCode",
     );
 
     expect(restored).toBe(true);

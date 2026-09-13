@@ -1,9 +1,6 @@
 import type { MutableField } from "../../domain/types";
 import { verifyInvariants } from "../../engine/invariantEngine";
-import {
-  selectFailedCount,
-  selectPendingCount,
-} from "../../store/selectors";
+import { selectFailedCount, selectPendingCount } from "../../store/selectors";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { StatusPill } from "../Shared/StatusPill";
 

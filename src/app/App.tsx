@@ -8,13 +8,7 @@ import { useStateTraceStore } from "../store/useStateTraceStore";
 import type { WebMCPStatus } from "../webmcp/useWebMCPTools";
 import { useWebMCPTools } from "../webmcp/useWebMCPTools";
 
-function WebMCPBadge({
-  status,
-  onClick,
-}: {
-  status: WebMCPStatus;
-  onClick: () => void;
-}) {
+function WebMCPBadge({ status, onClick }: { status: WebMCPStatus; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -22,10 +16,7 @@ function WebMCPBadge({
       aria-haspopup="dialog"
       onClick={onClick}
     >
-      <span
-        className={`protocol-light protocol-${status.state}`}
-        aria-hidden="true"
-      />
+      <span className={`protocol-light protocol-${status.state}`} aria-hidden="true" />
       <span>
         {status.state === "available"
           ? `WebMCP connected · ${status.toolCount} tools`
@@ -101,18 +92,33 @@ function WebMCPSetupDialog({
         </div>
 
         <ol className="webmcp-setup-steps">
-          <li><span>1</span><p>Use <strong>Chrome 149 or later</strong>.</p></li>
+          <li>
+            <span>1</span>
+            <p>
+              Use <strong>Chrome 149 or later</strong>.
+            </p>
+          </li>
           <li>
             <span>2</span>
-            <p>Open <code>chrome://flags/#enable-webmcp-testing</code>.</p>
+            <p>
+              Open <code>chrome://flags/#enable-webmcp-testing</code>.
+            </p>
           </li>
-          <li><span>3</span><p>Set <strong>WebMCP testing</strong> to Enabled.</p></li>
-          <li><span>4</span><p>Relaunch Chrome, then reopen this page.</p></li>
+          <li>
+            <span>3</span>
+            <p>
+              Set <strong>WebMCP testing</strong> to Enabled.
+            </p>
+          </li>
+          <li>
+            <span>4</span>
+            <p>Relaunch Chrome, then reopen this page.</p>
+          </li>
         </ol>
 
         <p className="webmcp-setup-note">
-          When setup is complete, this badge turns green and reports the
-          number of tools available to your agent.
+          When setup is complete, this badge turns green and reports the number of tools available
+          to your agent.
         </p>
         <button type="button" className="webmcp-setup-done" onClick={onClose}>
           {connected ? "Done" : "Continue in manual mode"}
@@ -185,16 +191,16 @@ export function App() {
 
   if (!demoOpen) {
     return (
-      <main
-        className="landing-shell"
-        id="landing-top"
-      >
+      <main className="landing-shell" id="landing-top">
         <div className="landing-glow" aria-hidden="true" />
         <header className={`landing-header${landingScrolled ? " is-docked" : ""}`}>
           <a className="landing-brand" href="#landing-top" aria-label="StateTrace home">
-            <span className="landing-monogram" aria-hidden="true">ST</span>
+            <span className="landing-monogram" aria-hidden="true">
+              ST
+            </span>
             <span className="landing-brand-name" aria-hidden="true">
-              <span>State</span><span>Trace</span>
+              <span>State</span>
+              <span>Trace</span>
             </span>
           </a>
           <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
@@ -204,10 +210,7 @@ export function App() {
           className="landing-hero"
           aria-labelledby="landing-title"
           onPointerEnter={(event) => {
-            event.currentTarget.parentElement?.style.setProperty(
-              "--landing-glow-opacity",
-              "1",
-            );
+            event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "1");
           }}
           onPointerMove={(event) => {
             const landing = event.currentTarget.parentElement;
@@ -215,29 +218,21 @@ export function App() {
             landing?.style.setProperty("--landing-glow-y", `${event.clientY}px`);
           }}
           onPointerLeave={(event) => {
-            event.currentTarget.parentElement?.style.setProperty(
-              "--landing-glow-opacity",
-              "0",
-            );
+            event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "0");
           }}
         >
           <p className="landing-kicker">Human-visible agent actions</p>
           <h1 id="landing-title" className="animated-title">
-            <span>State</span><span>Trace</span>
+            <span>State</span>
+            <span>Trace</span>
           </h1>
-          <p className="landing-tagline">
-            Observability for agent updates in WebMCP.
-          </p>
+          <p className="landing-tagline">Observability for agent updates in WebMCP.</p>
           <p className="landing-description">
-            See exactly what you changed, what the agent changed, and return
-            your form to any saved checkpoint.
+            See exactly what you changed, what the agent changed, and return your form to any saved
+            checkpoint.
           </p>
           <div className="landing-actions">
-            <button
-              type="button"
-              className="open-demo-button"
-              onClick={() => setDemoOpen(true)}
-            >
+            <button type="button" className="open-demo-button" onClick={() => setDemoOpen(true)}>
               Open checkout demo
               <span aria-hidden="true">↗</span>
             </button>
@@ -255,10 +250,7 @@ export function App() {
           id="product-overview"
           aria-labelledby="product-overview-title"
           onPointerEnter={(event) => {
-            event.currentTarget.parentElement?.style.setProperty(
-              "--landing-glow-opacity",
-              "0",
-            );
+            event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "0");
           }}
         >
           <div className="product-overview-heading">
@@ -295,103 +287,89 @@ export function App() {
           className="landing-faq"
           aria-labelledby="faq-title"
           onPointerEnter={(event) => {
-            event.currentTarget.parentElement?.style.setProperty(
-              "--landing-glow-opacity",
-              "0",
-            );
+            event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "0");
           }}
           onFocusCapture={(event) => {
-            event.currentTarget.parentElement?.style.setProperty(
-              "--landing-glow-opacity",
-              "0",
-            );
+            event.currentTarget.parentElement?.style.setProperty("--landing-glow-opacity", "0");
           }}
         >
           <div className="landing-faq-intro">
             <p className="section-kicker">What it does</p>
             <h2 id="faq-title">Frequently asked questions</h2>
             <p>
-              A practical view of StateTrace, WebMCP, and what the checkout
-              demo is designed to prove.
+              A practical view of StateTrace, WebMCP, and what the checkout demo is designed to
+              prove.
             </p>
           </div>
           <div className="landing-faq-list">
             <details>
               <summary>What does StateTrace make observable?</summary>
               <p>
-                It records field-level changes with the responsible actor,
-                previous value, new value, and revision—so you can distinguish
-                what you changed from what an agent changed.
+                It records field-level changes with the responsible actor, previous value, new
+                value, and revision—so you can distinguish what you changed from what an agent
+                changed.
               </p>
             </details>
             <details>
               <summary>What can an agent do through WebMCP?</summary>
               <p>
-                An agent can inspect current and pending state, read the ordered
-                activity trace, verify exact outcomes, stage a supported field
-                change, retry one failed transaction, and capture a recovered
-                trace as a regression fixture.
+                An agent can inspect current and pending state, read the ordered activity trace,
+                verify exact outcomes, stage a supported field change, retry one failed transaction,
+                and capture a recovered trace as a regression fixture.
               </p>
             </details>
             <details>
               <summary>How does it handle slow operations and latency?</summary>
               <p>
-                StateTrace separates the value currently shown in the form
-                from the last committed value. A slow operation stays visibly
-                pending until it succeeds or fails, so neither the person nor
-                the agent has to mistake an optimistic update for a completed
-                one.
+                StateTrace separates the value currently shown in the form from the last committed
+                value. A slow operation stays visibly pending until it succeeds or fails, so neither
+                the person nor the agent has to mistake an optimistic update for a completed one.
               </p>
             </details>
             <details>
               <summary>Can duplicate requests apply the same change twice?</summary>
               <p>
-                Idempotency keys prevent duplicate logical writes. If a
-                completion response arrives more than once, the extra response
-                is ignored and recorded in the trace instead of advancing the
-                revision again.
+                Idempotency keys prevent duplicate logical writes. If a completion response arrives
+                more than once, the extra response is ignored and recorded in the trace instead of
+                advancing the revision again.
               </p>
             </details>
             <details>
               <summary>What if the page changes while an agent is working?</summary>
               <p>
-                Agent writes include the revision they observed. Stale writes
-                to the same field are rejected or superseded, while safe edits
-                to independent fields can survive. A human can also lock a
-                field so a pending agent operation cannot overwrite it.
+                Agent writes include the revision they observed. Stale writes to the same field are
+                rejected or superseded, while safe edits to independent fields can survive. A human
+                can also lock a field so a pending agent operation cannot overwrite it.
               </p>
             </details>
             <details>
               <summary>Can a failed operation be retried safely?</summary>
               <p>
-                Yes. Recovery targets one identified failed or superseded
-                transaction at the current revision instead of repeating the
-                whole workflow. Newer human edits and field locks remain in
-                force.
+                Yes. Recovery targets one identified failed or superseded transaction at the current
+                revision instead of repeating the whole workflow. Newer human edits and field locks
+                remain in force.
               </p>
             </details>
             <details>
               <summary>Do I need to save checkpoints manually?</summary>
               <p>
-                No. StateTrace creates a restore point automatically before a
-                human or agent changes the form, keeping the experience free
-                of save buttons.
+                No. StateTrace creates a restore point automatically before a human or agent changes
+                the form, keeping the experience free of save buttons.
               </p>
             </details>
             <details>
               <summary>What happens when I restore a checkpoint?</summary>
               <p>
-                The form returns to the selected revision while the activity
-                history remains available, so the recovery itself stays
-                understandable and traceable.
+                The form returns to the selected revision while the activity history remains
+                available, so the recovery itself stays understandable and traceable.
               </p>
             </details>
             <details>
               <summary>Does StateTrace work on every website?</summary>
               <p>
-                Not automatically. A website must integrate the StateTrace
-                pattern and expose its actions through WebMCP. This checkout is
-                a reference implementation developers can adapt to real forms.
+                Not automatically. A website must integrate the StateTrace pattern and expose its
+                actions through WebMCP. This checkout is a reference implementation developers can
+                adapt to real forms.
               </p>
             </details>
           </div>
@@ -399,19 +377,11 @@ export function App() {
 
         <footer className="landing-footer">
           <span>Open-source WebMCP reference experience</span>
-          <a
-            href="https://github.com/Iltwats/stateTrace"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://github.com/Iltwats/stateTrace" target="_blank" rel="noreferrer">
             GitHub ↗
           </a>
         </footer>
-        <WebMCPSetupDialog
-          open={setupOpen}
-          status={webMCP}
-          onClose={closeSetup}
-        />
+        <WebMCPSetupDialog open={setupOpen} status={webMCP} onClose={closeSetup} />
       </main>
     );
   }
@@ -461,10 +431,18 @@ export function App() {
       <div className="checkout-content">
         <nav className="checkout-progress" aria-label="Checkout progress">
           <ol>
-            <li className="is-complete"><span>✓</span>Bag</li>
-            <li className="is-current"><span>2</span>Information</li>
-            <li><span>3</span>Delivery</li>
-            <li><span>4</span>Payment</li>
+            <li className="is-complete">
+              <span>✓</span>Bag
+            </li>
+            <li className="is-current">
+              <span>2</span>Information
+            </li>
+            <li>
+              <span>3</span>Delivery
+            </li>
+            <li>
+              <span>4</span>Payment
+            </li>
           </ol>
         </nav>
 
@@ -474,8 +452,8 @@ export function App() {
             <h1>Checkout</h1>
           </div>
           <p>
-            Complete your details below. Every edit is auto-saved, whether it
-            comes from you or your WebMCP agent.
+            Complete your details below. Every edit is auto-saved, whether it comes from you or your
+            WebMCP agent.
           </p>
         </div>
 
@@ -492,16 +470,8 @@ export function App() {
       </div>
 
       <ErrorToast />
-      <TraceDrawer
-        open={traceOpen}
-        eventCount={activityCount}
-        onClose={closeTrace}
-      />
-      <WebMCPSetupDialog
-        open={setupOpen}
-        status={webMCP}
-        onClose={closeSetup}
-      />
+      <TraceDrawer open={traceOpen} eventCount={activityCount} onClose={closeTrace} />
+      <WebMCPSetupDialog open={setupOpen} status={webMCP} onClose={closeSetup} />
     </main>
   );
 }

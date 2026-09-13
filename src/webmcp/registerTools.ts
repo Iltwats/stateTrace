@@ -77,24 +77,16 @@ function createTools(): WebMCP.ModelContextTool[] {
         let events = state.events;
 
         if (parsed.afterSequence !== undefined) {
-          events = events.filter(
-            ({ sequence }) => sequence > parsed.afterSequence!,
-          );
+          events = events.filter(({ sequence }) => sequence > parsed.afterSequence!);
         }
         if (parsed.transactionId) {
-          events = events.filter(
-            ({ transactionId }) => transactionId === parsed.transactionId,
-          );
+          events = events.filter(({ transactionId }) => transactionId === parsed.transactionId);
         }
         if (parsed.status) {
           const ids = new Set(
-            state.transactions
-              .filter(({ status }) => status === parsed.status)
-              .map(({ id }) => id),
+            state.transactions.filter(({ status }) => status === parsed.status).map(({ id }) => id),
           );
-          events = events.filter(
-            ({ transactionId }) => transactionId && ids.has(transactionId),
-          );
+          events = events.filter(({ transactionId }) => transactionId && ids.has(transactionId));
         }
 
         return {
@@ -135,9 +127,9 @@ function createTools(): WebMCP.ModelContextTool[] {
           });
         }
         if (parsed.expectedFields) {
-          for (const [field, expected] of Object.entries(
-            parsed.expectedFields,
-          ) as Array<[MutableField, string]>) {
+          for (const [field, expected] of Object.entries(parsed.expectedFields) as Array<
+            [MutableField, string]
+          >) {
             postconditions.push({
               id: `field-${field}`,
               passed: state.order[field] === expected,
@@ -147,9 +139,7 @@ function createTools(): WebMCP.ModelContextTool[] {
           }
         }
         if (parsed.transactionId) {
-          const transaction = state.transactions.find(
-            ({ id }) => id === parsed.transactionId,
-          );
+          const transaction = state.transactions.find(({ id }) => id === parsed.transactionId);
           postconditions.push({
             id: "transaction-status",
             passed:
@@ -213,11 +203,7 @@ function createTools(): WebMCP.ModelContextTool[] {
         const parsed = parseToolInput(retryFailedTransactionInput, input);
         const transaction = useStateTraceStore
           .getState()
-          .retryTransaction(
-            parsed.transactionId,
-            parsed.expectedRevision,
-            parsed.idempotencyKey,
-          );
+          .retryTransaction(parsed.transactionId, parsed.expectedRevision, parsed.idempotencyKey);
         if (!transaction) throw storeError();
         ensureNotCancelled(signal);
         return {
@@ -302,13 +288,9 @@ export async function registerStateTraceTools(
   }
 }
 
-export function getTransactionStatus(
-  transactionId: string,
-): TransactionStatus | "not_found" {
+export function getTransactionStatus(transactionId: string): TransactionStatus | "not_found" {
   return (
-    useStateTraceStore
-      .getState()
-      .state.transactions.find(({ id }) => id === transactionId)?.status ??
-    "not_found"
+    useStateTraceStore.getState().state.transactions.find(({ id }) => id === transactionId)
+      ?.status ?? "not_found"
   );
 }

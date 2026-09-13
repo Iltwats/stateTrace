@@ -1,8 +1,5 @@
 import { useStateTraceStore } from "../store/useStateTraceStore";
-import {
-  registerStateTraceTools,
-  stateTraceToolNames,
-} from "./registerTools";
+import { registerStateTraceTools, stateTraceToolNames } from "./registerTools";
 
 class FakeModelContext {
   readonly tools = new Map<string, WebMCP.ModelContextTool>();
@@ -15,11 +12,7 @@ class FakeModelContext {
       throw new Error(`Duplicate tool: ${tool.name}`);
     }
     this.tools.set(tool.name, tool);
-    options?.signal?.addEventListener(
-      "abort",
-      () => this.tools.delete(tool.name),
-      { once: true },
-    );
+    options?.signal?.addEventListener("abort", () => this.tools.delete(tool.name), { once: true });
   }
 
   asModelContext() {
@@ -27,11 +20,7 @@ class FakeModelContext {
   }
 }
 
-async function execute(
-  context: FakeModelContext,
-  name: string,
-  input: Record<string, unknown>,
-) {
+async function execute(context: FakeModelContext, name: string, input: Record<string, unknown>) {
   const tool = context.tools.get(name);
   if (!tool) throw new Error(`Missing registered tool ${name}`);
   return tool.execute(input, { signal: new AbortController().signal });
@@ -54,12 +43,8 @@ describe("StateTrace WebMCP tools", () => {
 
     expect(registration.supported).toBe(true);
     expect([...context.tools.keys()]).toEqual(stateTraceToolNames);
-    expect(context.tools.get("get_transaction_state")?.annotations?.readOnlyHint).toBe(
-      true,
-    );
-    expect(context.tools.get("stage_order_change")?.annotations?.readOnlyHint).toBe(
-      false,
-    );
+    expect(context.tools.get("get_transaction_state")?.annotations?.readOnlyHint).toBe(true);
+    expect(context.tools.get("stage_order_change")?.annotations?.readOnlyHint).toBe(false);
 
     registration.cleanup();
     expect(context.tools.size).toBe(0);
@@ -85,9 +70,9 @@ describe("StateTrace WebMCP tools", () => {
     const tool = context.tools.get("get_transaction_state");
 
     if (!tool) throw new Error("Missing get_transaction_state tool");
-    const result = (await (
-      tool.execute as (input: Record<string, unknown>) => Promise<unknown>
-    )({ includeRecentEvents: false })) as Record<string, unknown>;
+    const result = (await (tool.execute as (input: Record<string, unknown>) => Promise<unknown>)({
+      includeRecentEvents: false,
+    })) as Record<string, unknown>;
 
     expect(result.orderId).toBe("ORD-2048");
     expect(result.committedRevision).toBe(1);
@@ -97,12 +82,8 @@ describe("StateTrace WebMCP tools", () => {
   it("lists a bounded transaction event slice", async () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());
-    useStateTraceStore
-      .getState()
-      .commitHumanField("internalNote", "First trace event");
-    useStateTraceStore
-      .getState()
-      .commitHumanField("shippingMethod", "express");
+    useStateTraceStore.getState().commitHumanField("internalNote", "First trace event");
+    useStateTraceStore.getState().commitHumanField("shippingMethod", "express");
 
     const result = (await execute(context, "list_transaction_events", {
       afterSequence: 0,
@@ -124,9 +105,9 @@ describe("StateTrace WebMCP tools", () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());
 
-    await expect(
-      execute(context, "get_transaction_state", { unexpected: true }),
-    ).rejects.toThrow(/unrecognized key/i);
+    await expect(execute(context, "get_transaction_state", { unexpected: true })).rejects.toThrow(
+      /unrecognized key/i,
+    );
     registration.cleanup();
   });
 
@@ -143,9 +124,9 @@ describe("StateTrace WebMCP tools", () => {
     })) as { transactionId: string; status: string };
 
     expect(stageResult.status).toBe("pending");
-    expect(
-      useStateTraceStore.getState().state.visibleOrder.shippingAddress,
-    ).toContain("44 River Road");
+    expect(useStateTraceStore.getState().state.visibleOrder.shippingAddress).toContain(
+      "44 River Road",
+    );
     vi.advanceTimersByTime(800);
 
     const verification = (await execute(context, "verify_transaction_state", {
@@ -174,9 +155,7 @@ describe("StateTrace WebMCP tools", () => {
       reason: "Apply the customer promotion.",
     })) as { transactionId: string };
 
-    expect(useStateTraceStore.getState().state.visibleOrder.couponCode).toBe(
-      "SHIPFREE",
-    );
+    expect(useStateTraceStore.getState().state.visibleOrder.couponCode).toBe("SHIPFREE");
     vi.advanceTimersByTime(800);
 
     const verification = (await execute(context, "verify_transaction_state", {
@@ -203,9 +182,7 @@ describe("StateTrace WebMCP tools", () => {
       reason: "Correct the customer delivery address.",
     })) as { transactionId: string };
 
-    useStateTraceStore
-      .getState()
-      .commitHumanField("shippingMethod", "pickup");
+    useStateTraceStore.getState().commitHumanField("shippingMethod", "pickup");
     useStateTraceStore.getState().toggleFieldLock("shippingMethod");
     vi.advanceTimersByTime(900);
 
@@ -227,9 +204,7 @@ describe("StateTrace WebMCP tools", () => {
   it("saves the current trace as a visible regression fixture", async () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());
-    useStateTraceStore
-      .getState()
-      .commitHumanField("internalNote", "Fixture source event");
+    useStateTraceStore.getState().commitHumanField("internalNote", "Fixture source event");
 
     const saved = (await execute(context, "save_regression_fixture", {
       name: "Human note edit",
@@ -240,9 +215,7 @@ describe("StateTrace WebMCP tools", () => {
     expect(saved.fixtureId).toBeTruthy();
     expect(saved.capturedEvents).toBe(1);
     expect(useStateTraceStore.getState().state.savedFixtures).toHaveLength(1);
-    expect(useStateTraceStore.getState().state.events.at(-1)?.type).toBe(
-      "fixture_saved",
-    );
+    expect(useStateTraceStore.getState().state.events.at(-1)?.type).toBe("fixture_saved");
     registration.cleanup();
   });
 });

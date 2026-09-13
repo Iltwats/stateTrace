@@ -32,14 +32,14 @@ In a WebMCP-capable browser, the same flow can be requested conversationally:
 
 ## WebMCP tools
 
-| Tool | Type | Purpose |
-|---|---|---|
-| `get_transaction_state` | Read | Read revision, committed values, optimistic differences, locks, pending/failed effects, and verification summary. |
-| `list_transaction_events` | Read | Inspect a bounded ordered part of the append-only transaction trace. |
-| `verify_transaction_state` | Read | Run deterministic invariants and optional exact postconditions. |
-| `stage_order_change` | Write | Stage one validated optimistic order-field mutation at an observed revision. |
-| `retry_failed_transaction` | Write | Retry one failed/superseded transaction while preserving newer human state. |
-| `save_regression_fixture` | Write | Capture the current trace as a local deterministic regression fixture. |
+| Tool                       | Type  | Purpose                                                                                                           |
+| -------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------- |
+| `get_transaction_state`    | Read  | Read revision, committed values, optimistic differences, locks, pending/failed effects, and verification summary. |
+| `list_transaction_events`  | Read  | Inspect a bounded ordered part of the append-only transaction trace.                                              |
+| `verify_transaction_state` | Read  | Run deterministic invariants and optional exact postconditions.                                                   |
+| `stage_order_change`       | Write | Stage one validated optimistic order-field mutation at an observed revision.                                      |
+| `retry_failed_transaction` | Write | Retry one failed/superseded transaction while preserving newer human state.                                       |
+| `save_regression_fixture`  | Write | Capture the current trace as a local deterministic regression fixture.                                            |
 
 Every schema rejects unknown properties. Executable code revalidates fields, revisions, locks, statuses, ranges, and idempotency. Registration and execution support cancellation through `AbortSignal`.
 
@@ -94,15 +94,17 @@ The suite covers engine behavior, failure scheduling, invariant checks, shared-s
 
 ### Scripts
 
-| Script | Purpose |
-|---|---|
-| `npm run dev` | Dev server with hot reload at `http://localhost:5173`. |
-| `npm run build` | Type check, then build the production bundle into `dist/`. |
-| `npm run preview` | Serve the built bundle at `http://localhost:4173`. |
-| `npm run typecheck` | Type check only. |
-| `npm test` | Run the Vitest suite once. |
-| `npm run test:watch` | Run the suite in watch mode. |
-| `npm run coverage` | Run the suite with coverage. |
+| Script                 | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `npm run dev`          | Dev server with hot reload at `http://localhost:5173`.     |
+| `npm run build`        | Type check, then build the production bundle into `dist/`. |
+| `npm run preview`      | Serve the built bundle at `http://localhost:4173`.         |
+| `npm run format`       | Format the repository with Prettier.                       |
+| `npm run format:check` | Check formatting without changing files.                   |
+| `npm run typecheck`    | Type check only.                                           |
+| `npm test`             | Run the Vitest suite once.                                 |
+| `npm run test:watch`   | Run the suite in watch mode.                               |
+| `npm run coverage`     | Run the suite with coverage.                               |
 
 ## Testing WebMCP
 

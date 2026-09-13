@@ -3,9 +3,7 @@ import { useStateTraceStore } from "../../store/useStateTraceStore";
 
 export function CheckpointPanel() {
   const checkpoints = useStateTraceStore(({ state }) => state.checkpoints);
-  const restoreCheckpointState = useStateTraceStore(
-    ({ restoreCheckpoint }) => restoreCheckpoint,
-  );
+  const restoreCheckpointState = useStateTraceStore(({ restoreCheckpoint }) => restoreCheckpoint);
   const [restoredId, setRestoredId] = useState<string | null>(null);
 
   function restoreCheckpoint(fixtureId: string) {
@@ -25,8 +23,7 @@ export function CheckpointPanel() {
         </span>
       </div>
       <p className="checkpoint-help">
-        A restore point is created automatically before you or the agent changes
-        the form.
+        A restore point is created automatically before you or the agent changes the form.
       </p>
 
       {checkpoints.length > 0 ? (

@@ -5,9 +5,8 @@ export function selectPendingCount(state: StateTraceState) {
 }
 
 export function selectFailedCount(state: StateTraceState) {
-  return state.transactions.filter(
-    ({ status }) => status === "failed" || status === "superseded",
-  ).length;
+  return state.transactions.filter(({ status }) => status === "failed" || status === "superseded")
+    .length;
 }
 
 export function selectLatestRetryable(state: StateTraceState) {
@@ -15,4 +14,3 @@ export function selectLatestRetryable(state: StateTraceState) {
     .reverse()
     .find(({ status }) => status === "failed" || status === "superseded");
 }
-

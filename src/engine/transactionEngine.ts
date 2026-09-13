@@ -55,20 +55,13 @@ const defaultRuntime: EngineRuntime = {
   id: () => crypto.randomUUID(),
 };
 
-const pendingStatuses = new Set<Transaction["status"]>([
-  "created",
-  "optimistic",
-  "pending",
-]);
+const pendingStatuses = new Set<Transaction["status"]>(["created", "optimistic", "pending"]);
 
 function cloneState(state: StateTraceState): StateTraceState {
   return structuredClone(state);
 }
 
-function getFieldValue(
-  state: Pick<StateTraceState, "order">,
-  field: MutableField,
-): FieldValue {
+function getFieldValue(state: Pick<StateTraceState, "order">, field: MutableField): FieldValue {
   return state.order[field];
 }
 
@@ -221,8 +214,7 @@ export function stageOrderChange(
 
   const pendingForField = state.transactions.find(
     (transaction) =>
-      transaction.mutation.field === input.field &&
-      pendingStatuses.has(transaction.status),
+      transaction.mutation.field === input.field && pendingStatuses.has(transaction.status),
   );
   if (pendingForField) {
     throw new TransactionEngineError(
@@ -313,8 +305,7 @@ export function resolveTransaction(
     transaction.status = "failed";
     transaction.updatedAt = runtime.now();
     transaction.errorCode = outcome.code ?? "SYNTHETIC_WRITE_FAILED";
-    transaction.errorMessage =
-      outcome.message ?? "The synthetic server rejected the write.";
+    transaction.errorMessage = outcome.message ?? "The synthetic server rejected the write.";
     appendEvent(state, runtime, {
       actor: "system",
       type: "effect_failed",
@@ -390,12 +381,7 @@ export function resolveTransaction(
   }
 
   state.committedRevision += 1;
-  setFieldValue(
-    state,
-    "order",
-    transaction.mutation.field,
-    transaction.mutation.nextValue,
-  );
+  setFieldValue(state, "order", transaction.mutation.field, transaction.mutation.nextValue);
   state.fieldLastChangedRevision[field] = state.committedRevision;
   transaction.status = "committed";
   transaction.updatedAt = runtime.now();
@@ -528,9 +514,7 @@ export function retryFailedTransaction(
 }
 
 export function getPendingTransactions(state: StateTraceState) {
-  return state.transactions.filter((transaction) =>
-    pendingStatuses.has(transaction.status),
-  );
+  return state.transactions.filter((transaction) => pendingStatuses.has(transaction.status));
 }
 
 export function saveRegressionFixture(

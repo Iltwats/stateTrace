@@ -13,20 +13,10 @@ export type MutableField =
 export type FieldValue = string;
 
 export type FailureMode =
-  | "normal"
-  | "slow_next_write"
-  | "fail_next_write"
-  | "duplicate_response"
-  | "out_of_order";
+  "normal" | "slow_next_write" | "fail_next_write" | "duplicate_response" | "out_of_order";
 
 export type TransactionStatus =
-  | "created"
-  | "optimistic"
-  | "pending"
-  | "committed"
-  | "failed"
-  | "superseded"
-  | "cancelled";
+  "created" | "optimistic" | "pending" | "committed" | "failed" | "superseded" | "cancelled";
 
 export type Order = {
   id: string;

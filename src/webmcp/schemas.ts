@@ -12,15 +12,7 @@ export const listTransactionEventsInput = z
     limit: z.number().int().min(1).max(25).optional().default(10),
     transactionId: z.string().min(1).max(100).optional(),
     status: z
-      .enum([
-        "created",
-        "optimistic",
-        "pending",
-        "committed",
-        "failed",
-        "superseded",
-        "cancelled",
-      ])
+      .enum(["created", "optimistic", "pending", "committed", "failed", "superseded", "cancelled"])
       .optional(),
   })
   .strict();
@@ -75,11 +67,7 @@ export const saveRegressionFixtureInput = z
   .object({
     name: z.string().min(1).max(80),
     description: z.string().min(1).max(240),
-    expectedOutcome: z.enum([
-      "recovered",
-      "conflict_detected",
-      "write_failed",
-    ]),
+    expectedOutcome: z.enum(["recovered", "conflict_detected", "write_failed"]),
   })
   .strict();
 
@@ -191,7 +179,8 @@ export const inputSchemas = {
       },
       value: {
         type: "string",
-        description: "New field value. Shipping method accepts standard, express, or pickup; coupon code may be empty.",
+        description:
+          "New field value. Shipping method accepts standard, express, or pickup; coupon code may be empty.",
       },
       expectedRevision: {
         type: "integer",
