@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Atul Sharma",
   "type": "module",
-  "homepage": "https://iltwats.github.io/stateTrace/",
+  "homepage": "https://state-trace.vercel.app/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Iltwats/stateTrace.git"
