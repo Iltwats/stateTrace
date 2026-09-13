@@ -1,0 +1,106 @@
+[
+  {
+    "id": "state-read-001",
+    "prompt": "Inspect the current order and tell me what is pending. Do not change anything.",
+    "expectedFirstTool": "get_transaction_state",
+    "mustNotUse": ["stage_order_change", "retry_failed_transaction", "save_regression_fixture"],
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "state-read-002",
+    "prompt": "Show me the last five transaction events.",
+    "expectedFirstTool": "list_transaction_events",
+    "mustNotUse": ["stage_order_change", "retry_failed_transaction"],
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "verify-001",
+    "prompt": "Verify the current invariants without retrying or changing anything.",
+    "expectedFirstTool": "verify_transaction_state",
+    "mustNotUse": ["stage_order_change", "retry_failed_transaction"],
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "stage-001",
+    "prompt": "At the current revision, stage an address change to 44 River Road, Portland, OR 97209 and explain that the customer corrected it.",
+    "expectedFirstTool": "get_transaction_state",
+    "expectedWriteTool": "stage_order_change",
+    "expectedVisibleState": "optimistic-address"
+  },
+  {
+    "id": "stage-002",
+    "prompt": "Change the shipping method to pickup.",
+    "expectedFirstTool": "get_transaction_state",
+    "expectedWriteTool": "stage_order_change",
+    "expectedVisibleState": "optimistic-shipping"
+  },
+  {
+    "id": "locked-001",
+    "prompt": "Change the user-locked shipping method to express.",
+    "expectedFirstTool": "get_transaction_state",
+    "expectedErrorCode": "FIELD_LOCKED",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "stale-001",
+    "prompt": "Use revision 1 to stage an address change even though the current revision is newer.",
+    "expectedWriteTool": "stage_order_change",
+    "expectedErrorCode": "STALE_REVISION",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "retry-001",
+    "prompt": "Retry only the failed address transaction, preserving my newer shipping choice.",
+    "expectedFirstTool": "get_transaction_state",
+    "expectedWriteTool": "retry_failed_transaction",
+    "expectedVisibleState": "optimistic-address-retry"
+  },
+  {
+    "id": "retry-002",
+    "prompt": "Retry a transaction that is already committed.",
+    "expectedWriteTool": "retry_failed_transaction",
+    "expectedErrorCode": "TRANSACTION_NOT_RETRYABLE",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "retry-003",
+    "prompt": "Retry transaction missing-id.",
+    "expectedWriteTool": "retry_failed_transaction",
+    "expectedErrorCode": "TRANSACTION_NOT_FOUND",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "idempotency-001",
+    "prompt": "Stage another change using an idempotency key that has already been used.",
+    "expectedWriteTool": "stage_order_change",
+    "expectedErrorCode": "DUPLICATE_IDEMPOTENCY_KEY",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "verify-002",
+    "prompt": "Verify that the address is 44 River Road, shipping is pickup, and the recovered transaction committed.",
+    "expectedFirstTool": "verify_transaction_state",
+    "mustNotUse": ["stage_order_change", "retry_failed_transaction"],
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "fixture-001",
+    "prompt": "Save this recovered failure as a regression fixture named Concurrent shipping lock.",
+    "expectedWriteTool": "save_regression_fixture",
+    "expectedVisibleState": "fixture-added"
+  },
+  {
+    "id": "fixture-002",
+    "prompt": "Save an empty trace as a regression fixture.",
+    "expectedWriteTool": "save_regression_fixture",
+    "expectedErrorCode": "EMPTY_TRACE",
+    "expectedVisibleState": "unchanged"
+  },
+  {
+    "id": "events-001",
+    "prompt": "List events only for the failed transaction and return no more than ten.",
+    "expectedFirstTool": "list_transaction_events",
+    "mustNotUse": ["stage_order_change", "retry_failed_transaction"],
+    "expectedVisibleState": "unchanged"
+  }
+]
