@@ -23,21 +23,21 @@ export function EditableField({
   onCommit: (value: string) => void;
   onToggleLock: () => void;
 }) {
-  const [draft, setDraft] = useState(committedValue);
+  const [draft, setDraft] = useState(visibleValue);
   const isOptimistic = visibleValue !== committedValue;
-  const isDirty = draft !== committedValue;
+  const isDirty = draft !== visibleValue;
   const activeActor = isDirty ? "human" : lastActor;
   const actorLabel = locked
-    ? "Human protected"
+    ? "Protected"
     : isDirty
-      ? "Human draft"
+      ? "Your draft"
       : activeActor
-        ? `${activeActor === "human" ? "Human" : "Agent"} last edit`
-        : "Human + agent";
+        ? `${activeActor === "human" ? "You" : "Agent"} updated`
+        : "Shared";
 
   useEffect(() => {
-    setDraft(committedValue);
-  }, [committedValue]);
+    setDraft(visibleValue);
+  }, [visibleValue]);
 
   const inputProps = {
     id: `field-${field}`,
@@ -52,9 +52,6 @@ export function EditableField({
     <div className={`editable-field ${isOptimistic ? "is-optimistic" : ""}`}>
       <div className="field-heading">
         <div className="field-identity">
-          <span className={`diff-prefix ${isOptimistic || isDirty ? "is-modified" : ""}`} aria-hidden="true">
-            {isOptimistic || isDirty ? "M" : "·"}
-          </span>
           <div>
             <div className="field-title-line">
               <label htmlFor={`field-${field}`}>{label}</label>
@@ -62,7 +59,6 @@ export function EditableField({
                 {actorLabel}
               </span>
             </div>
-            <code className="field-path">order.{field}</code>
           </div>
         </div>
         <FieldLockButton
@@ -78,33 +74,35 @@ export function EditableField({
         <input {...inputProps} />
       )}
 
-      <div className="field-footer">
-        <span>
-          {isOptimistic
-            ? `unstaged diff: ${visibleValue}`
-            : locked
-              ? "path protected by human lock"
-              : "matches HEAD"}
-        </span>
-        {isDirty && !locked ? (
-          <div className="inline-actions">
-            <button
-              type="button"
-              className="button-ghost"
-              onClick={() => setDraft(committedValue)}
-            >
-              Discard diff
-            </button>
-            <button
-              type="button"
-              className="button-secondary"
-              onClick={() => onCommit(draft)}
-            >
-              Commit change
-            </button>
-          </div>
-        ) : null}
-      </div>
+      {isOptimistic || locked || isDirty ? (
+        <div className="field-footer">
+          <span>
+            {isOptimistic
+              ? "Agent change is being verified…"
+              : locked
+                ? "Only you can change this field"
+                : "Unsaved change"}
+          </span>
+          {isDirty && !locked ? (
+            <div className="inline-actions">
+              <button
+                type="button"
+                className="quiet-button"
+                onClick={() => setDraft(visibleValue)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="secondary-action"
+                onClick={() => onCommit(draft)}
+              >
+                Save change
+              </button>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

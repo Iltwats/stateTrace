@@ -31,34 +31,20 @@ export function OrderWorkspace() {
   const toggleFieldLock = useStateTraceStore(
     ({ toggleFieldLock }) => toggleFieldLock,
   );
-  const modifiedFields = [
-    state.visibleOrder.shippingAddress !== state.order.shippingAddress,
-    state.visibleOrder.shippingMethod !== state.order.shippingMethod,
-    state.visibleOrder.internalNote !== state.order.internalNote,
-  ].filter(Boolean).length;
-
   return (
-    <section className="panel order-workspace" aria-labelledby="order-heading">
-      <div className="panel-heading">
+    <section className="order-workspace" aria-labelledby="order-heading">
+      <div className="order-card-heading">
         <div>
-          <p className="section-kicker">Commerce workbench</p>
-          <h2 id="order-heading">Fulfillment details</h2>
+          <p className="section-kicker">Order {state.order.id}</p>
+          <h2 id="order-heading">Shipping details</h2>
+          <p>Editable by you or a connected agent.</p>
         </div>
         <div className="order-heading-meta">
-          <span className="order-status">Unfulfilled</span>
-          <span className="revision-badge">HEAD · r{state.committedRevision}</span>
+          <span className="order-status">{state.order.fulfillmentStatus}</span>
+          <span className="revision-badge">r{state.committedRevision}</span>
         </div>
       </div>
 
-      <div className="collaboration-legend" aria-label="Field editing model">
-        <span><i className="actor-swatch actor-human">H</i> Human commits directly</span>
-        <span><i className="actor-swatch actor-agent">A</i> Agent stages through WebMCP</span>
-      </div>
-
-      <div className="subsection-bar">
-        <span>Order context</span>
-        <code>{state.order.id}</code>
-      </div>
       <div className="customer-row">
         <div className="avatar" aria-hidden="true">MC</div>
         <div>
@@ -66,26 +52,22 @@ export function OrderWorkspace() {
           <p>{state.order.customerEmail}</p>
         </div>
         <div className="order-total">
-          <span>Total</span>
+          <span>
+            {state.order.lineItems.reduce(
+              (total, item) => total + item.quantity,
+              0,
+            )}{" "}
+            items
+          </span>
           <strong>{formatCurrency(state.order.totalCents)}</strong>
         </div>
       </div>
 
-      <div className="line-items" aria-label="Order line items">
-        {state.order.lineItems.map((item) => (
-          <div className="line-item" key={item.id}>
-            <span>{item.quantity}× {item.name}</span>
-            <strong>{formatCurrency(item.quantity * item.unitPriceCents)}</strong>
-          </div>
-        ))}
+      <div className="collaboration-legend" aria-label="Field editing model">
+        <span><i className="actor-swatch actor-human">H</i> Your edit</span>
+        <span><i className="actor-swatch actor-agent">A</i> Agent edit</span>
       </div>
 
-      <div className="subsection-bar">
-        <span>Shared form</span>
-        <code className={modifiedFields ? "signal-pending" : "signal-good"}>
-          {modifiedFields} modified
-        </code>
-      </div>
       <div className="field-stack">
         <EditableField
           field="shippingAddress"

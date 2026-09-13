@@ -1,13 +1,18 @@
 import { useEffect, useRef } from "react";
+import type { InvariantResult } from "../../domain/types";
 import { TransactionTimeline } from "../TransactionTimeline/TransactionTimeline";
 
 export function TraceDrawer({
   open,
   eventCount,
+  checks,
+  committedRevision,
   onClose,
 }: {
   open: boolean;
   eventCount: number;
+  checks: InvariantResult[];
+  committedRevision: number;
   onClose: () => void;
 }) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -49,8 +54,8 @@ export function TraceDrawer({
       >
         <header className="trace-drawer-header">
           <div>
-            <p className="section-kicker">Human + agent execution</p>
-            <h2 id="trace-drawer-title">Stack trace</h2>
+            <p className="section-kicker">Human + agent trace</p>
+            <h2 id="trace-drawer-title">Activity</h2>
           </div>
           <div className="trace-drawer-actions">
             <span className="event-count">{eventCount} events</span>
@@ -58,7 +63,7 @@ export function TraceDrawer({
               ref={closeButtonRef}
               type="button"
               className="drawer-close"
-              aria-label="Close stack trace"
+              aria-label="Close activity"
               onClick={onClose}
             >
               ×
@@ -66,6 +71,16 @@ export function TraceDrawer({
           </div>
         </header>
         <div className="trace-drawer-body">
+          <div className="drawer-summary" aria-label="Activity summary">
+            <span><strong>r{committedRevision}</strong> current revision</span>
+            <span><strong>{eventCount}</strong> events</span>
+            <span>
+              <strong>
+                {checks.filter(({ passed }) => passed).length}/{checks.length}
+              </strong>{" "}
+              safety checks
+            </span>
+          </div>
           <TransactionTimeline />
         </div>
       </aside>

@@ -28,21 +28,17 @@ export function ShippingMethodField({
     >
       <div className="field-heading">
         <div className="field-identity">
-          <span className={`diff-prefix ${visibleValue !== committedValue ? "is-modified" : ""}`} aria-hidden="true">
-            {visibleValue !== committedValue ? "M" : "·"}
-          </span>
           <div>
             <div className="field-title-line">
               <label htmlFor="field-shippingMethod">Shipping method</label>
               <span className={`field-actor actor-${lastActor ?? "shared"}`}>
                 {locked
-                  ? "Human protected"
+                  ? "Protected"
                   : lastActor
-                    ? `${lastActor === "human" ? "Human" : "Agent"} last edit`
-                    : "Human + agent"}
+                    ? `${lastActor === "human" ? "You" : "Agent"} updated`
+                    : "Shared"}
               </span>
             </div>
-            <code className="field-path">order.shippingMethod</code>
           </div>
         </div>
         <FieldLockButton
@@ -63,15 +59,15 @@ export function ShippingMethodField({
           </option>
         ))}
       </select>
-      <div className="field-footer">
-        <span>
-          {visibleValue !== committedValue
-            ? `unstaged diff: ${labels[visibleValue]}`
-            : locked
-              ? "path protected by human lock"
-              : "matches HEAD"}
-        </span>
-      </div>
+      {visibleValue !== committedValue || locked ? (
+        <div className="field-footer">
+          <span>
+            {visibleValue !== committedValue
+              ? "Agent change is being verified…"
+              : "Only you can change this field"}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

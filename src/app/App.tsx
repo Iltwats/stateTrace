@@ -1,13 +1,10 @@
 import { useCallback, useState } from "react";
+import { AgentDemo } from "../components/AgentDemo/AgentDemo";
 import { ErrorToast } from "../components/ErrorToast/ErrorToast";
-import { FailureControls } from "../components/FailureControls/FailureControls";
 import { OrderWorkspace } from "../components/OrderWorkspace/OrderWorkspace";
-import { RegressionPanel } from "../components/RegressionPanel/RegressionPanel";
 import { TraceDrawer } from "../components/TraceDrawer/TraceDrawer";
-import { TruthInspector } from "../components/TruthInspector/TruthInspector";
-import { VerificationPanel } from "../components/VerificationPanel/VerificationPanel";
 import { verifyInvariants } from "../engine/invariantEngine";
-import { selectFailedCount, selectPendingCount } from "../store/selectors";
+import { selectPendingCount } from "../store/selectors";
 import { useStateTraceStore } from "../store/useStateTraceStore";
 import { useWebMCPTools } from "../webmcp/useWebMCPTools";
 
@@ -17,136 +14,105 @@ export function App() {
   const closeTrace = useCallback(() => setTraceOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
   const checks = verifyInvariants(state);
-  const passedChecks = checks.filter(({ passed }) => passed).length;
-  const hasWorkingDiff =
-    state.visibleOrder.shippingAddress !== state.order.shippingAddress ||
-    state.visibleOrder.shippingMethod !== state.order.shippingMethod ||
-    state.visibleOrder.internalNote !== state.order.internalNote;
+  const allChecksPassing = checks.every(({ passed }) => passed);
   const pendingCount = selectPendingCount(state);
-  const failedCount = selectFailedCount(state);
+  const latestEvent = state.events.at(-1);
 
   return (
-    <main className="app-shell">
-      <header className="hero-panel">
-        <div className="product-lockup">
+    <main className="minimal-shell">
+      <header className="site-header">
+        <div className="simple-brand">
           <div className="product-mark" aria-hidden="true">
             ST
           </div>
           <div>
-            <div className="repo-path" aria-label="StateTrace repository path">
-              <span>open-source</span>
-              <span className="repo-slash">/</span>
-              <strong>commerce-observatory</strong>
-            </div>
             <h1>StateTrace</h1>
+            <p>Observable WebMCP demo</p>
           </div>
         </div>
 
-        <div className="hero-intro">
-          <p className="eyebrow">Agent-assisted commerce</p>
-          <p className="hero-copy">
-            Let a human and an agent complete one order form together—without
-            hiding pending work, failures, or who changed each field.
-          </p>
-        </div>
-
-        <div className="header-actions">
-          <div className="protocol-card">
+        <div className="site-header-actions">
+          <div className={`connection-pill connection-${webMCP.state}`}>
             <span
               className={`protocol-light protocol-${webMCP.state}`}
               aria-hidden="true"
             />
-            <div>
-              <strong>
-                {webMCP.state === "available"
-                  ? `${webMCP.toolCount} WebMCP tools available`
-                  : webMCP.state === "checking"
-                    ? "Checking WebMCP support"
-                    : "Manual mode available"}
-              </strong>
-              <p>
-                {webMCP.state === "available"
-                  ? "Human UI and semantic tools share one transaction engine."
-                  : "The complete human interface works without protocol support."}
-              </p>
-            </div>
+            <span>
+              {webMCP.state === "available"
+                ? `WebMCP ready · ${webMCP.toolCount} tools`
+                : webMCP.state === "checking"
+                  ? "Checking WebMCP"
+                  : "Manual demo mode"}
+            </span>
           </div>
-          <div className="header-action-row">
-            <a
-              className="source-link"
-              href="https://github.com/Iltwats/web-mcp-openai"
-              target="_blank"
-              rel="noreferrer"
-            >
-              View source ↗
-            </a>
-            <button
-              type="button"
-              className="trace-drawer-trigger"
-              aria-haspopup="dialog"
-              onClick={() => setTraceOpen(true)}
-            >
-              <span>Open stack trace</span>
-              <strong>{state.events.length}</strong>
-            </button>
-          </div>
+          <button
+            type="button"
+            className="activity-button"
+            aria-haspopup="dialog"
+            onClick={() => setTraceOpen(true)}
+          >
+            Activity
+            <span>{state.events.length}</span>
+          </button>
         </div>
       </header>
 
-      <section className="telemetry-strip" aria-label="Live trace summary">
-        <div className="telemetry-item telemetry-resource">
-          <span className="telemetry-label">Resource</span>
-          <strong>{state.order.id.toLowerCase()}</strong>
-          <span className="telemetry-sub">order workflow</span>
-        </div>
-        <div className="telemetry-item">
-          <span className="telemetry-label">Session</span>
-          <strong className="branch-ref">● collaborative</strong>
-          <span className="telemetry-sub">human + agent</span>
-        </div>
-        <div className="telemetry-item">
-          <span className="telemetry-label">HEAD</span>
-          <strong>r{state.committedRevision}</strong>
-          <span className="telemetry-sub">committed revision</span>
-        </div>
-        <div className="telemetry-item">
-          <span className="telemetry-label">Form state</span>
-          <strong className={hasWorkingDiff ? "signal-pending" : "signal-good"}>
-            {hasWorkingDiff ? "modified" : "clean"}
-          </strong>
-          <span className="telemetry-sub">visible vs committed</span>
-        </div>
-        <div className="telemetry-item">
-          <span className="telemetry-label">Agent jobs</span>
-          <strong>{pendingCount} pending</strong>
-          <span className={failedCount ? "telemetry-sub signal-bad" : "telemetry-sub"}>
-            {failedCount} failed / superseded
-          </span>
-        </div>
-        <div className="telemetry-item">
-          <span className="telemetry-label">Safety checks</span>
-          <strong className={passedChecks === checks.length ? "signal-good" : "signal-bad"}>
-            {passedChecks}/{checks.length} passing
-          </strong>
-          <span className="telemetry-sub">deterministic checks</span>
-        </div>
+      <section className="minimal-hero" aria-labelledby="demo-heading">
+        <p className="eyebrow">WebMCP commerce demo</p>
+        <h2 id="demo-heading">One order. One agent. Every change visible.</h2>
+        <p>
+          An agent can read and update this form through semantic WebMCP tools.
+          You stay in control, and every action appears in the activity trace.
+        </p>
       </section>
 
-      <FailureControls />
+      <AgentDemo />
+      <OrderWorkspace />
 
-      <div className="observability-grid">
-        <OrderWorkspace />
-        <div className="inspector-column">
-          <TruthInspector />
-          <VerificationPanel />
+      <section className="activity-preview" aria-label="Latest activity">
+        <div className="activity-preview-copy">
+          <span
+            className={`activity-state ${pendingCount ? "is-working" : allChecksPassing ? "is-ready" : "is-error"}`}
+            aria-hidden="true"
+          />
+          <div>
+            <strong>
+              {pendingCount
+                ? "Agent change in progress"
+                : latestEvent?.summary ?? "Waiting for the first agent action"}
+            </strong>
+            <p>
+              Revision {state.committedRevision} · {state.events.length} events ·{" "}
+              {allChecksPassing ? "verified" : "needs attention"}
+            </p>
+          </div>
         </div>
-      </div>
+        <button
+          type="button"
+          className="text-link-button"
+          onClick={() => setTraceOpen(true)}
+        >
+          View activity →
+        </button>
+      </section>
 
-      <RegressionPanel />
+      <footer className="site-footer">
+        <span>StateTrace is an open-source WebMCP reference app.</span>
+        <a
+          href="https://github.com/Iltwats/web-mcp-openai"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View source ↗
+        </a>
+      </footer>
+
       <ErrorToast />
       <TraceDrawer
         open={traceOpen}
         eventCount={state.events.length}
+        checks={checks}
+        committedRevision={state.committedRevision}
         onClose={closeTrace}
       />
     </main>

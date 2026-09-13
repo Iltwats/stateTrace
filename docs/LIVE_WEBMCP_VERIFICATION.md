@@ -59,3 +59,16 @@ This checkpoint covers the black-and-gold commerce redesign and drawer interacti
 | Failure and retry | Pass — a rejected address update produced six events and one exception; retry advanced HEAD from `r3` to `r4` while preserving the locked pickup method. |
 | Mobile drawer | Pass — at 390×844 both the page and full-width trace drawer measured 390 pixels with no horizontal overflow. |
 | Browser diagnostics | Pass — no warning or error console entries were reported. |
+
+## Minimal demo verification
+
+The public demo was simplified again on 2026-09-14 so the WebMCP story is understandable without reading an observability dashboard first.
+
+| Check | Result |
+| --- | --- |
+| Default-page complexity | Pass — the initial accessibility surface dropped from roughly 180 nodes to 52 and now contains only the product header, one-line explanation, suggested agent prompt, order form, and latest-activity preview. |
+| Pending-state visibility | Pass — a WebMCP address update immediately appears in the form with `Agent updated` and `Agent change is being verified…` before it commits. |
+| Native WebMCP execution | Pass — `stage_order_change` returned a pending transaction, the page settled to revision `2`, and `verify_transaction_state` passed the exact address and committed-status postconditions. |
+| Activity drawer | Pass — the drawer shows only revision, event count, safety status, and the three actor-attributed events required to explain the update. |
+| Responsive layout | Pass — the page and drawer remain exactly 390 pixels wide at a 390×844 viewport with no horizontal overflow. |
+| Browser diagnostics | Pass — no warning or error console entries were reported. |

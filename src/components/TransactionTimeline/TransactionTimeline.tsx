@@ -27,8 +27,8 @@ export function TransactionTimeline() {
     <section className="panel transaction-timeline" aria-labelledby="timeline-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Distributed trace</p>
-          <h2 id="timeline-heading">Commit graph</h2>
+          <p className="section-kicker">Live history</p>
+          <h2 id="timeline-heading">Agent &amp; human activity</h2>
         </div>
         <span className="event-count">{events.length} events · live</span>
       </div>
@@ -36,8 +36,8 @@ export function TransactionTimeline() {
       {newestFirst.length === 0 ? (
         <div className="empty-state">
           <span className="empty-glyph" aria-hidden="true">○</span>
-          <strong>No commits in trace</strong>
-          <p><code>$ statetrace watch --resource ORD-2048</code></p>
+          <strong>No activity yet</strong>
+          <p>Ask an agent to update the order, or preview an agent action.</p>
         </div>
       ) : (
         <ol className="timeline-list">
