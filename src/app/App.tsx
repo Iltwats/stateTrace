@@ -1,8 +1,9 @@
+import { useCallback, useState } from "react";
 import { ErrorToast } from "../components/ErrorToast/ErrorToast";
 import { FailureControls } from "../components/FailureControls/FailureControls";
 import { OrderWorkspace } from "../components/OrderWorkspace/OrderWorkspace";
 import { RegressionPanel } from "../components/RegressionPanel/RegressionPanel";
-import { TransactionTimeline } from "../components/TransactionTimeline/TransactionTimeline";
+import { TraceDrawer } from "../components/TraceDrawer/TraceDrawer";
 import { TruthInspector } from "../components/TruthInspector/TruthInspector";
 import { VerificationPanel } from "../components/VerificationPanel/VerificationPanel";
 import { verifyInvariants } from "../engine/invariantEngine";
@@ -12,6 +13,8 @@ import { useWebMCPTools } from "../webmcp/useWebMCPTools";
 
 export function App() {
   const webMCP = useWebMCPTools();
+  const [traceOpen, setTraceOpen] = useState(false);
+  const closeTrace = useCallback(() => setTraceOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
   const checks = verifyInvariants(state);
   const passedChecks = checks.filter(({ passed }) => passed).length;
@@ -47,25 +50,36 @@ export function App() {
           </p>
         </div>
 
-        <div className="protocol-card">
-          <span
-            className={`protocol-light protocol-${webMCP.state}`}
-            aria-hidden="true"
-          />
-          <div>
-            <strong>
-              {webMCP.state === "available"
-                ? `${webMCP.toolCount} WebMCP tools available`
-                : webMCP.state === "checking"
-                  ? "Checking WebMCP support"
-                  : "Manual mode available"}
-            </strong>
-            <p>
-              {webMCP.state === "available"
-                ? "Human UI and semantic tools share one transaction engine."
-                : "The complete human interface works without protocol support."}
-            </p>
+        <div className="header-actions">
+          <div className="protocol-card">
+            <span
+              className={`protocol-light protocol-${webMCP.state}`}
+              aria-hidden="true"
+            />
+            <div>
+              <strong>
+                {webMCP.state === "available"
+                  ? `${webMCP.toolCount} WebMCP tools available`
+                  : webMCP.state === "checking"
+                    ? "Checking WebMCP support"
+                    : "Manual mode available"}
+              </strong>
+              <p>
+                {webMCP.state === "available"
+                  ? "Human UI and semantic tools share one transaction engine."
+                  : "The complete human interface works without protocol support."}
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            className="trace-drawer-trigger"
+            aria-haspopup="dialog"
+            onClick={() => setTraceOpen(true)}
+          >
+            <span>Open stack trace</span>
+            <strong>{state.events.length}</strong>
+          </button>
         </div>
       </header>
 
@@ -112,7 +126,6 @@ export function App() {
 
       <div className="observability-grid">
         <OrderWorkspace />
-        <TransactionTimeline />
         <div className="inspector-column">
           <TruthInspector />
           <VerificationPanel />
@@ -121,6 +134,11 @@ export function App() {
 
       <RegressionPanel />
       <ErrorToast />
+      <TraceDrawer
+        open={traceOpen}
+        eventCount={state.events.length}
+        onClose={closeTrace}
+      />
     </main>
   );
 }

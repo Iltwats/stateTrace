@@ -23,7 +23,25 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("order/ORD-2048")).toBeInTheDocument();
     expect(screen.getByText("Working tree ↔ HEAD")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /open stack trace/i })).toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "Stack trace" })).not.toBeInTheDocument();
+  });
+
+  it("opens the stack trace in a drawer and closes it with Escape", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const trigger = screen.getByRole("button", { name: /open stack trace/i });
+    await user.click(trigger);
+
+    expect(screen.getByRole("dialog", { name: "Stack trace" })).toBeInTheDocument();
     expect(screen.getByText("Commit graph")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Close stack trace" })).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("dialog", { name: "Stack trace" })).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it("lets the human commit and lock a shipping choice", async () => {
