@@ -29,8 +29,6 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
-
 body {
   margin: 0;
   min-width: 320px;
@@ -1205,8 +1203,8 @@ h1 {
 .product-overview {
   position: relative;
   z-index: 2;
-  scroll-margin-top: 78px;
-  padding: 48px 0 0;
+  scroll-margin-top: 66px;
+  padding: 12px 0 0;
   border-top: 1px solid #24190c;
 }
 .product-overview-heading {
@@ -2534,7 +2532,7 @@ h1 {
   .animated-title span { width: 100%; }
   .landing-actions { align-items: flex-start; flex-direction: column; gap: 8px; }
   .landing-scroll-cue { bottom: 18px; }
-  .product-overview { padding-top: 54px; }
+  .product-overview { padding-top: 12px; }
   .product-overview-heading { margin-bottom: 26px; }
   .capability-grid { grid-template-columns: 1fr; }
   .capability-card { min-height: 166px; }

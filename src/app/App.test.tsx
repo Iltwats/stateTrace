@@ -87,7 +87,7 @@ describe("App", () => {
     expect(landing).toHaveStyle({ "--landing-glow-opacity": "0" });
   });
 
-  it("docks the StateTrace name in the header after scrolling", () => {
+  it("docks the StateTrace name in the header after scrolling", async () => {
     render(<App />);
 
     const header = screen.getByRole("banner");
@@ -115,10 +115,12 @@ describe("App", () => {
     expect(
       screen.queryByRole("link", { name: "Scroll to explore" }),
     ).not.toBeInTheDocument();
-    expect(scrollIntoView).toHaveBeenCalledWith({
-      behavior: "smooth",
-      block: "start",
-    });
+    await waitFor(() =>
+      expect(scrollIntoView).toHaveBeenCalledWith({
+        behavior: "auto",
+        block: "start",
+      }),
+    );
   });
 
   it("keeps the pointer glow out of the FAQ reading area", () => {

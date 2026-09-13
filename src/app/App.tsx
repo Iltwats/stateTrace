@@ -130,6 +130,7 @@ export function App() {
   const [landingScrolled, setLandingScrolled] = useState(false);
   const lastLandingScrollY = useRef(0);
   const hasSnappedToOverview = useRef(false);
+  const landingSnapTimer = useRef<number | null>(null);
   const closeTrace = useCallback(() => setTraceOpen(false), []);
   const closeSetup = useCallback(() => setSetupOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
@@ -153,16 +154,33 @@ export function App() {
         currentScrollY < overview.offsetTop - 100 &&
         !hasSnappedToOverview.current
       ) {
-        hasSnappedToOverview.current = true;
-        overview.scrollIntoView?.({ behavior: "smooth", block: "start" });
+        if (landingSnapTimer.current !== null) {
+          window.clearTimeout(landingSnapTimer.current);
+        }
+        landingSnapTimer.current = window.setTimeout(() => {
+          hasSnappedToOverview.current = true;
+          overview.scrollIntoView?.({ behavior: "auto", block: "start" });
+          landingSnapTimer.current = null;
+        }, 120);
       }
 
-      if (currentScrollY <= 4) hasSnappedToOverview.current = false;
+      if (currentScrollY <= 4) {
+        hasSnappedToOverview.current = false;
+        if (landingSnapTimer.current !== null) {
+          window.clearTimeout(landingSnapTimer.current);
+          landingSnapTimer.current = null;
+        }
+      }
       lastLandingScrollY.current = currentScrollY;
     };
     syncLandingScroll();
     window.addEventListener("scroll", syncLandingScroll, { passive: true });
-    return () => window.removeEventListener("scroll", syncLandingScroll);
+    return () => {
+      window.removeEventListener("scroll", syncLandingScroll);
+      if (landingSnapTimer.current !== null) {
+        window.clearTimeout(landingSnapTimer.current);
+      }
+    };
   }, []);
 
   if (!demoOpen) {
