@@ -1,17 +1,45 @@
 {
   "name": "statetrace",
   "description": "A WebMCP-native transaction debugger for visible, recoverable human-agent workflows.",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "author": "Atul Sharma",
   "type": "module",
+  "homepage": "https://iltwats.github.io/stateTrace/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iltwats/stateTrace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Iltwats/stateTrace/issues"
+  },
+  "keywords": [
+    "webmcp",
+    "mcp",
+    "model-context-protocol",
+    "agentic-web",
+    "human-in-the-loop",
+    "optimistic-ui",
+    "transactions",
+    "observability",
+    "react"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.5.4",
