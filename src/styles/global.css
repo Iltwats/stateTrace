@@ -1125,12 +1125,75 @@ h1 {
   z-index: 2;
   display: flex;
   justify-content: space-between;
+  margin-top: 56px;
   padding-top: 18px;
   border-top: 1px solid #24190c;
   color: #685d4d;
   font-size: 0.68rem;
 }
 .landing-footer a { color: #a47936; text-decoration: none; }
+
+.landing-faq {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: clamp(44px, 9vw, 120px);
+  padding-top: 58px;
+  border-top: 1px solid #24190c;
+}
+.landing-faq-intro .section-kicker { margin: 0 0 14px; }
+.landing-faq-intro h2 {
+  max-width: 360px;
+  margin: 0;
+  color: #f4ecdf;
+  font-size: clamp(1.65rem, 3vw, 2.45rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+.landing-faq-intro > p:last-child {
+  max-width: 340px;
+  margin: 16px 0 0;
+  color: #817563;
+  font-size: 0.76rem;
+  line-height: 1.65;
+}
+.landing-faq-list { border-top: 1px solid #332515; }
+.landing-faq-list details { border-bottom: 1px solid #332515; }
+.landing-faq-list summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 20px 0;
+  color: #dcd2c2;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 650;
+  list-style: none;
+}
+.landing-faq-list summary::-webkit-details-marker { display: none; }
+.landing-faq-list summary::after {
+  flex: 0 0 auto;
+  color: #d89222;
+  content: "+";
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 400;
+}
+.landing-faq-list details[open] summary { color: #fff6e8; }
+.landing-faq-list details[open] summary::after { content: "−"; }
+.landing-faq-list details p {
+  max-width: 620px;
+  margin: -3px 42px 20px 0;
+  color: #8f8371;
+  font-size: 0.74rem;
+  line-height: 1.7;
+}
+.landing-faq-list summary:focus-visible {
+  outline: 2px solid #e69a22;
+  outline-offset: 6px;
+}
 
 .checkout-shell { animation: checkout-arrive 420ms ease-out backwards; }
 .checkout-header {
@@ -2326,6 +2389,10 @@ h1 {
   .landing-hero { width: 100%; padding: 64px 0 80px; }
   .animated-title { font-size: clamp(4rem, 23vw, 7rem); line-height: 0.83; }
   .animated-title span { width: 100%; }
+  .landing-faq { grid-template-columns: 1fr; gap: 34px; padding-top: 42px; }
+  .landing-faq-intro h2 { max-width: 320px; }
+  .landing-faq-list summary { padding: 17px 0; font-size: 0.76rem; }
+  .landing-faq-list details p { margin-right: 18px; }
   .landing-footer { align-items: flex-start; flex-direction: column; gap: 8px; }
   .commerce-header-main { width: calc(100% - 28px); min-height: 68px; gap: 12px; }
   .commerce-brand strong { font-size: 0.85rem; }

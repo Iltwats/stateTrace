@@ -179,6 +179,60 @@ export function App() {
           </button>
         </section>
 
+        <section className="landing-faq" aria-labelledby="faq-title">
+          <div className="landing-faq-intro">
+            <p className="section-kicker">What it does</p>
+            <h2 id="faq-title">Frequently asked questions</h2>
+            <p>
+              A practical view of StateTrace, WebMCP, and what the checkout
+              demo is designed to prove.
+            </p>
+          </div>
+          <div className="landing-faq-list">
+            <details>
+              <summary>What does StateTrace make observable?</summary>
+              <p>
+                It records field-level changes with the responsible actor,
+                previous value, new value, and revision—so you can distinguish
+                what you changed from what an agent changed.
+              </p>
+            </details>
+            <details>
+              <summary>What can an agent do through WebMCP?</summary>
+              <p>
+                On a site that integrates StateTrace, an agent can inspect the
+                current checkout state, update supported fields, apply a
+                coupon, and read the activity history through page-defined
+                WebMCP tools.
+              </p>
+            </details>
+            <details>
+              <summary>Do I need to save checkpoints manually?</summary>
+              <p>
+                No. StateTrace creates a restore point automatically before a
+                human or agent changes the form, keeping the experience free
+                of save buttons.
+              </p>
+            </details>
+            <details>
+              <summary>What happens when I restore a checkpoint?</summary>
+              <p>
+                The form returns to the selected revision while the activity
+                history remains available, so the recovery itself stays
+                understandable and traceable.
+              </p>
+            </details>
+            <details>
+              <summary>Does StateTrace work on every website?</summary>
+              <p>
+                Not automatically. A website must integrate the StateTrace
+                pattern and expose its actions through WebMCP. This checkout is
+                a reference implementation developers can adapt to real forms.
+              </p>
+            </details>
+          </div>
+        </section>
+
         <footer className="landing-footer">
           <span>Open-source WebMCP reference experience</span>
           <a

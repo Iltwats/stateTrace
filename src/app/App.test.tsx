@@ -41,6 +41,15 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Open checkout demo" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Frequently asked questions" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("What does StateTrace make observable?"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Does StateTrace work on every website?"),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Checkout" })).not.toBeInTheDocument();
   });
 
