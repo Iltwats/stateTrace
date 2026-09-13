@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { MutableField } from "../../domain/types";
+import type { Actor, MutableField } from "../../domain/types";
 import { FieldLockButton } from "../Shared/FieldLockButton";
 
 export function EditableField({
@@ -7,6 +7,7 @@ export function EditableField({
   label,
   committedValue,
   visibleValue,
+  lastActor,
   locked,
   multiline = false,
   onCommit,
@@ -16,6 +17,7 @@ export function EditableField({
   label: string;
   committedValue: string;
   visibleValue: string;
+  lastActor?: Actor;
   locked: boolean;
   multiline?: boolean;
   onCommit: (value: string) => void;
@@ -24,6 +26,14 @@ export function EditableField({
   const [draft, setDraft] = useState(committedValue);
   const isOptimistic = visibleValue !== committedValue;
   const isDirty = draft !== committedValue;
+  const activeActor = isDirty ? "human" : lastActor;
+  const actorLabel = locked
+    ? "Human protected"
+    : isDirty
+      ? "Human draft"
+      : activeActor
+        ? `${activeActor === "human" ? "Human" : "Agent"} last edit`
+        : "Human + agent";
 
   useEffect(() => {
     setDraft(committedValue);
@@ -46,7 +56,12 @@ export function EditableField({
             {isOptimistic || isDirty ? "M" : "·"}
           </span>
           <div>
-            <label htmlFor={`field-${field}`}>{label}</label>
+            <div className="field-title-line">
+              <label htmlFor={`field-${field}`}>{label}</label>
+              <span className={`field-actor actor-${activeActor ?? "shared"}`}>
+                {actorLabel}
+              </span>
+            </div>
             <code className="field-path">order.{field}</code>
           </div>
         </div>

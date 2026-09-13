@@ -46,8 +46,8 @@ export function FailureControls() {
     <section className="panel failure-controls" aria-labelledby="failure-heading">
       <div className="panel-heading compact">
         <div>
-          <p className="section-kicker">Scenario controls</p>
-          <h2 id="failure-heading">Fault injector</h2>
+          <p className="section-kicker">Demo controls</p>
+          <h2 id="failure-heading">Agent delivery simulator</h2>
         </div>
         <button className="button-ghost" type="button" onClick={reset}>
           Reset workspace
@@ -71,8 +71,8 @@ export function FailureControls() {
 
       <div className="demo-actions">
         <div>
-          <strong>Agent command runner</strong>
-          <p><code>$ statetrace apply --field shippingAddress</code></p>
+          <strong>Ask the agent to correct the delivery address</strong>
+          <p><code>44 River Road, Portland, OR 97209</code></p>
         </div>
         <div className="inline-actions">
           {retryable ? (

@@ -1,4 +1,4 @@
-import type { ShippingMethod } from "../../domain/types";
+import type { Actor, ShippingMethod } from "../../domain/types";
 import { FieldLockButton } from "../Shared/FieldLockButton";
 
 const labels: Record<ShippingMethod, string> = {
@@ -10,12 +10,14 @@ const labels: Record<ShippingMethod, string> = {
 export function ShippingMethodField({
   committedValue,
   visibleValue,
+  lastActor,
   locked,
   onCommit,
   onToggleLock,
 }: {
   committedValue: ShippingMethod;
   visibleValue: ShippingMethod;
+  lastActor?: Actor;
   locked: boolean;
   onCommit: (value: ShippingMethod) => void;
   onToggleLock: () => void;
@@ -30,7 +32,16 @@ export function ShippingMethodField({
             {visibleValue !== committedValue ? "M" : "·"}
           </span>
           <div>
-            <label htmlFor="field-shippingMethod">Shipping method</label>
+            <div className="field-title-line">
+              <label htmlFor="field-shippingMethod">Shipping method</label>
+              <span className={`field-actor actor-${lastActor ?? "shared"}`}>
+                {locked
+                  ? "Human protected"
+                  : lastActor
+                    ? `${lastActor === "human" ? "Human" : "Agent"} last edit`
+                    : "Human + agent"}
+              </span>
+            </div>
             <code className="field-path">order.shippingMethod</code>
           </div>
         </div>

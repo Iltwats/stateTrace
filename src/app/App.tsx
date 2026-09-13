@@ -34,19 +34,19 @@ export function App() {
           </div>
           <div>
             <div className="repo-path" aria-label="StateTrace repository path">
-              <span>statetrace</span>
+              <span>open-source</span>
               <span className="repo-slash">/</span>
-              <strong>transaction-observatory</strong>
+              <strong>commerce-observatory</strong>
             </div>
             <h1>StateTrace</h1>
           </div>
         </div>
 
         <div className="hero-intro">
-          <p className="eyebrow">WebMCP transaction observability</p>
+          <p className="eyebrow">Agent-assisted commerce</p>
           <p className="hero-copy">
-            Inspect the working tree, follow every human-agent commit, and
-            recover failed effects without overwriting newer intent.
+            Let a human and an agent complete one order form together—without
+            hiding pending work, failures, or who changed each field.
           </p>
         </div>
 
@@ -71,15 +71,25 @@ export function App() {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            className="trace-drawer-trigger"
-            aria-haspopup="dialog"
-            onClick={() => setTraceOpen(true)}
-          >
-            <span>Open stack trace</span>
-            <strong>{state.events.length}</strong>
-          </button>
+          <div className="header-action-row">
+            <a
+              className="source-link"
+              href="https://github.com/Iltwats/web-mcp-openai"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View source ↗
+            </a>
+            <button
+              type="button"
+              className="trace-drawer-trigger"
+              aria-haspopup="dialog"
+              onClick={() => setTraceOpen(true)}
+            >
+              <span>Open stack trace</span>
+              <strong>{state.events.length}</strong>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -90,9 +100,9 @@ export function App() {
           <span className="telemetry-sub">order workflow</span>
         </div>
         <div className="telemetry-item">
-          <span className="telemetry-label">Branch</span>
-          <strong className="branch-ref">● main</strong>
-          <span className="telemetry-sub">human-agent/shared</span>
+          <span className="telemetry-label">Session</span>
+          <strong className="branch-ref">● collaborative</strong>
+          <span className="telemetry-sub">human + agent</span>
         </div>
         <div className="telemetry-item">
           <span className="telemetry-label">HEAD</span>
@@ -100,21 +110,21 @@ export function App() {
           <span className="telemetry-sub">committed revision</span>
         </div>
         <div className="telemetry-item">
-          <span className="telemetry-label">Working tree</span>
+          <span className="telemetry-label">Form state</span>
           <strong className={hasWorkingDiff ? "signal-pending" : "signal-good"}>
             {hasWorkingDiff ? "modified" : "clean"}
           </strong>
           <span className="telemetry-sub">visible vs committed</span>
         </div>
         <div className="telemetry-item">
-          <span className="telemetry-label">Effects</span>
+          <span className="telemetry-label">Agent jobs</span>
           <strong>{pendingCount} pending</strong>
           <span className={failedCount ? "telemetry-sub signal-bad" : "telemetry-sub"}>
             {failedCount} failed / superseded
           </span>
         </div>
         <div className="telemetry-item">
-          <span className="telemetry-label">Invariant suite</span>
+          <span className="telemetry-label">Safety checks</span>
           <strong className={passedChecks === checks.length ? "signal-good" : "signal-bad"}>
             {passedChecks}/{checks.length} passing
           </strong>

@@ -1,3 +1,4 @@
+import type { Actor, MutableField, TraceEvent } from "../../domain/types";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { EditableField } from "./EditableField";
 import { ShippingMethodField } from "./ShippingMethodField";
@@ -7,6 +8,19 @@ function formatCurrency(cents: number) {
     style: "currency",
     currency: "USD",
   }).format(cents / 100);
+}
+
+function lastActorForField(
+  events: TraceEvent[],
+  field: MutableField,
+): Actor | undefined {
+  return [...events]
+    .reverse()
+    .find(
+      (event) =>
+        event.payload.field === field &&
+        (event.actor === "human" || event.actor === "agent"),
+    )?.actor;
 }
 
 export function OrderWorkspace() {
@@ -27,15 +41,23 @@ export function OrderWorkspace() {
     <section className="panel order-workspace" aria-labelledby="order-heading">
       <div className="panel-heading">
         <div>
-          <p className="section-kicker">Tracked resource</p>
-          <h2 id="order-heading">order/{state.order.id}</h2>
+          <p className="section-kicker">Commerce workbench</p>
+          <h2 id="order-heading">Fulfillment details</h2>
         </div>
-        <span className="revision-badge">HEAD · r{state.committedRevision}</span>
+        <div className="order-heading-meta">
+          <span className="order-status">Unfulfilled</span>
+          <span className="revision-badge">HEAD · r{state.committedRevision}</span>
+        </div>
+      </div>
+
+      <div className="collaboration-legend" aria-label="Field editing model">
+        <span><i className="actor-swatch actor-human">H</i> Human commits directly</span>
+        <span><i className="actor-swatch actor-agent">A</i> Agent stages through WebMCP</span>
       </div>
 
       <div className="subsection-bar">
-        <span>Resource context</span>
-        <code>commerce.order</code>
+        <span>Order context</span>
+        <code>{state.order.id}</code>
       </div>
       <div className="customer-row">
         <div className="avatar" aria-hidden="true">MC</div>
@@ -59,7 +81,7 @@ export function OrderWorkspace() {
       </div>
 
       <div className="subsection-bar">
-        <span>Working tree</span>
+        <span>Shared form</span>
         <code className={modifiedFields ? "signal-pending" : "signal-good"}>
           {modifiedFields} modified
         </code>
@@ -70,6 +92,7 @@ export function OrderWorkspace() {
           label="Shipping address"
           committedValue={state.order.shippingAddress}
           visibleValue={state.visibleOrder.shippingAddress}
+          lastActor={lastActorForField(state.events, "shippingAddress")}
           locked={state.lockedFields.includes("shippingAddress")}
           onCommit={(value) => commitHumanField("shippingAddress", value)}
           onToggleLock={() => toggleFieldLock("shippingAddress")}
@@ -78,6 +101,7 @@ export function OrderWorkspace() {
         <ShippingMethodField
           committedValue={state.order.shippingMethod}
           visibleValue={state.visibleOrder.shippingMethod}
+          lastActor={lastActorForField(state.events, "shippingMethod")}
           locked={state.lockedFields.includes("shippingMethod")}
           onCommit={(value) => commitHumanField("shippingMethod", value)}
           onToggleLock={() => toggleFieldLock("shippingMethod")}
@@ -88,6 +112,7 @@ export function OrderWorkspace() {
           label="Internal note"
           committedValue={state.order.internalNote}
           visibleValue={state.visibleOrder.internalNote}
+          lastActor={lastActorForField(state.events, "internalNote")}
           locked={state.lockedFields.includes("internalNote")}
           multiline
           onCommit={(value) => commitHumanField("internalNote", value)}

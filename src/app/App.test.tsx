@@ -19,9 +19,12 @@ describe("App", () => {
       screen.getByRole("heading", { name: "StateTrace" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/inspect the working tree/i),
+      screen.getByText(/complete one order form together/i),
     ).toBeInTheDocument();
-    expect(screen.getByText("order/ORD-2048")).toBeInTheDocument();
+    expect(screen.getByText("Fulfillment details")).toBeInTheDocument();
+    expect(screen.getByLabelText("Field editing model")).toHaveTextContent(
+      "Human commits directly",
+    );
     expect(screen.getByText("Working tree ↔ HEAD")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /open stack trace/i })).toBeInTheDocument();
     expect(screen.queryByRole("dialog", { name: "Stack trace" })).not.toBeInTheDocument();
@@ -58,6 +61,7 @@ describe("App", () => {
     expect(state.order.shippingMethod).toBe("pickup");
     expect(state.lockedFields).toContain("shippingMethod");
     expect(screen.getByLabelText("Unlock shipping method")).toBeInTheDocument();
+    expect(screen.getByText("Human protected")).toBeInTheDocument();
   });
 
   it("captures and replays a regression fixture", async () => {
