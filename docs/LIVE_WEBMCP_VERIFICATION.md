@@ -72,3 +72,22 @@ The public demo was simplified again on 2026-09-14 so the WebMCP story is unders
 | Activity drawer | Pass — the drawer shows only revision, event count, safety status, and the three actor-attributed events required to explain the update. |
 | Responsive layout | Pass — the page and drawer remain exactly 390 pixels wide at a 390×844 viewport with no horizontal overflow. |
 | Browser diagnostics | Pass — no warning or error console entries were reported. |
+
+## Final storefront and checkpoint verification
+
+The submission demo now opens with a focused StateTrace identity screen and
+then moves into a realistic ecommerce checkout. The public-facing activity UI
+is intentionally limited to information a shopper needs: what changed, whether
+the user or agent changed it, the before-and-after values, and whether it was
+applied.
+
+| Check | Result |
+| --- | --- |
+| Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
+| Visual system | Pass — the page uses Manrope and IBM Plex Mono with a black `#060504` base and true gold-orange `#f59e0b` / `#ffb52b` accents. |
+| Complete checkout | Pass — contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals are present. |
+| Native WebMCP write | Pass — the browser discovered six page tools, read revision `2`, staged an agent-owned address change, and observed it commit at revision `3`. |
+| Human/agent activity | Pass — the drawer separately showed the human coupon edit and the agent address edit, including actor, old value, new value, and applied status. No internal safety panel or system-event stream is shown. |
+| Checkpoint restore | Pass — a revision `1` checkout checkpoint restored both edited fields while retaining the original actions and adding the restore diffs to activity instead of erasing history. |
+| Responsive layout | Pass — the checkout and full-width activity drawer have no horizontal overflow at `390×844`. |
+| Browser diagnostics | Pass — no warning or error console entries were reported during the end-to-end workflow. |

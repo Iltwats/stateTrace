@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Actor, MutableField, TraceEvent } from "../../domain/types";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { EditableField } from "./EditableField";
@@ -31,76 +32,175 @@ export function OrderWorkspace() {
   const toggleFieldLock = useStateTraceStore(
     ({ toggleFieldLock }) => toggleFieldLock,
   );
+  const [placed, setPlaced] = useState(false);
+  const discountCents = state.order.couponCode ? 1480 : 0;
+  const finalTotal = state.order.totalCents - discountCents;
+
+  function editableField(
+    field: Exclude<MutableField, "shippingMethod">,
+    label: string,
+    multiline = false,
+  ) {
+    return (
+      <EditableField
+        field={field}
+        label={label}
+        committedValue={state.order[field]}
+        visibleValue={state.visibleOrder[field]}
+        lastActor={lastActorForField(state.events, field)}
+        locked={state.lockedFields.includes(field)}
+        multiline={multiline}
+        onCommit={(value) => commitHumanField(field, value)}
+        onToggleLock={() => toggleFieldLock(field)}
+      />
+    );
+  }
+
   return (
-    <section className="order-workspace" aria-labelledby="order-heading">
-      <div className="order-card-heading">
-        <div>
-          <p className="section-kicker">Order {state.order.id}</p>
-          <h2 id="order-heading">Shipping details</h2>
-          <p>Editable by you or a connected agent.</p>
+    <section className="checkout-layout" aria-label="Checkout demo">
+      <form
+        className="checkout-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setPlaced(true);
+        }}
+      >
+        <div className="checkout-form-heading">
+          <div>
+            <p className="section-kicker">Secure checkout</p>
+            <h2>Complete your order</h2>
+          </div>
+          <span>All fields are observable</span>
         </div>
-        <div className="order-heading-meta">
-          <span className="order-status">{state.order.fulfillmentStatus}</span>
-          <span className="revision-badge">r{state.committedRevision}</span>
+
+        <section className="checkout-section" aria-labelledby="contact-heading">
+          <div className="checkout-section-title">
+            <span>1</span>
+            <div>
+              <h3 id="contact-heading">Contact</h3>
+              <p>Receipt and delivery updates</p>
+            </div>
+          </div>
+          {editableField("customerEmail", "Email address")}
+        </section>
+
+        <section className="checkout-section" aria-labelledby="delivery-heading">
+          <div className="checkout-section-title">
+            <span>2</span>
+            <div>
+              <h3 id="delivery-heading">Delivery</h3>
+              <p>Where and how your order should arrive</p>
+            </div>
+          </div>
+          {editableField("shippingAddress", "Shipping address")}
+          <ShippingMethodField
+            committedValue={state.order.shippingMethod}
+            visibleValue={state.visibleOrder.shippingMethod}
+            lastActor={lastActorForField(state.events, "shippingMethod")}
+            locked={state.lockedFields.includes("shippingMethod")}
+            onCommit={(value) => commitHumanField("shippingMethod", value)}
+            onToggleLock={() => toggleFieldLock("shippingMethod")}
+          />
+          {editableField("internalNote", "Delivery instructions", true)}
+        </section>
+
+        <section className="checkout-section" aria-labelledby="payment-heading">
+          <div className="checkout-section-title">
+            <span>3</span>
+            <div>
+              <h3 id="payment-heading">Payment</h3>
+              <p>Demo card—no payment will be processed</p>
+            </div>
+          </div>
+          <div className="saved-card">
+            <div className="card-brand" aria-hidden="true">VISA</div>
+            <div>
+              <strong>Visa ending in 4242</strong>
+              <span>Expires 12/28</span>
+            </div>
+            <span className="selected-card">Selected</span>
+          </div>
+          {editableField("paymentName", "Name on card")}
+          <div className="payment-details" aria-label="Demo payment information">
+            <label>
+              Card number
+              <input value="•••• •••• •••• 4242" readOnly />
+            </label>
+            <label>
+              Expiry
+              <input value="12 / 28" readOnly />
+            </label>
+            <label>
+              CVC
+              <input value="•••" readOnly />
+            </label>
+          </div>
+        </section>
+
+        <section className="checkout-section" aria-labelledby="discount-heading">
+          <div className="checkout-section-title">
+            <span>4</span>
+            <div>
+              <h3 id="discount-heading">Discount</h3>
+              <p>You or your agent can apply a code</p>
+            </div>
+          </div>
+          {editableField("couponCode", "Coupon code")}
+        </section>
+
+        <div className="checkout-submit">
+          <button type="submit">
+            {placed ? "Demo order complete ✓" : `Pay ${formatCurrency(finalTotal)}`}
+          </button>
+          <p>This is a simulation. No payment or order is submitted.</p>
         </div>
-      </div>
+      </form>
 
-      <div className="customer-row">
-        <div className="avatar" aria-hidden="true">MC</div>
-        <div>
-          <strong>{state.order.customerName}</strong>
-          <p>{state.order.customerEmail}</p>
+      <aside className="order-summary" aria-labelledby="summary-heading">
+        <div className="summary-heading">
+          <div>
+            <p className="section-kicker">Order {state.order.id}</p>
+            <h2 id="summary-heading">Order details</h2>
+          </div>
+          <span>3 items</span>
         </div>
-        <div className="order-total">
-          <span>
-            {state.order.lineItems.reduce(
-              (total, item) => total + item.quantity,
-              0,
-            )}{" "}
-            items
-          </span>
-          <strong>{formatCurrency(state.order.totalCents)}</strong>
+
+        <ul className="checkout-items">
+          {state.order.lineItems.map((item) => (
+            <li key={item.id}>
+              <div className="product-image" aria-hidden="true">
+                {item.name === "Studio task lamp" ? "◒" : "⌁"}
+                <span>{item.quantity}</span>
+              </div>
+              <div>
+                <strong>{item.name}</strong>
+                <span>{item.name === "Studio task lamp" ? "Matte black" : "Gold / 2 m"}</span>
+              </div>
+              <b>{formatCurrency(item.quantity * item.unitPriceCents)}</b>
+            </li>
+          ))}
+        </ul>
+
+        <div className="summary-totals">
+          <div><span>Subtotal</span><strong>{formatCurrency(state.order.totalCents)}</strong></div>
+          <div><span>Shipping</span><strong>Free</strong></div>
+          {state.order.couponCode ? (
+            <div className="discount-row">
+              <span>{state.order.couponCode}</span>
+              <strong>−{formatCurrency(discountCents)}</strong>
+            </div>
+          ) : null}
+          <div className="summary-total"><span>Total</span><strong>{formatCurrency(finalTotal)}</strong></div>
         </div>
-      </div>
 
-      <div className="collaboration-legend" aria-label="Field editing model">
-        <span><i className="actor-swatch actor-human">H</i> Your edit</span>
-        <span><i className="actor-swatch actor-agent">A</i> Agent edit</span>
-      </div>
-
-      <div className="field-stack">
-        <EditableField
-          field="shippingAddress"
-          label="Shipping address"
-          committedValue={state.order.shippingAddress}
-          visibleValue={state.visibleOrder.shippingAddress}
-          lastActor={lastActorForField(state.events, "shippingAddress")}
-          locked={state.lockedFields.includes("shippingAddress")}
-          onCommit={(value) => commitHumanField("shippingAddress", value)}
-          onToggleLock={() => toggleFieldLock("shippingAddress")}
-        />
-
-        <ShippingMethodField
-          committedValue={state.order.shippingMethod}
-          visibleValue={state.visibleOrder.shippingMethod}
-          lastActor={lastActorForField(state.events, "shippingMethod")}
-          locked={state.lockedFields.includes("shippingMethod")}
-          onCommit={(value) => commitHumanField("shippingMethod", value)}
-          onToggleLock={() => toggleFieldLock("shippingMethod")}
-        />
-
-        <EditableField
-          field="internalNote"
-          label="Internal note"
-          committedValue={state.order.internalNote}
-          visibleValue={state.visibleOrder.internalNote}
-          lastActor={lastActorForField(state.events, "internalNote")}
-          locked={state.lockedFields.includes("internalNote")}
-          multiline
-          onCommit={(value) => commitHumanField("internalNote", value)}
-          onToggleLock={() => toggleFieldLock("internalNote")}
-        />
-      </div>
+        <div className="summary-observability">
+          <span className="activity-state is-ready" aria-hidden="true" />
+          <p>
+            Changes to this checkout are captured for you, whether they come
+            from the page or a WebMCP agent.
+          </p>
+        </div>
+      </aside>
     </section>
   );
 }

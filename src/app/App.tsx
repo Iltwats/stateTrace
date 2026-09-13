@@ -1,50 +1,109 @@
 import { useCallback, useState } from "react";
+import { getVisibleActivityCount } from "../components/ActivityFeed/ActivityFeed";
 import { AgentDemo } from "../components/AgentDemo/AgentDemo";
 import { ErrorToast } from "../components/ErrorToast/ErrorToast";
 import { OrderWorkspace } from "../components/OrderWorkspace/OrderWorkspace";
 import { TraceDrawer } from "../components/TraceDrawer/TraceDrawer";
-import { verifyInvariants } from "../engine/invariantEngine";
-import { selectPendingCount } from "../store/selectors";
 import { useStateTraceStore } from "../store/useStateTraceStore";
+import type { WebMCPStatus } from "../webmcp/useWebMCPTools";
 import { useWebMCPTools } from "../webmcp/useWebMCPTools";
+
+function WebMCPBadge({ status }: { status: WebMCPStatus }) {
+  return (
+    <div className={`connection-pill connection-${status.state}`}>
+      <span
+        className={`protocol-light protocol-${status.state}`}
+        aria-hidden="true"
+      />
+      <span>
+        {status.state === "available"
+          ? `WebMCP connected · ${status.toolCount} tools`
+          : status.state === "checking"
+            ? "Checking WebMCP"
+            : "Manual demo mode"}
+      </span>
+    </div>
+  );
+}
 
 export function App() {
   const webMCP = useWebMCPTools();
+  const [demoOpen, setDemoOpen] = useState(false);
   const [traceOpen, setTraceOpen] = useState(false);
   const closeTrace = useCallback(() => setTraceOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
-  const checks = verifyInvariants(state);
-  const allChecksPassing = checks.every(({ passed }) => passed);
-  const pendingCount = selectPendingCount(state);
-  const latestEvent = state.events.at(-1);
+  const activityCount = getVisibleActivityCount(state);
 
-  return (
-    <main className="minimal-shell">
-      <header className="site-header">
-        <div className="simple-brand">
-          <div className="product-mark" aria-hidden="true">
-            ST
-          </div>
-          <div>
-            <h1>StateTrace</h1>
-            <p>Observable WebMCP demo</p>
-          </div>
+  if (!demoOpen) {
+    return (
+      <main className="landing-shell">
+        <div className="landing-glow" aria-hidden="true" />
+        <header className="landing-header">
+          <div className="landing-monogram" aria-hidden="true">ST</div>
+          <WebMCPBadge status={webMCP} />
+        </header>
+
+        <section className="landing-hero" aria-labelledby="landing-title">
+          <p className="landing-kicker">Human-visible agent actions</p>
+          <h1 id="landing-title" className="animated-title">
+            <span>State</span><span>Trace</span>
+          </h1>
+          <p className="landing-tagline">
+            Observability for agent updates in WebMCP.
+          </p>
+          <p className="landing-description">
+            See exactly what you changed, what the agent changed, and return
+            your form to any saved checkpoint.
+          </p>
+          <button
+            type="button"
+            className="open-demo-button"
+            onClick={() => setDemoOpen(true)}
+          >
+            Open checkout demo
+            <span aria-hidden="true">↗</span>
+          </button>
+        </section>
+
+        <div className="landing-preview" aria-hidden="true">
+          <span className="preview-line preview-line-one" />
+          <span className="preview-line preview-line-two" />
+          <span className="preview-orbit">A</span>
+          <span className="preview-orbit preview-human">Y</span>
         </div>
 
-        <div className="site-header-actions">
-          <div className={`connection-pill connection-${webMCP.state}`}>
-            <span
-              className={`protocol-light protocol-${webMCP.state}`}
-              aria-hidden="true"
-            />
-            <span>
-              {webMCP.state === "available"
-                ? `WebMCP ready · ${webMCP.toolCount} tools`
-                : webMCP.state === "checking"
-                  ? "Checking WebMCP"
-                  : "Manual demo mode"}
-            </span>
+        <footer className="landing-footer">
+          <span>Open-source WebMCP reference experience</span>
+          <a
+            href="https://github.com/Iltwats/web-mcp-openai"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub ↗
+          </a>
+        </footer>
+      </main>
+    );
+  }
+
+  return (
+    <main className="checkout-shell">
+      <header className="checkout-header">
+        <button
+          type="button"
+          className="checkout-brand"
+          onClick={() => setDemoOpen(false)}
+          aria-label="Back to StateTrace overview"
+        >
+          <span aria-hidden="true">ST</span>
+          <div>
+            <strong>StateTrace</strong>
+            <small>Checkout demo</small>
           </div>
+        </button>
+
+        <div className="checkout-header-actions">
+          <WebMCPBadge status={webMCP} />
           <button
             type="button"
             className="activity-button"
@@ -52,67 +111,36 @@ export function App() {
             onClick={() => setTraceOpen(true)}
           >
             Activity
-            <span>{state.events.length}</span>
+            <span>{activityCount}</span>
           </button>
         </div>
       </header>
 
-      <section className="minimal-hero" aria-labelledby="demo-heading">
-        <p className="eyebrow">WebMCP commerce demo</p>
-        <h2 id="demo-heading">One order. One agent. Every change visible.</h2>
-        <p>
-          An agent can read and update this form through semantic WebMCP tools.
-          You stay in control, and every action appears in the activity trace.
-        </p>
-      </section>
-
-      <AgentDemo />
-      <OrderWorkspace />
-
-      <section className="activity-preview" aria-label="Latest activity">
-        <div className="activity-preview-copy">
-          <span
-            className={`activity-state ${pendingCount ? "is-working" : allChecksPassing ? "is-ready" : "is-error"}`}
-            aria-hidden="true"
-          />
+      <div className="checkout-content">
+        <div className="checkout-intro">
           <div>
-            <strong>
-              {pendingCount
-                ? "Agent change in progress"
-                : latestEvent?.summary ?? "Waiting for the first agent action"}
-            </strong>
-            <p>
-              Revision {state.committedRevision} · {state.events.length} events ·{" "}
-              {allChecksPassing ? "verified" : "needs attention"}
-            </p>
+            <p className="eyebrow">Interactive storefront</p>
+            <h1>Checkout</h1>
           </div>
+          <p>
+            Edit normally or ask your agent. Open Activity to compare changes
+            and restore a checkpoint.
+          </p>
         </div>
-        <button
-          type="button"
-          className="text-link-button"
-          onClick={() => setTraceOpen(true)}
-        >
-          View activity →
-        </button>
-      </section>
 
-      <footer className="site-footer">
-        <span>StateTrace is an open-source WebMCP reference app.</span>
-        <a
-          href="https://github.com/Iltwats/web-mcp-openai"
-          target="_blank"
-          rel="noreferrer"
-        >
-          View source ↗
-        </a>
-      </footer>
+        <AgentDemo />
+        <OrderWorkspace />
+
+        <footer className="checkout-footer">
+          <button type="button" onClick={() => setDemoOpen(false)}>← Overview</button>
+          <span>Demo data only · No order or payment is submitted</span>
+        </footer>
+      </div>
 
       <ErrorToast />
       <TraceDrawer
         open={traceOpen}
-        eventCount={state.events.length}
-        checks={checks}
-        committedRevision={state.committedRevision}
+        eventCount={activityCount}
         onClose={closeTrace}
       />
     </main>

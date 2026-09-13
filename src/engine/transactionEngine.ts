@@ -554,13 +554,6 @@ export function saveRegressionFixture(
       "Fixture description must contain between 1 and 240 characters.",
     );
   }
-  if (state.events.length === 0) {
-    throw new TransactionEngineError(
-      "EMPTY_TRACE",
-      "Create at least one trace event before saving a regression fixture.",
-    );
-  }
-
   const fixture: RegressionFixture = {
     id: runtime.id(),
     name,

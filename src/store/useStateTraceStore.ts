@@ -49,9 +49,19 @@ type StateTraceStore = {
     expectedOutcome: RegressionFixture["expectedOutcome"];
   }) => RegressionFixture | null;
   replayFixture: (fixtureId: string) => boolean;
+  restoreCheckpoint: (fixtureId: string) => boolean;
   clearError: () => void;
   reset: () => void;
 };
+
+const mutableFields: MutableField[] = [
+  "customerEmail",
+  "shippingAddress",
+  "shippingMethod",
+  "couponCode",
+  "paymentName",
+  "internalNote",
+];
 
 function toError(error: unknown) {
   if (error instanceof TransactionEngineError) {
@@ -197,6 +207,42 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
         const replayed = replayRegressionFixture(fixture);
         replayed.savedFixtures = structuredClone(current.savedFixtures);
         set({ state: replayed, lastError: null });
+        return true;
+      } catch (error) {
+        set({ lastError: toError(error) });
+        return false;
+      }
+    },
+
+    restoreCheckpoint(fixtureId) {
+      try {
+        const fixture = get().state.savedFixtures.find(
+          ({ id }) => id === fixtureId,
+        );
+        if (!fixture) {
+          throw new TransactionEngineError(
+            "FIXTURE_NOT_FOUND",
+            `Checkpoint ${fixtureId} does not exist.`,
+          );
+        }
+
+        for (const transactionId of scheduler.pendingIds()) {
+          scheduler.cancel(transactionId);
+        }
+
+        const target = replayRegressionFixture(fixture);
+        let restored = structuredClone(get().state);
+        const currentLocks = restored.lockedFields;
+        restored.lockedFields = [];
+
+        for (const field of mutableFields) {
+          if (restored.order[field] !== target.order[field]) {
+            restored = commitHumanChange(restored, field, target.order[field]);
+          }
+        }
+
+        restored.lockedFields = currentLocks;
+        set({ state: restored, lastError: null });
         return true;
       } catch (error) {
         set({ lastError: toError(error) });

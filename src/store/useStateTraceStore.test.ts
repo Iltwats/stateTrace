@@ -66,5 +66,33 @@ describe("StateTrace shared store", () => {
     expect(state.transactions[0].status).toBe("cancelled");
     expect(state.visibleOrder).toEqual(state.order);
   });
-});
 
+  it("restores a checkpoint without erasing the activity history", () => {
+    const fixture = useStateTraceStore.getState().saveFixture({
+      name: "Checkout baseline",
+      description: "Restore the original checkout details.",
+      expectedOutcome: "recovered",
+    });
+
+    expect(fixture).not.toBeNull();
+    useStateTraceStore.getState().commitHumanField("couponCode", "SHIPFREE");
+
+    const restored = useStateTraceStore
+      .getState()
+      .restoreCheckpoint(fixture!.id);
+    const state = useStateTraceStore.getState().state;
+    const couponChanges = state.events.filter(
+      (event) =>
+        event.type === "human_change_committed" &&
+        event.payload.field === "couponCode",
+    );
+
+    expect(restored).toBe(true);
+    expect(state.order.couponCode).toBe("WELCOME10");
+    expect(couponChanges).toHaveLength(2);
+    expect(couponChanges.at(-1)?.payload).toMatchObject({
+      previousValue: "SHIPFREE",
+      nextValue: "WELCOME10",
+    });
+  });
+});

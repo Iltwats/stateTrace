@@ -1,8 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RegressionPanel } from "../components/RegressionPanel/RegressionPanel";
 import { useStateTraceStore } from "../store/useStateTraceStore";
 import { App } from "./App";
+
+async function openCheckout(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(
+    screen.getByRole("button", { name: "Open checkout demo" }),
+  );
+}
 
 describe("App", () => {
   beforeEach(() => {
@@ -13,37 +18,52 @@ describe("App", () => {
     useStateTraceStore.getState().reset();
   });
 
-  it("renders the focused StateTrace demo", () => {
+  it("opens with the StateTrace observability story", () => {
     render(<App />);
 
     expect(
       screen.getByRole("heading", { name: "StateTrace" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
-        name: "One order. One agent. Every change visible.",
-      }),
+      screen.getByText("Observability for agent updates in WebMCP."),
     ).toBeInTheDocument();
-    expect(screen.getByText("Shipping details")).toBeInTheDocument();
-    expect(screen.getByLabelText("Field editing model")).toHaveTextContent(
-      "Your edit",
-    );
-    expect(screen.getByText(/update the shipping address/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^activity/i })).toBeInTheDocument();
     expect(
-      screen.queryByRole("dialog", { name: "Activity" }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: "Open checkout demo" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Checkout" })).not.toBeInTheDocument();
   });
 
-  it("opens activity in a drawer and closes it with Escape", async () => {
+  it("opens a complete ecommerce checkout demo", async () => {
     const user = userEvent.setup();
     render(<App />);
+
+    await openCheckout(user);
+
+    expect(screen.getByRole("heading", { name: "Checkout" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Order details" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Contact" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Delivery" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Payment" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Discount" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toHaveValue(
+      "maya.chen@example.com",
+    );
+    expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");
+    expect(screen.getByText("Visa ending in 4242")).toBeInTheDocument();
+  });
+
+  it("opens human-focused activity in a drawer and closes it with Escape", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openCheckout(user);
 
     const trigger = screen.getByRole("button", { name: /^activity/i });
     await user.click(trigger);
 
     expect(screen.getByRole("dialog", { name: "Activity" })).toBeInTheDocument();
-    expect(screen.getByText("Agent & human activity")).toBeInTheDocument();
+    expect(screen.getByText("What changed")).toBeInTheDocument();
+    expect(screen.getByText("Checkpoints")).toBeInTheDocument();
+    expect(screen.queryByText(/safety checks/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Close activity" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
@@ -54,57 +74,49 @@ describe("App", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("lets the human commit and protect a shipping choice", async () => {
+  it("separates human and agent changes", async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openCheckout(user);
 
     await user.selectOptions(screen.getByLabelText("Shipping method"), "pickup");
-    await user.click(screen.getByLabelText("Lock shipping method"));
-
-    const state = useStateTraceStore.getState().state;
-    expect(state.order.shippingMethod).toBe("pickup");
-    expect(state.lockedFields).toContain("shippingMethod");
-    expect(screen.getByLabelText("Unlock shipping method")).toBeInTheDocument();
-    expect(screen.getByText("Protected")).toBeInTheDocument();
-  });
-
-  it("previews an agent update in the same observable state", async () => {
-    const user = userEvent.setup();
-    render(<App />);
-
     await user.click(
       screen.getByRole("button", { name: "Preview agent update" }),
     );
 
+    expect(screen.getByText("You updated")).toBeInTheDocument();
     expect(
       await screen.findByDisplayValue("44 River Road, Portland, OR 97209"),
     ).toBeInTheDocument();
     expect(screen.getByText("Agent updated")).toBeInTheDocument();
-    expect(useStateTraceStore.getState().state.transactions[0]?.actor).toBe(
-      "agent",
-    );
+
+    await user.click(screen.getByRole("button", { name: /^activity/i }));
+    expect(screen.getByText("Delivery method changed")).toBeInTheDocument();
+    expect(screen.getByText("Shipping address is changing")).toBeInTheDocument();
   });
 
-  it("captures and replays a regression fixture", async () => {
+  it("saves and restores checkout form details from a checkpoint", async () => {
     const user = userEvent.setup();
-    useStateTraceStore
-      .getState()
-      .commitHumanField("internalNote", "Captured regression note");
-    render(<RegressionPanel />);
+    render(<App />);
+    await openCheckout(user);
 
-    await user.click(
-      screen.getByRole("button", { name: /commit 1 event to fixture/i }),
-    );
-    expect(useStateTraceStore.getState().state.savedFixtures).toHaveLength(1);
-    expect(screen.getByText("Concurrent order recovery")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /^activity/i }));
+    await user.click(screen.getByRole("button", { name: "Save checkpoint" }));
+    expect(screen.getByText("Checkout checkpoint 1")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Close activity" }));
 
-    useStateTraceStore
-      .getState()
-      .commitHumanField("internalNote", "A later temporary note");
-    await user.click(screen.getByRole("button", { name: "Replay" }));
+    const coupon = screen.getByLabelText("Coupon code");
+    await user.clear(coupon);
+    await user.type(coupon, "SHIPFREE");
+    await user.click(screen.getByRole("button", { name: "Save change" }));
+    expect(coupon).toHaveValue("SHIPFREE");
 
-    expect(useStateTraceStore.getState().state.order.internalNote).toBe(
-      "Captured regression note",
-    );
+    await user.click(screen.getByRole("button", { name: /^activity/i }));
+    await user.click(screen.getByRole("button", { name: "Restore" }));
+
+    expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");
+    expect(screen.getByRole("button", { name: "Restored" })).toBeInTheDocument();
+    expect(screen.getAllByText("2 changes")).toHaveLength(2);
+    expect(screen.getAllByText("Discount code changed")).toHaveLength(2);
   });
 });

@@ -176,7 +176,7 @@ function createTools(): WebMCP.ModelContextTool[] {
       name: "stage_order_change",
       title: "Stage order change",
       description:
-        "Stage one validated optimistic change to the address, shipping method, or internal note at an observed revision and show it in the human-visible trace.",
+        "Stage one validated optimistic change to an observable checkout field at an observed revision and show it in the human-visible activity trace.",
       inputSchema: inputSchemas.stageOrderChange,
       annotations: { readOnlyHint: false, untrustedContentHint: false },
       execute: async (input, options) => {

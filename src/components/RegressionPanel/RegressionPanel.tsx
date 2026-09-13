@@ -79,7 +79,7 @@ export function RegressionPanel() {
               ))}
             </select>
           </label>
-          <button className="button-primary" type="submit" disabled={!events.length}>
+          <button className="button-primary" type="submit">
             Commit {events.length} event{events.length === 1 ? "" : "s"} to fixture
           </button>
         </form>
