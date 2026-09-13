@@ -21,6 +21,11 @@ async function openCheckout(user: ReturnType<typeof userEvent.setup>) {
 describe("App", () => {
   beforeEach(() => {
     mockUseWebMCPTools.mockReturnValue({ state: "available", toolCount: 6 });
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 0,
+      writable: true,
+    });
     useStateTraceStore.getState().reset();
   });
 
@@ -41,7 +46,7 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Open checkout demo" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "See how it works" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Scroll to explore" })).toHaveAttribute(
       "href",
       "#product-overview",
     );
@@ -80,6 +85,21 @@ describe("App", () => {
 
     fireEvent.pointerLeave(hero!);
     expect(landing).toHaveStyle({ "--landing-glow-opacity": "0" });
+  });
+
+  it("docks the StateTrace name in the header after scrolling", () => {
+    render(<App />);
+
+    const header = screen.getByRole("banner");
+    expect(header).not.toHaveClass("is-docked");
+
+    window.scrollY = 24;
+    fireEvent.scroll(window);
+
+    expect(header).toHaveClass("is-docked");
+    expect(
+      screen.getByRole("link", { name: "StateTrace home" }),
+    ).toBeInTheDocument();
   });
 
   it("keeps the pointer glow out of the FAQ reading area", () => {

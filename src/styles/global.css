@@ -982,6 +982,7 @@ h1 {
 .landing-shell {
   --landing-glow-x: 88vw;
   --landing-glow-y: 8vh;
+  overflow: visible;
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto;
   padding: 28px 0 24px;
@@ -1034,6 +1035,47 @@ h1 {
   justify-content: space-between;
   gap: 24px;
   align-items: center;
+}
+
+.landing-header {
+  position: sticky;
+  z-index: 20;
+  top: 12px;
+  min-height: 54px;
+  margin: -6px -8px 0;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.landing-header.is-docked {
+  border-color: #352613;
+  background: rgb(8 7 5 / 88%);
+  box-shadow: 0 14px 42px rgb(0 0 0 / 38%);
+  backdrop-filter: blur(16px);
+}
+.landing-brand {
+  display: inline-flex;
+  gap: 11px;
+  align-items: center;
+  color: #f6ecdc;
+  text-decoration: none;
+}
+.landing-brand-name {
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  transform: translateX(-7px);
+  transition: max-width 220ms ease, opacity 160ms ease, transform 220ms ease;
+  white-space: nowrap;
+}
+.landing-header.is-docked .landing-brand-name {
+  max-width: 100px;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .landing-monogram {
@@ -1129,25 +1171,33 @@ h1 {
   align-items: center;
   margin-top: 34px;
 }
-.landing-scroll-link {
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-  padding: 12px 2px;
+.landing-scroll-cue {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  display: grid;
+  gap: 9px;
+  justify-items: center;
+  padding: 10px 14px;
   color: #a9987e;
-  font-size: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.61rem;
   font-weight: 650;
+  letter-spacing: 0.09em;
   text-decoration: none;
+  text-transform: uppercase;
+  transform: translateX(-50%);
   animation: rise-in 700ms 480ms ease-out both;
 }
-.landing-scroll-link span {
+.landing-scroll-cue i {
   color: #e99a1d;
   font-family: var(--mono);
-  transition: transform 160ms ease;
+  font-size: 1rem;
+  font-style: normal;
+  animation: scroll-cue-drop 1.5s ease-in-out infinite;
 }
-.landing-scroll-link:hover { color: #f2e8d7; }
-.landing-scroll-link:hover span { transform: translateY(3px); }
-.landing-scroll-link:focus-visible { outline: 2px solid #e69a22; outline-offset: 5px; }
+.landing-scroll-cue:hover { color: #f2e8d7; }
+.landing-scroll-cue:focus-visible { outline: 2px solid #e69a22; outline-offset: 5px; }
 
 .product-overview {
   position: relative;
@@ -2430,6 +2480,10 @@ h1 {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes scroll-cue-drop {
+  0%, 100% { opacity: 0.45; transform: translateY(-2px); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
 @keyframes glow-arrive {
   from { opacity: 0; transform: scale(0.7); }
   to { opacity: 1; transform: rotate(-9deg) skewX(-8deg) scale(1); }
@@ -2477,6 +2531,7 @@ h1 {
   .animated-title { font-size: clamp(4rem, 23vw, 7rem); line-height: 0.83; }
   .animated-title span { width: 100%; }
   .landing-actions { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .landing-scroll-cue { bottom: 18px; }
   .product-overview { padding-top: 54px; }
   .product-overview-heading { margin-bottom: 26px; }
   .capability-grid { grid-template-columns: 1fr; }
@@ -2534,7 +2589,8 @@ h1 {
   .landing-tagline,
   .landing-description,
   .open-demo-button,
-  .landing-scroll-link,
+  .landing-scroll-cue,
+  .landing-scroll-cue i,
   .checkout-shell,
   .order-complete-overlay,
   .order-complete-dialog,

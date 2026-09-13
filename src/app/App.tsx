@@ -127,6 +127,7 @@ export function App() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [traceOpen, setTraceOpen] = useState(false);
   const [setupOpen, setSetupOpen] = useState(false);
+  const [landingScrolled, setLandingScrolled] = useState(false);
   const closeTrace = useCallback(() => setTraceOpen(false), []);
   const closeSetup = useCallback(() => setSetupOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
@@ -136,14 +137,25 @@ export function App() {
     if (demoOpen && webMCP.state === "unavailable") setSetupOpen(true);
   }, [demoOpen, webMCP.state]);
 
+  useEffect(() => {
+    const syncLandingScroll = () => setLandingScrolled(window.scrollY > 4);
+    syncLandingScroll();
+    window.addEventListener("scroll", syncLandingScroll, { passive: true });
+    return () => window.removeEventListener("scroll", syncLandingScroll);
+  }, []);
+
   if (!demoOpen) {
     return (
       <main
         className="landing-shell"
+        id="landing-top"
       >
         <div className="landing-glow" aria-hidden="true" />
-        <header className="landing-header">
-          <div className="landing-monogram" aria-hidden="true">ST</div>
+        <header className={`landing-header${landingScrolled ? " is-docked" : ""}`}>
+          <a className="landing-brand" href="#landing-top" aria-label="StateTrace home">
+            <span className="landing-monogram" aria-hidden="true">ST</span>
+            <span className="landing-brand-name">StateTrace</span>
+          </a>
           <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
         </header>
 
@@ -188,11 +200,11 @@ export function App() {
               Open checkout demo
               <span aria-hidden="true">↗</span>
             </button>
-            <a className="landing-scroll-link" href="#product-overview">
-              See how it works
-              <span aria-hidden="true">↓</span>
-            </a>
           </div>
+          <a className="landing-scroll-cue" href="#product-overview">
+            <span>Scroll to explore</span>
+            <i aria-hidden="true">↓</i>
+          </a>
         </section>
 
         <section
