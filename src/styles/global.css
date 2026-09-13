@@ -1432,19 +1432,18 @@ h1 {
   font-size: 1.2rem;
 }
 .webmcp-current-status {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
   margin: 22px 0;
   padding: 14px;
   border: 1px solid #343128;
   border-radius: 9px;
   background: #0b0b09;
 }
-.webmcp-status-label {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
 .webmcp-current-status strong { color: #f2eadc; font-size: 0.78rem; }
-.webmcp-current-status p { margin: 4px 0 0 20px; color: #8f877a; font-size: 0.68rem; line-height: 1.5; }
+.webmcp-current-status p { margin: 4px 0 0; color: #8f877a; font-size: 0.68rem; line-height: 1.5; }
 .webmcp-current-status.status-available { border-color: #285949; background: #0a1511; }
 .webmcp-current-status.status-unavailable { border-color: #60441c; background: #171006; }
 .webmcp-setup-steps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
