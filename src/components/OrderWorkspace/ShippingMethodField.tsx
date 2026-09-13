@@ -1,5 +1,4 @@
 import type { Actor, ShippingMethod } from "../../domain/types";
-import { FieldLockButton } from "../Shared/FieldLockButton";
 
 const labels: Record<ShippingMethod, string> = {
   standard: "Standard · 4–6 days",
@@ -13,14 +12,12 @@ export function ShippingMethodField({
   lastActor,
   locked,
   onCommit,
-  onToggleLock,
 }: {
   committedValue: ShippingMethod;
   visibleValue: ShippingMethod;
   lastActor?: Actor;
   locked: boolean;
   onCommit: (value: ShippingMethod) => void;
-  onToggleLock: () => void;
 }) {
   return (
     <div
@@ -31,21 +28,14 @@ export function ShippingMethodField({
           <div>
             <div className="field-title-line">
               <label htmlFor="field-shippingMethod">Shipping method</label>
-              <span className={`field-actor actor-${lastActor ?? "shared"}`}>
-                {locked
-                  ? "Protected"
-                  : lastActor
-                    ? `${lastActor === "human" ? "You" : "Agent"} updated`
-                    : "Shared"}
-              </span>
+              {lastActor ? (
+                <span className={`field-actor actor-${lastActor}`}>
+                  {lastActor === "human" ? "You" : "Agent"} updated
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
-        <FieldLockButton
-          locked={locked}
-          fieldLabel="shipping method"
-          onClick={onToggleLock}
-        />
       </div>
       <select
         id="field-shippingMethod"
@@ -59,12 +49,10 @@ export function ShippingMethodField({
           </option>
         ))}
       </select>
-      {visibleValue !== committedValue || locked ? (
+      {visibleValue !== committedValue ? (
         <div className="field-footer">
           <span>
-            {visibleValue !== committedValue
-              ? "Agent change is being verified…"
-              : "Only you can change this field"}
+            Agent change is being verified…
           </span>
         </div>
       ) : null}

@@ -88,43 +88,64 @@ export function App() {
 
   return (
     <main className="checkout-shell">
-      <header className="checkout-header">
-        <button
-          type="button"
-          className="checkout-brand"
-          onClick={() => setDemoOpen(false)}
-          aria-label="Back to StateTrace overview"
-        >
-          <span aria-hidden="true">ST</span>
-          <div>
-            <strong>StateTrace</strong>
-            <small>Checkout demo</small>
-          </div>
-        </button>
-
-        <div className="checkout-header-actions">
-          <WebMCPBadge status={webMCP} />
+      <header className="commerce-header">
+        <div className="commerce-header-main">
           <button
             type="button"
-            className="activity-button"
-            aria-haspopup="dialog"
-            onClick={() => setTraceOpen(true)}
+            className="commerce-brand"
+            onClick={() => setDemoOpen(false)}
+            aria-label="Back to StateTrace overview"
           >
-            Activity
-            <span>{activityCount}</span>
+            <span aria-hidden="true">A</span>
+            <strong>AURUM</strong>
           </button>
+
+          <nav className="commerce-navigation" aria-label="Store navigation">
+            <a href="#checkout-products">New arrivals</a>
+            <a href="#checkout-products">Lighting</a>
+            <a href="#checkout-products">Accessories</a>
+          </nav>
+
+          <div className="checkout-header-actions">
+            <span className="secure-checkout-label">
+              <i aria-hidden="true">⌾</i>
+              Secure checkout
+            </span>
+            <button
+              type="button"
+              className="activity-button"
+              aria-haspopup="dialog"
+              onClick={() => setTraceOpen(true)}
+            >
+              Activity
+              <span>{activityCount}</span>
+            </button>
+          </div>
+        </div>
+        <div className="commerce-observer-bar">
+          <WebMCPBadge status={webMCP} />
+          <span>Agent changes are recorded automatically by StateTrace</span>
         </div>
       </header>
 
       <div className="checkout-content">
+        <nav className="checkout-progress" aria-label="Checkout progress">
+          <ol>
+            <li className="is-complete"><span>✓</span>Bag</li>
+            <li className="is-current"><span>2</span>Information</li>
+            <li><span>3</span>Delivery</li>
+            <li><span>4</span>Payment</li>
+          </ol>
+        </nav>
+
         <div className="checkout-intro">
           <div>
-            <p className="eyebrow">Interactive storefront</p>
+            <p className="eyebrow">Aurum online store</p>
             <h1>Checkout</h1>
           </div>
           <p>
-            Edit normally or ask your agent. Open Activity to compare changes
-            and restore a checkpoint.
+            Complete your details below. Every edit is auto-saved, whether it
+            comes from you or your WebMCP agent.
           </p>
         </div>
 
@@ -132,8 +153,11 @@ export function App() {
         <OrderWorkspace />
 
         <footer className="checkout-footer">
-          <button type="button" onClick={() => setDemoOpen(false)}>← Overview</button>
-          <span>Demo data only · No order or payment is submitted</span>
+          <button type="button" onClick={() => setDemoOpen(false)}>
+            ← Back to StateTrace
+          </button>
+          <span>Privacy · Terms · Help</span>
+          <span>Demo store · No order or payment is submitted</span>
         </footer>
       </div>
 

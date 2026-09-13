@@ -29,9 +29,6 @@ export function OrderWorkspace() {
   const commitHumanField = useStateTraceStore(
     ({ commitHumanField }) => commitHumanField,
   );
-  const toggleFieldLock = useStateTraceStore(
-    ({ toggleFieldLock }) => toggleFieldLock,
-  );
   const [placed, setPlaced] = useState(false);
   const discountCents = state.order.couponCode ? 1480 : 0;
   const finalTotal = state.order.totalCents - discountCents;
@@ -51,13 +48,16 @@ export function OrderWorkspace() {
         locked={state.lockedFields.includes(field)}
         multiline={multiline}
         onCommit={(value) => commitHumanField(field, value)}
-        onToggleLock={() => toggleFieldLock(field)}
       />
     );
   }
 
   return (
-    <section className="checkout-layout" aria-label="Checkout demo">
+    <section
+      id="checkout-products"
+      className="checkout-layout"
+      aria-label="Checkout demo"
+    >
       <form
         className="checkout-form"
         onSubmit={(event) => {
@@ -67,10 +67,10 @@ export function OrderWorkspace() {
       >
         <div className="checkout-form-heading">
           <div>
-            <p className="section-kicker">Secure checkout</p>
-            <h2>Complete your order</h2>
+            <p className="section-kicker">Customer information</p>
+            <h2>Checkout details</h2>
           </div>
-          <span>All fields are observable</span>
+          <span>All fields required</span>
         </div>
 
         <section className="checkout-section" aria-labelledby="contact-heading">
@@ -99,7 +99,6 @@ export function OrderWorkspace() {
             lastActor={lastActorForField(state.events, "shippingMethod")}
             locked={state.lockedFields.includes("shippingMethod")}
             onCommit={(value) => commitHumanField("shippingMethod", value)}
-            onToggleLock={() => toggleFieldLock("shippingMethod")}
           />
           {editableField("internalNote", "Delivery instructions", true)}
         </section>

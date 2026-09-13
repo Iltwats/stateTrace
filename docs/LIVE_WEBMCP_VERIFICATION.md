@@ -85,9 +85,9 @@ applied.
 | --- | --- |
 | Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
 | Visual system | Pass — the page uses Manrope and IBM Plex Mono with a black `#060504` base and true gold-orange `#f59e0b` / `#ffb52b` accents. |
-| Complete checkout | Pass — contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals are present. |
+| Complete checkout | Pass — the Aurum demo uses familiar retail navigation, checkout progress, contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals. |
 | Native WebMCP write | Pass — the browser discovered six page tools, read revision `2`, staged an agent-owned address change, and observed it commit at revision `3`. |
 | Human/agent activity | Pass — the drawer separately showed the human coupon edit and the agent address edit, including actor, old value, new value, and applied status. No internal safety panel or system-event stream is shown. |
-| Checkpoint restore | Pass — a revision `1` checkout checkpoint restored both edited fields while retaining the original actions and adding the restore diffs to activity instead of erasing history. |
+| Automatic restore points | Pass — human changes, agent writes, and retries create a restore point before mutation. There is no manual save control. Restoring revision `1` retained the original action and added the reverse diff to activity instead of erasing history. |
 | Responsive layout | Pass — the checkout and full-width activity drawer have no horizontal overflow at `390×844`. |
 | Browser diagnostics | Pass — no warning or error console entries were reported during the end-to-end workflow. |
