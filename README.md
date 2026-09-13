@@ -133,8 +133,6 @@ npm run build
 # serve dist/
 ```
 
-Vercel and generic static-host instructions are in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
-
 ## Evaluation
 
 The prompt suite is in [`evals/statetrace.json`](evals/statetrace.json). It tests:
@@ -170,13 +168,6 @@ src/
 ## Scope and safety
 
 StateTrace is a synthetic reliability and debugging environment. It does not connect to a real commerce system, execute payments/refunds, or claim to prevent arbitrary prompt injection. User-generated notes and trace content are marked untrusted where returned through WebMCP.
-
-## Documentation
-
-| Document | What it covers |
-|---|---|
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Running locally and publishing to Vercel or another static host. |
-| [`docs/LIVE_WEBMCP_VERIFICATION.md`](docs/LIVE_WEBMCP_VERIFICATION.md) | Recorded live Chrome verification results. |
 
 ## Contributing
 
