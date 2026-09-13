@@ -140,16 +140,6 @@ export function App() {
     return (
       <main
         className="landing-shell"
-        onPointerMove={(event) => {
-          event.currentTarget.style.setProperty(
-            "--landing-glow-x",
-            `${event.clientX}px`,
-          );
-          event.currentTarget.style.setProperty(
-            "--landing-glow-y",
-            `${event.clientY}px`,
-          );
-        }}
       >
         <div className="landing-glow" aria-hidden="true" />
         <header className="landing-header">
@@ -157,7 +147,27 @@ export function App() {
           <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
         </header>
 
-        <section className="landing-hero" aria-labelledby="landing-title">
+        <section
+          className="landing-hero"
+          aria-labelledby="landing-title"
+          onPointerEnter={(event) => {
+            event.currentTarget.parentElement?.style.setProperty(
+              "--landing-glow-opacity",
+              "1",
+            );
+          }}
+          onPointerMove={(event) => {
+            const landing = event.currentTarget.parentElement;
+            landing?.style.setProperty("--landing-glow-x", `${event.clientX}px`);
+            landing?.style.setProperty("--landing-glow-y", `${event.clientY}px`);
+          }}
+          onPointerLeave={(event) => {
+            event.currentTarget.parentElement?.style.setProperty(
+              "--landing-glow-opacity",
+              "0",
+            );
+          }}
+        >
           <p className="landing-kicker">Human-visible agent actions</p>
           <h1 id="landing-title" className="animated-title">
             <span>State</span><span>Trace</span>
@@ -179,7 +189,22 @@ export function App() {
           </button>
         </section>
 
-        <section className="landing-faq" aria-labelledby="faq-title">
+        <section
+          className="landing-faq"
+          aria-labelledby="faq-title"
+          onPointerEnter={(event) => {
+            event.currentTarget.parentElement?.style.setProperty(
+              "--landing-glow-opacity",
+              "0",
+            );
+          }}
+          onFocusCapture={(event) => {
+            event.currentTarget.parentElement?.style.setProperty(
+              "--landing-glow-opacity",
+              "0",
+            );
+          }}
+        >
           <div className="landing-faq-intro">
             <p className="section-kicker">What it does</p>
             <h2 id="faq-title">Frequently asked questions</h2>
@@ -200,10 +225,47 @@ export function App() {
             <details>
               <summary>What can an agent do through WebMCP?</summary>
               <p>
-                On a site that integrates StateTrace, an agent can inspect the
-                current checkout state, update supported fields, apply a
-                coupon, and read the activity history through page-defined
-                WebMCP tools.
+                An agent can inspect current and pending state, read the ordered
+                activity trace, verify exact outcomes, stage a supported field
+                change, retry one failed transaction, and capture a recovered
+                trace as a regression fixture.
+              </p>
+            </details>
+            <details>
+              <summary>How does it handle slow operations and latency?</summary>
+              <p>
+                StateTrace separates the value currently shown in the form
+                from the last committed value. A slow operation stays visibly
+                pending until it succeeds or fails, so neither the person nor
+                the agent has to mistake an optimistic update for a completed
+                one.
+              </p>
+            </details>
+            <details>
+              <summary>Can duplicate requests apply the same change twice?</summary>
+              <p>
+                Idempotency keys prevent duplicate logical writes. If a
+                completion response arrives more than once, the extra response
+                is ignored and recorded in the trace instead of advancing the
+                revision again.
+              </p>
+            </details>
+            <details>
+              <summary>What if the page changes while an agent is working?</summary>
+              <p>
+                Agent writes include the revision they observed. Stale writes
+                to the same field are rejected or superseded, while safe edits
+                to independent fields can survive. A human can also lock a
+                field so a pending agent operation cannot overwrite it.
+              </p>
+            </details>
+            <details>
+              <summary>Can a failed operation be retried safely?</summary>
+              <p>
+                Yes. Recovery targets one identified failed or superseded
+                transaction at the current revision instead of repeating the
+                whole workflow. Newer human edits and field locks remain in
+                force.
               </p>
             </details>
             <details>

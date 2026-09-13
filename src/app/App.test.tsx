@@ -57,12 +57,31 @@ describe("App", () => {
     render(<App />);
 
     const landing = screen.getByRole("main");
-    fireEvent.pointerMove(landing, { clientX: 320, clientY: 180 });
+    const hero = screen.getByRole("heading", { name: "StateTrace" }).closest("section");
+    expect(hero).not.toBeNull();
+    fireEvent.pointerMove(hero!, { clientX: 320, clientY: 180 });
 
     expect(landing).toHaveStyle({
       "--landing-glow-x": "320px",
       "--landing-glow-y": "180px",
     });
+
+    fireEvent.pointerLeave(hero!);
+    expect(landing).toHaveStyle({ "--landing-glow-opacity": "0" });
+  });
+
+  it("keeps the pointer glow out of the FAQ reading area", () => {
+    render(<App />);
+
+    const landing = screen.getByRole("main");
+    const faq = screen
+      .getByRole("heading", { name: "Frequently asked questions" })
+      .closest("section");
+    expect(faq).not.toBeNull();
+
+    fireEvent.pointerEnter(faq!);
+
+    expect(landing).toHaveStyle({ "--landing-glow-opacity": "0" });
   });
 
   it("opens WebMCP setup steps when the connected badge is clicked", async () => {

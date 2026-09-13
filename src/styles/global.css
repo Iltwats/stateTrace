@@ -995,13 +995,14 @@ h1 {
   width: 76rem;
   height: 28rem;
   border-radius: 50%;
+  opacity: var(--landing-glow-opacity, 1);
   pointer-events: none;
   transform: translate3d(
     calc(var(--landing-glow-x) - 50%),
     calc(var(--landing-glow-y) - 50%),
     0
   );
-  transition: transform 110ms ease-out;
+  transition: transform 110ms ease-out, opacity 220ms ease-out;
   will-change: transform;
 }
 .landing-glow::after {
