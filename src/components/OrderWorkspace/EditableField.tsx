@@ -31,6 +31,9 @@ export function EditableField({
   locked,
   multiline = false,
   onCommit,
+  actionLabel,
+  actionStatus,
+  onAction,
 }: {
   field: MutableField;
   label: string;
@@ -40,6 +43,9 @@ export function EditableField({
   locked: boolean;
   multiline?: boolean;
   onCommit: (value: string) => void;
+  actionLabel?: string;
+  actionStatus?: string;
+  onAction?: (value: string) => void;
 }) {
   const [draft, setDraft] = useState(visibleValue);
   const isOptimistic = visibleValue !== committedValue;
@@ -89,11 +95,22 @@ export function EditableField({
         </div>
       </div>
 
-      {multiline ? (
-        <textarea {...inputProps} rows={3} />
-      ) : (
-        <input {...inputProps} />
-      )}
+      <div className={onAction ? "field-input-action" : undefined}>
+        {multiline ? (
+          <textarea {...inputProps} rows={3} />
+        ) : (
+          <input {...inputProps} />
+        )}
+        {onAction ? (
+          <button
+            type="button"
+            disabled={locked || Boolean(draftError) || !draft.trim()}
+            onClick={() => onAction(draft.trim())}
+          >
+            {actionLabel ?? "Apply"}
+          </button>
+        ) : null}
+      </div>
 
       {isOptimistic || isDirty ? (
         <div className="field-footer" aria-live="polite">
@@ -102,6 +119,10 @@ export function EditableField({
               ? "Agent change is being applied…"
               : draftError ?? "Auto-saving…"}
           </span>
+        </div>
+      ) : actionStatus ? (
+        <div className="field-action-status" role="status">
+          {actionStatus}
         </div>
       ) : null}
     </div>

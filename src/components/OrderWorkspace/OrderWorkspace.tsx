@@ -12,6 +12,16 @@ function formatCurrency(cents: number) {
   }).format(cents / 100);
 }
 
+const surpriseDiscounts = [8, 12, 15, 20] as const;
+
+export function pickSurpriseDiscount(randomValue = Math.random()) {
+  const index = Math.min(
+    surpriseDiscounts.length - 1,
+    Math.floor(Math.max(0, randomValue) * surpriseDiscounts.length),
+  );
+  return surpriseDiscounts[index];
+}
+
 function lastActorForField(
   events: TraceEvent[],
   field: MutableField,
@@ -33,8 +43,14 @@ export function OrderWorkspace() {
   const reset = useStateTraceStore(({ reset }) => reset);
   const [placed, setPlaced] = useState(false);
   const [paymentFormKey, setPaymentFormKey] = useState(0);
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    code: string;
+    percent: number;
+  } | null>(null);
   const startAgainRef = useRef<HTMLButtonElement>(null);
-  const discountCents = state.order.couponCode ? 1480 : 0;
+  const discountCents = appliedDiscount
+    ? Math.round((state.order.totalCents * appliedDiscount.percent) / 100)
+    : 0;
   const finalTotal = state.order.totalCents - discountCents;
 
   useEffect(() => {
@@ -44,7 +60,15 @@ export function OrderWorkspace() {
   function startAgain() {
     reset();
     setPaymentFormKey((key) => key + 1);
+    setAppliedDiscount(null);
     setPlaced(false);
+  }
+
+  function applyCoupon(code: string) {
+    if (code !== state.visibleOrder.couponCode) {
+      commitHumanField("couponCode", code);
+    }
+    setAppliedDiscount({ code, percent: pickSurpriseDiscount() });
   }
 
   function editableField(
@@ -137,7 +161,22 @@ export function OrderWorkspace() {
               <p>You or your agent can apply a code</p>
             </div>
           </div>
-          {editableField("couponCode", "Coupon code")}
+          <EditableField
+            field="couponCode"
+            label="Coupon code"
+            committedValue={state.order.couponCode}
+            visibleValue={state.visibleOrder.couponCode}
+            lastActor={lastActorForField(state.events, "couponCode")}
+            locked={state.lockedFields.includes("couponCode")}
+            onCommit={(value) => commitHumanField("couponCode", value)}
+            actionLabel="Apply"
+            actionStatus={
+              appliedDiscount
+                ? `${appliedDiscount.percent}% off applied`
+                : undefined
+            }
+            onAction={applyCoupon}
+          />
         </section>
 
         <div className="checkout-submit">
@@ -176,9 +215,9 @@ export function OrderWorkspace() {
         <div className="summary-totals">
           <div><span>Subtotal</span><strong>{formatCurrency(state.order.totalCents)}</strong></div>
           <div><span>Shipping</span><strong>Free</strong></div>
-          {state.order.couponCode ? (
+          {appliedDiscount ? (
             <div className="discount-row">
-              <span>{state.order.couponCode}</span>
+              <span>{appliedDiscount.code}</span>
               <strong>−{formatCurrency(discountCents)}</strong>
             </div>
           ) : null}
@@ -209,8 +248,7 @@ export function OrderWorkspace() {
             <p className="section-kicker">Order {state.order.id}</p>
             <h2 id="order-complete-title">Order complete</h2>
             <p id="order-complete-description">
-              Your demo checkout is complete. No payment was charged and no
-              order was submitted.
+              Your order has been confirmed.
             </p>
             <div className="order-complete-total">
               <span>Total</span>

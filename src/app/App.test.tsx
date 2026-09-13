@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 import { useStateTraceStore } from "../store/useStateTraceStore";
 import { App } from "./App";
 
@@ -15,6 +16,7 @@ describe("App", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     useStateTraceStore.getState().reset();
   });
 
@@ -144,11 +146,12 @@ describe("App", () => {
     await openCheckout(user);
 
     await user.type(screen.getByLabelText("Card number"), "4242424242424242");
-    await user.click(screen.getByRole("button", { name: "Pay $133.20" }));
+    await user.click(screen.getByRole("button", { name: "Pay $148.00" }));
 
     expect(
       screen.getByRole("dialog", { name: "Order complete" }),
     ).toBeInTheDocument();
+    expect(screen.queryByText(/demo checkout/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start again" })).toHaveFocus();
 
     await user.click(screen.getByRole("button", { name: "Start again" }));
@@ -158,6 +161,20 @@ describe("App", () => {
     ).not.toBeInTheDocument();
     expect(screen.getByLabelText("Card number")).toHaveValue("");
     expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");
-    expect(screen.getByRole("button", { name: "Pay $133.20" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Pay $148.00" })).toBeInTheDocument();
+  });
+
+  it("applies a surprise coupon discount and updates the total", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
+    const user = userEvent.setup();
+    render(<App />);
+    await openCheckout(user);
+
+    expect(screen.getByRole("button", { name: "Pay $148.00" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Apply" }));
+
+    expect(screen.getByRole("status")).toHaveTextContent("15% off applied");
+    expect(screen.getByText("−$22.20")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Pay $125.80" })).toBeInTheDocument();
   });
 });

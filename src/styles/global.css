@@ -1234,6 +1234,25 @@ h1 {
 .checkout-section .editable-field input,
 .checkout-section .editable-field textarea,
 .checkout-section .editable-field select { padding: 11px 12px; }
+.field-input-action {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: stretch;
+}
+.field-input-action button {
+  min-width: 92px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border: 1px solid #714514;
+  border-radius: 8px;
+  color: #1b1001;
+  background: linear-gradient(135deg, #ffc14d, #f28a0a);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.field-input-action button:disabled { cursor: not-allowed; filter: grayscale(0.6); opacity: 0.48; }
+.field-action-status { margin-top: 9px; color: #d79329; font-family: var(--mono); font-size: 0.58rem; }
 .checkout-section .field-heading label { font-family: "Manrope", sans-serif; font-size: 0.74rem; }
 .checkout-section .field-actor { border-color: #3b2912; color: #a28049; background: #110c06; }
 .checkout-section .field-actor.actor-agent { border-color: #9b5e10; color: #ffc15a; background: #251603; }
@@ -2064,6 +2083,18 @@ h1 {
 }
 .checkout-section .editable-field input::placeholder,
 .payment-details input::placeholder { color: #625c52; }
+.checkout-section .editable-field select {
+  padding-right: 46px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8'%3E%3Cpath d='m1 1 6 6 6-6' fill='none' stroke='%23ffb224' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 17px center;
+  background-size: 12px 7px;
+}
+.checkout-section .field-input-action button {
+  border-color: #f0a01b;
+  box-shadow: 0 9px 22px rgb(224 126 11 / 16%);
+}
 .checkout-section .editable-field input:focus,
 .checkout-section .editable-field textarea:focus,
 .checkout-section .editable-field select:focus {
