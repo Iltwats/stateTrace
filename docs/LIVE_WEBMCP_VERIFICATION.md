@@ -84,9 +84,11 @@ applied.
 | Check | Result |
 | --- | --- |
 | Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
-| Visual system | Pass — the StateTrace entrance retains its black and gold-orange identity, while the embedded Aurum store uses a separate midnight, slate, electric-indigo, and mint dark-mode palette. |
+| Visual system | Pass — the StateTrace entrance and Aurum store now share a coherent carbon-black and warm gold-orange identity, with mint reserved for live connection status. No purple or indigo accents remain in the visible checkout. |
 | Complete checkout | Pass — the Aurum demo uses familiar retail navigation, checkout progress, contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals. |
-| Familiar payment entry | Pass — the demo card formats while typing and visibly detects Visa, Mastercard, American Express, and Discover. The fields are local-only and never submit a payment. |
+| Section hierarchy | Pass — Contact, Delivery, Payment, and Discount render as separate elevated cards with consistent spacing instead of one visually dense form surface. |
+| Familiar payment entry | Pass — card number, expiry, and CVC use the same recessed control treatment; the demo card formats while typing and visibly detects Visa, Mastercard, American Express, and Discover. The fields are local-only and never submit a payment. |
+| Completion flow | Pass — Pay opens a centered animated order-complete dialog, moves focus to `Start again`, and the action clears local payment fields and restores the baseline checkout. The dialog remains fully visible at `390×844`. |
 | Field auto-save | Pass — valid text edits display `Auto-saving…`, commit after a short debounce, update Activity, and create a restore point without rendering Cancel or Save buttons. Invalid drafts remain local and explain what must be corrected. |
 | Native WebMCP write | Pass — the browser discovered six page tools, read revision `2`, staged an agent-owned address change, and observed it commit at revision `3`. |
 | Human/agent activity | Pass — the drawer separately showed the human coupon edit and the agent address edit, including actor, old value, new value, and applied status. No internal safety panel or system-event stream is shown. |

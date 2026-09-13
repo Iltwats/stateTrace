@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Actor, MutableField, TraceEvent } from "../../domain/types";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { EditableField } from "./EditableField";
@@ -30,9 +30,22 @@ export function OrderWorkspace() {
   const commitHumanField = useStateTraceStore(
     ({ commitHumanField }) => commitHumanField,
   );
+  const reset = useStateTraceStore(({ reset }) => reset);
   const [placed, setPlaced] = useState(false);
+  const [paymentFormKey, setPaymentFormKey] = useState(0);
+  const startAgainRef = useRef<HTMLButtonElement>(null);
   const discountCents = state.order.couponCode ? 1480 : 0;
   const finalTotal = state.order.totalCents - discountCents;
+
+  useEffect(() => {
+    if (placed) startAgainRef.current?.focus();
+  }, [placed]);
+
+  function startAgain() {
+    reset();
+    setPaymentFormKey((key) => key + 1);
+    setPlaced(false);
+  }
 
   function editableField(
     field: Exclude<MutableField, "shippingMethod">,
@@ -113,7 +126,7 @@ export function OrderWorkspace() {
             </div>
           </div>
           {editableField("paymentName", "Name on card")}
-          <PaymentCardFields />
+          <PaymentCardFields key={paymentFormKey} />
         </section>
 
         <section className="checkout-section" aria-labelledby="discount-heading">
@@ -129,7 +142,7 @@ export function OrderWorkspace() {
 
         <div className="checkout-submit">
           <button type="submit">
-            {placed ? "Demo order complete ✓" : `Pay ${formatCurrency(finalTotal)}`}
+            Pay {formatCurrency(finalTotal)}
           </button>
           <p>This is a simulation. No payment or order is submitted.</p>
         </div>
@@ -180,6 +193,35 @@ export function OrderWorkspace() {
           </p>
         </div>
       </aside>
+
+      {placed ? (
+        <div className="order-complete-overlay" role="presentation">
+          <section
+            className="order-complete-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-complete-title"
+            aria-describedby="order-complete-description"
+          >
+            <div className="order-complete-mark" aria-hidden="true">
+              <span>✓</span>
+            </div>
+            <p className="section-kicker">Order {state.order.id}</p>
+            <h2 id="order-complete-title">Order complete</h2>
+            <p id="order-complete-description">
+              Your demo checkout is complete. No payment was charged and no
+              order was submitted.
+            </p>
+            <div className="order-complete-total">
+              <span>Total</span>
+              <strong>{formatCurrency(finalTotal)}</strong>
+            </div>
+            <button ref={startAgainRef} type="button" onClick={startAgain}>
+              Start again
+            </button>
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }

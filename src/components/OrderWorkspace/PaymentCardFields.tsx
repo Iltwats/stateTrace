@@ -58,9 +58,9 @@ export function PaymentCardFields() {
       </div>
 
       <div className="payment-details" aria-label="Payment card details">
-        <div className="payment-card-number-field">
+        <div className="payment-field payment-card-number-field">
           <label htmlFor="payment-card-number">Card number</label>
-          <div className="card-number-control">
+          <div className="payment-control">
             <input
               id="payment-card-number"
               value={cardNumber}
@@ -73,30 +73,38 @@ export function PaymentCardFields() {
                 setCardNumber(formatCardNumber(event.target.value, nextBrand));
               }}
             />
-            <span id="card-brand-status">{brand ?? "Card"}</span>
+            <span className="payment-control-meta" id="card-brand-status">
+              {brand ?? "Card"}
+            </span>
           </div>
         </div>
-        <label>
-          Expiry
-          <input
-            value={expiry}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="MM / YY"
-            onChange={(event) => setExpiry(formatExpiry(event.target.value))}
-          />
-        </label>
-        <label>
-          CVC
-          <input
-            value={cvc}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="CVC"
-            maxLength={4}
-            onChange={(event) => setCvc(event.target.value.replace(/\D/g, ""))}
-          />
-        </label>
+        <div className="payment-field">
+          <label htmlFor="payment-card-expiry">Expiry</label>
+          <div className="payment-control">
+            <input
+              id="payment-card-expiry"
+              value={expiry}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="MM / YY"
+              onChange={(event) => setExpiry(formatExpiry(event.target.value))}
+            />
+          </div>
+        </div>
+        <div className="payment-field">
+          <label htmlFor="payment-card-cvc">CVC</label>
+          <div className="payment-control">
+            <input
+              id="payment-card-cvc"
+              value={cvc}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="CVC"
+              maxLength={4}
+              onChange={(event) => setCvc(event.target.value.replace(/\D/g, ""))}
+            />
+          </div>
+        </div>
       </div>
       <p className="payment-local-note">
         Demo only. Card details stay in this page and are never submitted.

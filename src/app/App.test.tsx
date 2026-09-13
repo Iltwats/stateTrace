@@ -137,4 +137,27 @@ describe("App", () => {
     expect(screen.getAllByText("2 changes")).toHaveLength(2);
     expect(screen.getAllByText("Discount code changed")).toHaveLength(2);
   });
+
+  it("shows an order-complete dialog and starts a fresh checkout", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openCheckout(user);
+
+    await user.type(screen.getByLabelText("Card number"), "4242424242424242");
+    await user.click(screen.getByRole("button", { name: "Pay $133.20" }));
+
+    expect(
+      screen.getByRole("dialog", { name: "Order complete" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start again" })).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: "Start again" }));
+
+    expect(
+      screen.queryByRole("dialog", { name: "Order complete" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Card number")).toHaveValue("");
+    expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");
+    expect(screen.getByRole("button", { name: "Pay $133.20" })).toBeInTheDocument();
+  });
 });
