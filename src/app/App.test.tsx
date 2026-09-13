@@ -4,6 +4,14 @@ import { vi } from "vitest";
 import { useStateTraceStore } from "../store/useStateTraceStore";
 import { App } from "./App";
 
+const { mockUseWebMCPTools } = vi.hoisted(() => ({
+  mockUseWebMCPTools: vi.fn(),
+}));
+
+vi.mock("../webmcp/useWebMCPTools", () => ({
+  useWebMCPTools: mockUseWebMCPTools,
+}));
+
 async function openCheckout(user: ReturnType<typeof userEvent.setup>) {
   await user.click(
     screen.getByRole("button", { name: "Open checkout demo" }),
@@ -12,6 +20,7 @@ async function openCheckout(user: ReturnType<typeof userEvent.setup>) {
 
 describe("App", () => {
   beforeEach(() => {
+    mockUseWebMCPTools.mockReturnValue({ state: "available", toolCount: 6 });
     useStateTraceStore.getState().reset();
   });
 
@@ -45,6 +54,48 @@ describe("App", () => {
       "--landing-glow-x": "320px",
       "--landing-glow-y": "180px",
     });
+  });
+
+  it("opens WebMCP setup steps when the connected badge is clicked", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: "WebMCP connected · 6 tools" }),
+    );
+
+    expect(screen.getByRole("dialog", { name: "Enable WebMCP" })).toBeInTheDocument();
+    expect(screen.getByText("Connected")).toBeInTheDocument();
+    expect(
+      screen.getByText("chrome://flags/#enable-webmcp-testing"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Close WebMCP setup" })).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(
+      screen.queryByRole("dialog", { name: "Enable WebMCP" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("automatically shows setup on the demo when WebMCP is unavailable", async () => {
+    mockUseWebMCPTools.mockReturnValue({
+      state: "unavailable",
+      toolCount: 0,
+      error: "WebMCP is not supported",
+    });
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(
+      screen.queryByRole("dialog", { name: "Enable WebMCP" }),
+    ).not.toBeInTheDocument();
+    await openCheckout(user);
+
+    expect(screen.getByRole("dialog", { name: "Enable WebMCP" })).toBeInTheDocument();
+    expect(screen.getByText("WebMCP is not available")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Continue in manual mode" }),
+    ).toBeInTheDocument();
   });
 
   it("opens a complete ecommerce checkout demo", async () => {

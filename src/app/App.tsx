@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getVisibleActivityCount } from "../components/ActivityFeed/ActivityFeed";
 import { AgentDemo } from "../components/AgentDemo/AgentDemo";
 import { ErrorToast } from "../components/ErrorToast/ErrorToast";
@@ -8,9 +8,20 @@ import { useStateTraceStore } from "../store/useStateTraceStore";
 import type { WebMCPStatus } from "../webmcp/useWebMCPTools";
 import { useWebMCPTools } from "../webmcp/useWebMCPTools";
 
-function WebMCPBadge({ status }: { status: WebMCPStatus }) {
+function WebMCPBadge({
+  status,
+  onClick,
+}: {
+  status: WebMCPStatus;
+  onClick: () => void;
+}) {
   return (
-    <div className={`connection-pill connection-${status.state}`}>
+    <button
+      type="button"
+      className={`connection-pill connection-${status.state}`}
+      aria-haspopup="dialog"
+      onClick={onClick}
+    >
       <span
         className={`protocol-light protocol-${status.state}`}
         aria-hidden="true"
@@ -20,8 +31,93 @@ function WebMCPBadge({ status }: { status: WebMCPStatus }) {
           ? `WebMCP connected · ${status.toolCount} tools`
           : status.state === "checking"
             ? "Checking WebMCP"
-            : "Manual demo mode"}
+            : "WebMCP unavailable"}
       </span>
+    </button>
+  );
+}
+
+function WebMCPSetupDialog({
+  open,
+  status,
+  onClose,
+}: {
+  open: boolean;
+  status: WebMCPStatus;
+  onClose: () => void;
+}) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    closeButtonRef.current?.focus();
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose, open]);
+
+  if (!open) return null;
+
+  const connected = status.state === "available";
+
+  return (
+    <div className="webmcp-setup-overlay" role="presentation">
+      <section
+        className="webmcp-setup-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="webmcp-setup-title"
+        aria-describedby="webmcp-setup-description"
+      >
+        <div className="webmcp-setup-heading">
+          <div>
+            <p className="section-kicker">Browser setup</p>
+            <h2 id="webmcp-setup-title">Enable WebMCP</h2>
+          </div>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="webmcp-setup-close"
+            onClick={onClose}
+            aria-label="Close WebMCP setup"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className={`webmcp-current-status status-${status.state}`}>
+          <span className={`protocol-light protocol-${status.state}`} aria-hidden="true" />
+          <div>
+            <strong>{connected ? "Connected" : "WebMCP is not available"}</strong>
+            <p id="webmcp-setup-description">
+              {connected
+                ? `${status.toolCount} StateTrace tools are registered in this browser.`
+                : "The checkout still works manually. Follow these steps to let an agent use its page tools."}
+            </p>
+          </div>
+        </div>
+
+        <ol className="webmcp-setup-steps">
+          <li><span>1</span><p>Use <strong>Chrome 149 or later</strong>.</p></li>
+          <li>
+            <span>2</span>
+            <p>Open <code>chrome://flags/#enable-webmcp-testing</code>.</p>
+          </li>
+          <li><span>3</span><p>Set <strong>WebMCP testing</strong> to Enabled.</p></li>
+          <li><span>4</span><p>Relaunch Chrome, then reopen this page.</p></li>
+        </ol>
+
+        <p className="webmcp-setup-note">
+          When setup is complete, this badge turns green and reports the
+          number of tools available to your agent.
+        </p>
+        <button type="button" className="webmcp-setup-done" onClick={onClose}>
+          {connected ? "Done" : "Continue in manual mode"}
+        </button>
+      </section>
     </div>
   );
 }
@@ -30,9 +126,15 @@ export function App() {
   const webMCP = useWebMCPTools();
   const [demoOpen, setDemoOpen] = useState(false);
   const [traceOpen, setTraceOpen] = useState(false);
+  const [setupOpen, setSetupOpen] = useState(false);
   const closeTrace = useCallback(() => setTraceOpen(false), []);
+  const closeSetup = useCallback(() => setSetupOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
   const activityCount = getVisibleActivityCount(state);
+
+  useEffect(() => {
+    if (demoOpen && webMCP.state === "unavailable") setSetupOpen(true);
+  }, [demoOpen, webMCP.state]);
 
   if (!demoOpen) {
     return (
@@ -52,7 +154,7 @@ export function App() {
         <div className="landing-glow" aria-hidden="true" />
         <header className="landing-header">
           <div className="landing-monogram" aria-hidden="true">ST</div>
-          <WebMCPBadge status={webMCP} />
+          <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
         </header>
 
         <section className="landing-hero" aria-labelledby="landing-title">
@@ -77,13 +179,6 @@ export function App() {
           </button>
         </section>
 
-        <div className="landing-preview" aria-hidden="true">
-          <span className="preview-line preview-line-one" />
-          <span className="preview-line preview-line-two" />
-          <span className="preview-orbit">A</span>
-          <span className="preview-orbit preview-human">Y</span>
-        </div>
-
         <footer className="landing-footer">
           <span>Open-source WebMCP reference experience</span>
           <a
@@ -94,6 +189,11 @@ export function App() {
             GitHub ↗
           </a>
         </footer>
+        <WebMCPSetupDialog
+          open={setupOpen}
+          status={webMCP}
+          onClose={closeSetup}
+        />
       </main>
     );
   }
@@ -135,7 +235,7 @@ export function App() {
           </div>
         </div>
         <div className="commerce-observer-bar">
-          <WebMCPBadge status={webMCP} />
+          <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
           <span>Agent changes are recorded automatically by StateTrace</span>
         </div>
       </header>
@@ -178,6 +278,11 @@ export function App() {
         open={traceOpen}
         eventCount={activityCount}
         onClose={closeTrace}
+      />
+      <WebMCPSetupDialog
+        open={setupOpen}
+        status={webMCP}
+        onClose={closeSetup}
       />
     </main>
   );

@@ -741,7 +741,10 @@ h1 {
   background: rgb(16 14 10 / 80%);
   font-size: 0.72rem;
   font-weight: 650;
+  text-align: left;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
 }
+.connection-pill:hover { border-color: #76501c; color: #f0d49e; background: #171107; }
 
 .activity-button,
 .primary-action,
@@ -1117,42 +1120,6 @@ h1 {
 .open-demo-button:hover { filter: brightness(1.08); }
 .open-demo-button:hover span { transform: translate(2px, -2px); }
 
-.landing-preview {
-  position: absolute;
-  right: -4rem;
-  bottom: 9rem;
-  width: min(42vw, 520px);
-  height: 340px;
-  pointer-events: none;
-  opacity: 0.72;
-  animation: preview-arrive 1.1s 280ms ease-out both;
-}
-.preview-line {
-  position: absolute;
-  display: block;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #9d5e0d 30%, #f59e0b 64%, transparent);
-  transform: rotate(-18deg);
-}
-.preview-line-one { top: 42%; left: 0; width: 110%; }
-.preview-line-two { top: 64%; left: 8%; width: 86%; transform: rotate(21deg); }
-.preview-orbit {
-  position: absolute;
-  top: 24%;
-  right: 28%;
-  display: grid;
-  width: 58px;
-  height: 58px;
-  place-items: center;
-  border: 1px solid #9c5f13;
-  border-radius: 50%;
-  color: #1a0f01;
-  background: var(--gold-bright);
-  box-shadow: 0 0 0 12px rgb(245 158 11 / 5%), 0 0 70px rgb(245 158 11 / 18%);
-  font-family: var(--mono);
-  font-weight: 600;
-}
-.preview-human { top: auto; right: 58%; bottom: 12%; width: 42px; height: 42px; color: var(--gold-bright); background: #160f06; }
 .landing-footer {
   position: relative;
   z-index: 2;
@@ -1421,6 +1388,97 @@ h1 {
   font-weight: 800;
 }
 .order-complete-dialog button:focus-visible { outline: 3px solid rgb(255 185 56 / 24%); outline-offset: 3px; }
+
+.webmcp-setup-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(3 3 2 / 80%);
+  backdrop-filter: blur(9px);
+  animation: order-overlay-in 200ms ease both;
+}
+.webmcp-setup-dialog {
+  width: min(520px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: 28px;
+  overflow-y: auto;
+  border: 1px solid #4d3820;
+  border-radius: 15px;
+  color: #f3ede3;
+  background: #12110e;
+  box-shadow: 0 34px 100px rgb(0 0 0 / 58%);
+  animation: order-dialog-in 340ms cubic-bezier(0.2, 0.9, 0.2, 1.08) both;
+}
+.webmcp-setup-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+.webmcp-setup-heading h2 { margin: 7px 0 0; font-size: 1.55rem; }
+.webmcp-setup-close {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #3b3328;
+  border-radius: 50%;
+  color: #b4aa9a;
+  background: #0b0b09;
+  font-size: 1.2rem;
+}
+.webmcp-current-status {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 22px 0;
+  padding: 14px;
+  border: 1px solid #343128;
+  border-radius: 9px;
+  background: #0b0b09;
+}
+.webmcp-current-status .protocol-light { margin-top: 5px; }
+.webmcp-current-status strong { color: #f2eadc; font-size: 0.78rem; }
+.webmcp-current-status p { margin: 4px 0 0; color: #8f877a; font-size: 0.68rem; line-height: 1.5; }
+.webmcp-current-status.status-available { border-color: #285949; background: #0a1511; }
+.webmcp-current-status.status-unavailable { border-color: #60441c; background: #171006; }
+.webmcp-setup-steps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.webmcp-setup-steps li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+  padding: 11px 0;
+  border-bottom: 1px solid #2b2821;
+}
+.webmcp-setup-steps li > span {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffba3d;
+  background: #241806;
+  font-family: var(--mono);
+  font-size: 0.59rem;
+}
+.webmcp-setup-steps p { margin: 4px 0 0; color: #b3aa9c; font-size: 0.72rem; line-height: 1.5; }
+.webmcp-setup-steps strong { color: #f3ede3; }
+.webmcp-setup-steps code { color: #ffc153; overflow-wrap: anywhere; }
+.webmcp-setup-note { margin: 17px 0; color: #7f786d; font-size: 0.65rem; line-height: 1.55; }
+.webmcp-setup-done {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #f0a01b;
+  border-radius: 8px;
+  color: #1a1002;
+  background: linear-gradient(135deg, #ffc14d, #f28a0a);
+  font-weight: 800;
+}
 
 .order-summary { position: sticky; top: 18px; }
 .checkout-items { display: grid; gap: 0; margin: 0; padding: 8px 22px; list-style: none; }
@@ -2224,10 +2282,6 @@ h1 {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes preview-arrive {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 0.72; transform: translateX(0); }
-}
 @keyframes glow-arrive {
   from { opacity: 0; transform: scale(0.7); }
   to { opacity: 1; transform: rotate(-9deg) skewX(-8deg) scale(1); }
@@ -2260,7 +2314,6 @@ h1 {
 }
 
 @media (max-width: 920px) {
-  .landing-preview { opacity: 0.35; }
   .commerce-header-main { grid-template-columns: auto auto; justify-content: space-between; }
   .commerce-navigation { display: none; }
   .checkout-layout { grid-template-columns: 1fr; }
@@ -2273,7 +2326,6 @@ h1 {
   .landing-hero { width: 100%; padding: 64px 0 80px; }
   .animated-title { font-size: clamp(4rem, 23vw, 7rem); line-height: 0.83; }
   .animated-title span { width: 100%; }
-  .landing-preview { right: -9rem; bottom: 7rem; width: 100%; opacity: 0.25; }
   .landing-footer { align-items: flex-start; flex-direction: column; gap: 8px; }
   .commerce-header-main { width: calc(100% - 28px); min-height: 68px; gap: 12px; }
   .commerce-brand strong { font-size: 0.85rem; }
@@ -2296,6 +2348,7 @@ h1 {
   .payment-details { grid-template-columns: 1fr 1fr; }
   .payment-card-number-field { grid-column: 1 / -1; }
   .order-complete-dialog { padding: 28px 22px; }
+  .webmcp-setup-dialog { padding: 24px 20px; }
   .checkout-items { padding-right: 16px; padding-left: 16px; }
   .checkout-footer { align-items: flex-start; flex-direction: column; }
   .checkout-footer span:last-child { margin-left: 0; }
@@ -2320,11 +2373,12 @@ h1 {
   .landing-tagline,
   .landing-description,
   .open-demo-button,
-  .landing-preview,
   .checkout-shell,
   .order-complete-overlay,
   .order-complete-dialog,
-  .order-complete-mark span { animation: none; }
+  .order-complete-mark span,
+  .webmcp-setup-overlay,
+  .webmcp-setup-dialog { animation: none; }
   .landing-glow {
     transform: translate3d(calc(88vw - 50%), calc(8vh - 50%), 0);
     transition: none;

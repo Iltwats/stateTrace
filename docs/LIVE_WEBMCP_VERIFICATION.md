@@ -85,6 +85,8 @@ applied.
 | --- | --- |
 | Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
 | Pointer glow | Pass — a soft gold aurora trail with transparent ends follows fine-pointer movement and slowly changes shape without causing React re-renders or visible rings; reduced-motion and coarse-pointer environments retain a static trail. |
+| WebMCP setup guidance | Pass — the status pill is an accessible button that always opens current connection status and Chrome enablement steps. When WebMCP is unavailable, the checkout opens the guide automatically and still offers manual mode. |
+| Decorative clarity | Pass — the unexplained `A`/`Y` orbit illustration and crossing lines were removed from the homepage so every remaining element has a clear purpose. |
 | Visual system | Pass — the StateTrace entrance and Aurum store now share a coherent carbon-black and warm gold-orange identity, with mint reserved for live connection status. No purple or indigo accents remain in the visible checkout. |
 | Complete checkout | Pass — the Aurum demo uses familiar retail navigation, checkout progress, contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals. |
 | Section hierarchy | Pass — Contact, Delivery, Payment, and Discount render as separate elevated cards with consistent spacing instead of one visually dense form surface. |
