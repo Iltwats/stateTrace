@@ -179,14 +179,61 @@ export function App() {
             See exactly what you changed, what the agent changed, and return
             your form to any saved checkpoint.
           </p>
-          <button
-            type="button"
-            className="open-demo-button"
-            onClick={() => setDemoOpen(true)}
-          >
-            Open checkout demo
-            <span aria-hidden="true">↗</span>
-          </button>
+          <div className="landing-actions">
+            <button
+              type="button"
+              className="open-demo-button"
+              onClick={() => setDemoOpen(true)}
+            >
+              Open checkout demo
+              <span aria-hidden="true">↗</span>
+            </button>
+            <a className="landing-scroll-link" href="#product-overview">
+              See how it works
+              <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </section>
+
+        <section
+          className="product-overview"
+          id="product-overview"
+          aria-labelledby="product-overview-title"
+          onPointerEnter={(event) => {
+            event.currentTarget.parentElement?.style.setProperty(
+              "--landing-glow-opacity",
+              "0",
+            );
+          }}
+        >
+          <div className="product-overview-heading">
+            <p className="section-kicker">StateTrace in one glance</p>
+            <h2 id="product-overview-title">
+              See the whole agent transaction, not just the final field value.
+            </h2>
+          </div>
+          <div className="capability-grid">
+            <article className="capability-card">
+              <span>01</span>
+              <h3>Observe</h3>
+              <p>Separate optimistic UI, pending work, and committed state.</p>
+            </article>
+            <article className="capability-card">
+              <span>02</span>
+              <h3>Protect</h3>
+              <p>Reject stale or duplicate writes and respect human locks.</p>
+            </article>
+            <article className="capability-card">
+              <span>03</span>
+              <h3>Recover</h3>
+              <p>Retry one failed transaction or restore an automatic checkpoint.</p>
+            </article>
+            <article className="capability-card">
+              <span>04</span>
+              <h3>Verify</h3>
+              <p>Prove the final outcome with an ordered trace and deterministic checks.</p>
+            </article>
+          </div>
         </section>
 
         <section

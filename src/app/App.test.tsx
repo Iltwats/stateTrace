@@ -41,6 +41,18 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Open checkout demo" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See how it works" })).toHaveAttribute(
+      "href",
+      "#product-overview",
+    );
+    expect(
+      screen.getByRole("heading", {
+        name: "See the whole agent transaction, not just the final field value.",
+      }),
+    ).toBeInTheDocument();
+    for (const capability of ["Observe", "Protect", "Recover", "Verify"]) {
+      expect(screen.getByRole("heading", { name: capability })).toBeInTheDocument();
+    }
     expect(
       screen.getByRole("heading", { name: "Frequently asked questions" }),
     ).toBeInTheDocument();
