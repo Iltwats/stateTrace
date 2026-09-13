@@ -89,9 +89,11 @@ function WebMCPSetupDialog({
         </div>
 
         <div className={`webmcp-current-status status-${status.state}`}>
-          <span className={`protocol-light protocol-${status.state}`} aria-hidden="true" />
           <div>
-            <strong>{connected ? "Connected" : "WebMCP is not available"}</strong>
+            <div className="webmcp-status-label">
+              <span className={`protocol-light protocol-${status.state}`} aria-hidden="true" />
+              <strong>{connected ? "Connected" : "WebMCP is not available"}</strong>
+            </div>
             <p id="webmcp-setup-description">
               {connected
                 ? `${status.toolCount} StateTrace tools are registered in this browser.`
