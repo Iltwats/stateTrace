@@ -109,6 +109,15 @@ export type RegressionFixture = {
   events: TraceEvent[];
 };
 
+export type FormCheckpoint = {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: number;
+  revision: number;
+  order: Order;
+};
+
 export type StateTraceState = {
   order: Order;
   visibleOrder: Order;
@@ -119,6 +128,7 @@ export type StateTraceState = {
   events: TraceEvent[];
   failureMode: FailureMode;
   savedFixtures: RegressionFixture[];
+  checkpoints: FormCheckpoint[];
   nextSequence: number;
 };
 

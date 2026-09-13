@@ -1,28 +1,12 @@
 import { useState } from "react";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 
-function checkpointRevision(events: Array<{ revisionAfter: number }>) {
-  return events.reduce(
-    (latest, event) => Math.max(latest, event.revisionAfter),
-    1,
-  );
-}
-
 export function CheckpointPanel() {
-  const state = useStateTraceStore(({ state }) => state);
-  const saveFixture = useStateTraceStore(({ saveFixture }) => saveFixture);
+  const checkpoints = useStateTraceStore(({ state }) => state.checkpoints);
   const restoreCheckpointState = useStateTraceStore(
     ({ restoreCheckpoint }) => restoreCheckpoint,
   );
   const [restoredId, setRestoredId] = useState<string | null>(null);
-
-  function saveCheckpoint() {
-    saveFixture({
-      name: `Checkout checkpoint ${state.savedFixtures.length + 1}`,
-      description: `Form details saved at revision ${state.committedRevision}.`,
-      expectedOutcome: "recovered",
-    });
-  }
 
   function restoreCheckpoint(fixtureId: string) {
     if (restoreCheckpointState(fixtureId)) setRestoredId(fixtureId);
@@ -32,37 +16,42 @@ export function CheckpointPanel() {
     <section className="checkpoint-panel" aria-labelledby="checkpoint-heading">
       <div className="drawer-section-heading">
         <div>
-          <p className="section-kicker">Form history</p>
-          <h3 id="checkpoint-heading">Checkpoints</h3>
+          <p className="section-kicker">Automatic form history</p>
+          <h3 id="checkpoint-heading">Restore points</h3>
         </div>
-        <button type="button" className="checkpoint-save" onClick={saveCheckpoint}>
-          Save checkpoint
-        </button>
+        <span className="auto-save-state">
+          <i aria-hidden="true" />
+          Auto-saved
+        </span>
       </div>
       <p className="checkpoint-help">
-        Save the current form, then restore it after you or the agent makes changes.
+        A restore point is created automatically before you or the agent changes
+        the form.
       </p>
 
-      {state.savedFixtures.length > 0 ? (
+      {checkpoints.length > 0 ? (
         <ul className="checkpoint-list">
-          {[...state.savedFixtures].reverse().map((fixture) => (
-            <li key={fixture.id}>
+          {[...checkpoints].reverse().map((checkpoint) => (
+            <li key={checkpoint.id}>
               <div>
-                <strong>{fixture.name}</strong>
-                <span>Revision {checkpointRevision(fixture.events)}</span>
+                <strong>{checkpoint.name}</strong>
+                <span>{checkpoint.description}</span>
+                <small>Revision {checkpoint.revision}</small>
               </div>
               <button
                 type="button"
                 className="checkpoint-restore"
-                onClick={() => restoreCheckpoint(fixture.id)}
+                onClick={() => restoreCheckpoint(checkpoint.id)}
               >
-                {restoredId === fixture.id ? "Restored" : "Restore"}
+                {restoredId === checkpoint.id ? "Restored" : "Restore"}
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="checkpoint-empty">No checkpoints saved.</p>
+        <p className="checkpoint-empty">
+          Your first restore point will appear when a checkout field changes.
+        </p>
       )}
     </section>
   );

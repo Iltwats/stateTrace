@@ -47,6 +47,7 @@ export function createBaselineState(): StateTraceState {
     events: [],
     failureMode: "normal",
     savedFixtures: [],
+    checkpoints: [],
     nextSequence: 1,
   };
 }

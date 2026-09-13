@@ -68,18 +68,12 @@ describe("StateTrace shared store", () => {
   });
 
   it("restores a checkpoint without erasing the activity history", () => {
-    const fixture = useStateTraceStore.getState().saveFixture({
-      name: "Checkout baseline",
-      description: "Restore the original checkout details.",
-      expectedOutcome: "recovered",
-    });
-
-    expect(fixture).not.toBeNull();
     useStateTraceStore.getState().commitHumanField("couponCode", "SHIPFREE");
+    const checkpoint = useStateTraceStore.getState().state.checkpoints[0];
 
     const restored = useStateTraceStore
       .getState()
-      .restoreCheckpoint(fixture!.id);
+      .restoreCheckpoint(checkpoint.id);
     const state = useStateTraceStore.getState().state;
     const couponChanges = state.events.filter(
       (event) =>
@@ -89,6 +83,7 @@ describe("StateTrace shared store", () => {
 
     expect(restored).toBe(true);
     expect(state.order.couponCode).toBe("WELCOME10");
+    expect(state.checkpoints).toHaveLength(2);
     expect(couponChanges).toHaveLength(2);
     expect(couponChanges.at(-1)?.payload).toMatchObject({
       previousValue: "SHIPFREE",

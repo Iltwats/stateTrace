@@ -62,7 +62,11 @@ describe("App", () => {
 
     expect(screen.getByRole("dialog", { name: "Activity" })).toBeInTheDocument();
     expect(screen.getByText("What changed")).toBeInTheDocument();
-    expect(screen.getByText("Checkpoints")).toBeInTheDocument();
+    expect(screen.getByText("Restore points")).toBeInTheDocument();
+    expect(screen.getByText("Auto-saved")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Save checkpoint" }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/safety checks/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Close activity" })).toHaveFocus();
 
@@ -100,11 +104,6 @@ describe("App", () => {
     render(<App />);
     await openCheckout(user);
 
-    await user.click(screen.getByRole("button", { name: /^activity/i }));
-    await user.click(screen.getByRole("button", { name: "Save checkpoint" }));
-    expect(screen.getByText("Checkout checkpoint 1")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Close activity" }));
-
     const coupon = screen.getByLabelText("Coupon code");
     await user.clear(coupon);
     await user.type(coupon, "SHIPFREE");
@@ -112,6 +111,10 @@ describe("App", () => {
     expect(coupon).toHaveValue("SHIPFREE");
 
     await user.click(screen.getByRole("button", { name: /^activity/i }));
+    expect(screen.getByText("Automatic checkpoint 1")).toBeInTheDocument();
+    expect(
+      screen.getByText("Before you changed the discount code."),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Restore" }));
 
     expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");

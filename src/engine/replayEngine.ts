@@ -36,6 +36,7 @@ export function replayRegressionFixture(
   state.order = structuredClone(fixture.startingOrder);
   state.visibleOrder = structuredClone(fixture.startingOrder);
   state.savedFixtures = [];
+  state.checkpoints = [];
   const transactionIdMap = new Map<string, string>();
 
   for (const event of fixture.events) {
@@ -157,4 +158,3 @@ export function replayRegressionFixture(
 
   return state;
 }
-

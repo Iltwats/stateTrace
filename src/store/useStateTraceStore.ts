@@ -3,6 +3,7 @@ import type {
   Actor,
   FailureMode,
   FieldValue,
+  FormCheckpoint,
   MutableField,
   RegressionFixture,
   StateTraceState,
@@ -63,6 +64,32 @@ const mutableFields: MutableField[] = [
   "internalNote",
 ];
 
+const fieldLabels: Record<MutableField, string> = {
+  customerEmail: "contact email",
+  shippingAddress: "shipping address",
+  shippingMethod: "delivery method",
+  couponCode: "discount code",
+  paymentName: "name on card",
+  internalNote: "delivery instructions",
+};
+
+function addAutomaticCheckpoint(
+  currentState: StateTraceState,
+  description: string,
+): StateTraceState {
+  const state = structuredClone(currentState);
+  const checkpoint: FormCheckpoint = {
+    id: crypto.randomUUID(),
+    name: `Automatic checkpoint ${state.checkpoints.length + 1}`,
+    description,
+    createdAt: Date.now(),
+    revision: state.committedRevision,
+    order: structuredClone(state.order),
+  };
+  state.checkpoints.push(checkpoint);
+  return state;
+}
+
 function toError(error: unknown) {
   if (error instanceof TransactionEngineError) {
     return { code: error.code, message: error.message };
@@ -96,7 +123,12 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
       try {
         const current = get().state;
         const mode = current.failureMode;
-        const staged = stageOrderChange(current, {
+        const actor = request.actor ?? "agent";
+        const checkpointed = addAutomaticCheckpoint(
+          current,
+          `Before ${actor === "human" ? "you" : "the agent"} changed the ${fieldLabels[request.field]}.`,
+        );
+        const staged = stageOrderChange(checkpointed, {
           field: request.field,
           value: request.value,
           expectedRevision:
@@ -104,7 +136,7 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
           idempotencyKey:
             request.idempotencyKey ?? makeIdempotencyKey(request.field),
           reason: request.reason,
-          actor: request.actor ?? "agent",
+          actor,
         });
 
         if (mode !== "normal") staged.state.failureMode = "normal";
@@ -121,8 +153,17 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
       try {
         const current = get().state;
         const mode = current.failureMode;
-        const retried = retryFailedTransaction(
+        const original = current.transactions.find(
+          (transaction) => transaction.id === transactionId,
+        );
+        const checkpointed = addAutomaticCheckpoint(
           current,
+          `Before the agent retried the ${
+            original ? fieldLabels[original.mutation.field] : "checkout update"
+          }.`,
+        );
+        const retried = retryFailedTransaction(
+          checkpointed,
           transactionId,
           expectedRevision ?? current.committedRevision,
           idempotencyKey ?? makeIdempotencyKey("retry"),
@@ -139,8 +180,12 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
 
     commitHumanField(field, value) {
       try {
+        const checkpointed = addAutomaticCheckpoint(
+          get().state,
+          `Before you changed the ${fieldLabels[field]}.`,
+        );
         set({
-          state: commitHumanChange(get().state, field, value),
+          state: commitHumanChange(checkpointed, field, value),
           lastError: null,
         });
         return true;
@@ -206,6 +251,7 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
         scheduler.cancelAll();
         const replayed = replayRegressionFixture(fixture);
         replayed.savedFixtures = structuredClone(current.savedFixtures);
+        replayed.checkpoints = structuredClone(current.checkpoints);
         set({ state: replayed, lastError: null });
         return true;
       } catch (error) {
@@ -216,10 +262,10 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
 
     restoreCheckpoint(fixtureId) {
       try {
-        const fixture = get().state.savedFixtures.find(
+        const checkpoint = get().state.checkpoints.find(
           ({ id }) => id === fixtureId,
         );
-        if (!fixture) {
+        if (!checkpoint) {
           throw new TransactionEngineError(
             "FIXTURE_NOT_FOUND",
             `Checkpoint ${fixtureId} does not exist.`,
@@ -230,15 +276,24 @@ export const useStateTraceStore = create<StateTraceStore>((set, get) => {
           scheduler.cancel(transactionId);
         }
 
-        const target = replayRegressionFixture(fixture);
         let restored = structuredClone(get().state);
+        const changedFields = mutableFields.filter(
+          (field) => restored.order[field] !== checkpoint.order[field],
+        );
+        if (changedFields.length === 0) {
+          set({ lastError: null });
+          return true;
+        }
+
+        restored = addAutomaticCheckpoint(
+          restored,
+          `Before you restored ${checkpoint.name.toLowerCase()}.`,
+        );
         const currentLocks = restored.lockedFields;
         restored.lockedFields = [];
 
-        for (const field of mutableFields) {
-          if (restored.order[field] !== target.order[field]) {
-            restored = commitHumanChange(restored, field, target.order[field]);
-          }
+        for (const field of changedFields) {
+          restored = commitHumanChange(restored, field, checkpoint.order[field]);
         }
 
         restored.lockedFields = currentLocks;
