@@ -989,8 +989,8 @@ h1 {
   z-index: 0;
   top: 0;
   left: 0;
-  width: 52rem;
-  height: 52rem;
+  width: 68rem;
+  height: 40rem;
   border-radius: 50%;
   pointer-events: none;
   transform: translate3d(
@@ -1003,10 +1003,10 @@ h1 {
 }
 .landing-glow::after {
   position: absolute;
-  inset: 0;
+  inset: 12%;
   border-radius: inherit;
-  background: radial-gradient(circle, rgb(245 158 11 / 17%), transparent 66%);
-  filter: blur(10px);
+  background: rgb(245 158 11 / 22%);
+  filter: blur(110px);
   content: "";
   animation: glow-arrive 1.8s ease-out both;
 }

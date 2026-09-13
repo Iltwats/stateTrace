@@ -84,7 +84,7 @@ applied.
 | Check | Result |
 | --- | --- |
 | Opening experience | Pass — the `State` and `Trace` wordmarks run the `name-arrive` animation for `900ms`, followed by the WebMCP observability statement and one checkout CTA. |
-| Pointer glow | Pass — the homepage gold shadow follows fine-pointer movement through CSS coordinates without causing React re-renders, while reduced-motion and coarse-pointer environments retain the original static glow. |
+| Pointer glow | Pass — a single soft-edged gold oval follows fine-pointer movement through CSS coordinates without causing React re-renders or visible concentric rings, while reduced-motion and coarse-pointer environments retain a static glow. |
 | Visual system | Pass — the StateTrace entrance and Aurum store now share a coherent carbon-black and warm gold-orange identity, with mint reserved for live connection status. No purple or indigo accents remain in the visible checkout. |
 | Complete checkout | Pass — the Aurum demo uses familiar retail navigation, checkout progress, contact email, delivery address and method, delivery instructions, cardholder name, demo payment details, coupon, line items, and totals. |
 | Section hierarchy | Pass — Contact, Delivery, Payment, and Discount render as separate elevated cards with consistent spacing instead of one visually dense form surface. |
