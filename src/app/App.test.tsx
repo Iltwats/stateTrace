@@ -174,6 +174,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Apply" }));
 
     expect(screen.getByRole("status")).toHaveTextContent("15% off applied");
+    expect(screen.getByText("Discount (WELCOME10)")).toBeInTheDocument();
     expect(screen.getByText("−$22.20")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Pay $125.80" })).toBeInTheDocument();
   });

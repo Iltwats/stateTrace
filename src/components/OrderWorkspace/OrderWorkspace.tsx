@@ -217,7 +217,7 @@ export function OrderWorkspace() {
           <div><span>Shipping</span><strong>Free</strong></div>
           {appliedDiscount ? (
             <div className="discount-row">
-              <span>{appliedDiscount.code}</span>
+              <span>Discount ({appliedDiscount.code})</span>
               <strong>−{formatCurrency(discountCents)}</strong>
             </div>
           ) : null}
