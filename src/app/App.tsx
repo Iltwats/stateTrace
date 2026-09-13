@@ -182,7 +182,7 @@ export function App() {
         <footer className="landing-footer">
           <span>Open-source WebMCP reference experience</span>
           <a
-            href="https://github.com/Iltwats/web-mcp-openai"
+            href="https://github.com/Iltwats/stateTrace"
             target="_blank"
             rel="noreferrer"
           >
