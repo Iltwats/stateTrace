@@ -91,6 +91,18 @@ describe("App", () => {
     render(<App />);
 
     const header = screen.getByRole("banner");
+    const overview = screen.getByRole("region", {
+      name: "See the whole agent transaction, not just the final field value.",
+    });
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(overview, "offsetTop", {
+      configurable: true,
+      value: 900,
+    });
+    Object.defineProperty(overview, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
     expect(header).not.toHaveClass("is-docked");
 
     window.scrollY = 24;
@@ -103,6 +115,10 @@ describe("App", () => {
     expect(
       screen.queryByRole("link", { name: "Scroll to explore" }),
     ).not.toBeInTheDocument();
+    expect(scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 
   it("keeps the pointer glow out of the FAQ reading area", () => {

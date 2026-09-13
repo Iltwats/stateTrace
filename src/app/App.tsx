@@ -128,6 +128,8 @@ export function App() {
   const [traceOpen, setTraceOpen] = useState(false);
   const [setupOpen, setSetupOpen] = useState(false);
   const [landingScrolled, setLandingScrolled] = useState(false);
+  const lastLandingScrollY = useRef(0);
+  const hasSnappedToOverview = useRef(false);
   const closeTrace = useCallback(() => setTraceOpen(false), []);
   const closeSetup = useCallback(() => setSetupOpen(false), []);
   const state = useStateTraceStore(({ state }) => state);
@@ -138,7 +140,26 @@ export function App() {
   }, [demoOpen, webMCP.state]);
 
   useEffect(() => {
-    const syncLandingScroll = () => setLandingScrolled(window.scrollY > 4);
+    const syncLandingScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastLandingScrollY.current;
+      setLandingScrolled(currentScrollY > 4);
+
+      const overview = document.getElementById("product-overview");
+      if (
+        scrollingDown &&
+        currentScrollY > 4 &&
+        overview &&
+        currentScrollY < overview.offsetTop - 100 &&
+        !hasSnappedToOverview.current
+      ) {
+        hasSnappedToOverview.current = true;
+        overview.scrollIntoView?.({ behavior: "smooth", block: "start" });
+      }
+
+      if (currentScrollY <= 4) hasSnappedToOverview.current = false;
+      lastLandingScrollY.current = currentScrollY;
+    };
     syncLandingScroll();
     window.addEventListener("scroll", syncLandingScroll, { passive: true });
     return () => window.removeEventListener("scroll", syncLandingScroll);
