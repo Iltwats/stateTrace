@@ -49,7 +49,14 @@ describe("App", () => {
       "maya.chen@example.com",
     );
     expect(screen.getByLabelText("Coupon code")).toHaveValue("WELCOME10");
-    expect(screen.getByText("Visa ending in 4242")).toBeInTheDocument();
+    expect(screen.getByText("Appears as you type")).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText("Card number"), "4242424242424242");
+
+    expect(screen.getByLabelText("Card number")).toHaveValue(
+      "4242 4242 4242 4242",
+    );
+    expect(screen.getByText("Visa detected")).toBeInTheDocument();
   });
 
   it("opens human-focused activity in a drawer and closes it with Escape", async () => {

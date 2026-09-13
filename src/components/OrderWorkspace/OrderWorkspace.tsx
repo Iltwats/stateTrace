@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Actor, MutableField, TraceEvent } from "../../domain/types";
 import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { EditableField } from "./EditableField";
+import { PaymentCardFields } from "./PaymentCardFields";
 import { ShippingMethodField } from "./ShippingMethodField";
 
 function formatCurrency(cents: number) {
@@ -108,32 +109,11 @@ export function OrderWorkspace() {
             <span>3</span>
             <div>
               <h3 id="payment-heading">Payment</h3>
-              <p>Demo card—no payment will be processed</p>
+              <p>Enter a demo card to see live card-type detection</p>
             </div>
-          </div>
-          <div className="saved-card">
-            <div className="card-brand" aria-hidden="true">VISA</div>
-            <div>
-              <strong>Visa ending in 4242</strong>
-              <span>Expires 12/28</span>
-            </div>
-            <span className="selected-card">Selected</span>
           </div>
           {editableField("paymentName", "Name on card")}
-          <div className="payment-details" aria-label="Demo payment information">
-            <label>
-              Card number
-              <input value="•••• •••• •••• 4242" readOnly />
-            </label>
-            <label>
-              Expiry
-              <input value="12 / 28" readOnly />
-            </label>
-            <label>
-              CVC
-              <input value="•••" readOnly />
-            </label>
-          </div>
+          <PaymentCardFields />
         </section>
 
         <section className="checkout-section" aria-labelledby="discount-heading">
