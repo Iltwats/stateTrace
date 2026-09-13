@@ -1,8 +1,14 @@
 # StateTrace
 
+[![CI](https://github.com/Iltwats/stateTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/Iltwats/stateTrace/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](.nvmrc)
+
 StateTrace is a WebMCP-native transaction debugger for human-agent workflows in modern web applications. It makes optimistic UI, committed state, pending effects, conflicts, retries, locks, and deterministic postconditions visible in one shared workspace.
 
-The hackathon demo uses a synthetic order-management SPA. No account, backend, model API, or external data is required.
+The app uses a synthetic order-management SPA. No account, backend, model API, or external data is required.
+
+**Live demo:** https://state-trace.vercel.app/ — best viewed in a WebMCP-capable browser. Without one, the app falls back to manual mode and the full human workflow still works.
 
 ## Why WebMCP
 
@@ -86,6 +92,18 @@ npm run build
 
 The suite covers engine behavior, failure scheduling, invariant checks, shared-store integration, UI interaction, replay, and WebMCP contracts.
 
+### Scripts
+
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Dev server with hot reload at `http://localhost:5173`. |
+| `npm run build` | Type check, then build the production bundle into `dist/`. |
+| `npm run preview` | Serve the built bundle at `http://localhost:4173`. |
+| `npm run typecheck` | Type check only. |
+| `npm test` | Run the Vitest suite once. |
+| `npm run test:watch` | Run the suite in watch mode. |
+| `npm run coverage` | Run the suite with coverage. |
+
 ## Testing WebMCP
 
 ### ChatGPT desktop app
@@ -104,6 +122,18 @@ The suite covers engine behavior, failure scheduling, invariant checks, shared-s
 5. Confirm the header reports **6 WebMCP tools available**.
 
 When `document.modelContext` is unavailable, StateTrace deliberately enters manual mode and the complete human workflow remains functional.
+
+## Deploy
+
+StateTrace is deployed on Vercel at https://state-trace.vercel.app/. It is a static client app with no application server, database, API key, or required environment variables. Any static host can build it with:
+
+```bash
+npm ci
+npm run build
+# serve dist/
+```
+
+Vercel and generic static-host instructions are in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## Evaluation
 
@@ -137,13 +167,23 @@ src/
   webmcp/         Tool schemas, serializers, registration, and lifecycle
 ```
 
-The full build specification is available in [`STATETRACE_IMPLEMENTATION_PLAN.md`](STATETRACE_IMPLEMENTATION_PLAN.md).
-
 ## Scope and safety
 
 StateTrace is a synthetic reliability and debugging environment. It does not connect to a real commerce system, execute payments/refunds, or claim to prevent arbitrary prompt injection. User-generated notes and trace content are marked untrusted where returned through WebMCP.
 
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Running locally and publishing to Vercel or another static host. |
+| [`docs/LIVE_WEBMCP_VERIFICATION.md`](docs/LIVE_WEBMCP_VERIFICATION.md) | Recorded live Chrome verification results. |
+
+## Contributing
+
+Contributions are welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md) — the one rule everything else follows from is that the human UI and the WebMCP tools never hold separate application state.
+
+Participation is governed by the [`Code of Conduct`](CODE_OF_CONDUCT.md). For security reports, use [`SECURITY.md`](SECURITY.md) rather than a public issue.
+
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
-
+Apache License 2.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).

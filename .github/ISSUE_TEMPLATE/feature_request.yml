@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest a capability, tool, or invariant for StateTrace.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        StateTrace is deliberately narrow: the human UI and the WebMCP tools
+        share one transaction engine, and every mutation is visible and
+        attributed. Proposals that preserve that rule are the easiest to accept.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the human-agent workflow that is hard or unsafe today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: If it adds or changes a WebMCP tool, sketch the schema and the guarantees it upholds.
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: How would it be verified deterministically?
+      description: Which invariant, test, or eval case would prove it works?
