@@ -3,8 +3,11 @@ export type Actor = "human" | "agent" | "system";
 export type ShippingMethod = "standard" | "express" | "pickup";
 
 export type MutableField =
+  | "customerEmail"
   | "shippingAddress"
   | "shippingMethod"
+  | "couponCode"
+  | "paymentName"
   | "internalNote";
 
 export type FieldValue = string;
@@ -31,6 +34,8 @@ export type Order = {
   customerEmail: string;
   shippingAddress: string;
   shippingMethod: ShippingMethod;
+  couponCode: string;
+  paymentName: string;
   internalNote: string;
   fulfillmentStatus: "unfulfilled" | "processing" | "shipped";
   totalCents: number;
@@ -125,4 +130,3 @@ export type InvariantResult = {
   evidence: string;
   relatedTransactionIds: string[];
 };
-

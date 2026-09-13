@@ -162,6 +162,34 @@ describe("StateTrace WebMCP tools", () => {
     registration.cleanup();
   });
 
+  it("lets an agent apply and verify a checkout coupon", async () => {
+    const context = new FakeModelContext();
+    const registration = await registerStateTraceTools(context.asModelContext());
+
+    const staged = (await execute(context, "stage_order_change", {
+      field: "couponCode",
+      value: "SHIPFREE",
+      expectedRevision: 1,
+      idempotencyKey: "webmcp-coupon-1",
+      reason: "Apply the customer promotion.",
+    })) as { transactionId: string };
+
+    expect(useStateTraceStore.getState().state.visibleOrder.couponCode).toBe(
+      "SHIPFREE",
+    );
+    vi.advanceTimersByTime(800);
+
+    const verification = (await execute(context, "verify_transaction_state", {
+      expectedRevision: 2,
+      expectedFields: { couponCode: "SHIPFREE" },
+      transactionId: staged.transactionId,
+      expectedTransactionStatus: "committed",
+    })) as { passed: boolean };
+
+    expect(verification.passed).toBe(true);
+    registration.cleanup();
+  });
+
   it("retries only the failed transaction while preserving a human lock", async () => {
     const context = new FakeModelContext();
     const registration = await registerStateTraceTools(context.asModelContext());

@@ -6,8 +6,11 @@ import type {
 import { verifyInvariants } from "../engine/invariantEngine";
 
 const mutableFields: MutableField[] = [
+  "customerEmail",
   "shippingAddress",
   "shippingMethod",
+  "couponCode",
+  "paymentName",
   "internalNote",
 ];
 
@@ -41,8 +44,11 @@ export function serializeTransactionState(
     orderId: state.order.id,
     committedRevision: state.committedRevision,
     committed: {
+      customerEmail: state.order.customerEmail,
       shippingAddress: state.order.shippingAddress,
       shippingMethod: state.order.shippingMethod,
+      couponCode: state.order.couponCode,
+      paymentName: state.order.paymentName,
       internalNote: state.order.internalNote,
     },
     visibleDifferences: differences,
@@ -79,4 +85,3 @@ export function serializeTransactionState(
       : undefined,
   };
 }
-

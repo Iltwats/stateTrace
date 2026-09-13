@@ -245,5 +245,45 @@ describe("transaction engine", () => {
       ),
     ).toThrowError(/already belongs/i);
   });
-});
 
+  it("tracks human checkout contact, coupon, and payment-name edits", () => {
+    const runtime = createRuntime();
+    const emailChanged = commitHumanChange(
+      createBaselineState(),
+      "customerEmail",
+      "maya.updated@example.com",
+      runtime,
+    );
+    const couponCleared = commitHumanChange(
+      emailChanged,
+      "couponCode",
+      "",
+      runtime,
+    );
+    const paymentChanged = commitHumanChange(
+      couponCleared,
+      "paymentName",
+      "Maya L. Chen",
+      runtime,
+    );
+
+    expect(paymentChanged.order.customerEmail).toBe("maya.updated@example.com");
+    expect(paymentChanged.order.couponCode).toBe("");
+    expect(paymentChanged.order.paymentName).toBe("Maya L. Chen");
+    expect(paymentChanged.events.map(({ actor }) => actor)).toEqual([
+      "human",
+      "human",
+      "human",
+    ]);
+  });
+
+  it("rejects an invalid checkout email", () => {
+    expect(() =>
+      commitHumanChange(
+        createBaselineState(),
+        "customerEmail",
+        "not-an-email",
+      ),
+    ).toThrowError(/valid email/i);
+  });
+});

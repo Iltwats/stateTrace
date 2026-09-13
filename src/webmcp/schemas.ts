@@ -30,8 +30,11 @@ export const verifyTransactionStateInput = z
     expectedRevision: z.number().int().min(1).optional(),
     expectedFields: z
       .object({
+        customerEmail: z.string().email().max(240).optional(),
         shippingAddress: z.string().min(1).max(240).optional(),
         shippingMethod: z.enum(["standard", "express", "pickup"]).optional(),
+        couponCode: z.string().max(32).optional(),
+        paymentName: z.string().min(1).max(100).optional(),
         internalNote: z.string().min(1).max(400).optional(),
       })
       .strict()
@@ -45,8 +48,15 @@ export const verifyTransactionStateInput = z
 
 export const stageOrderChangeInput = z
   .object({
-    field: z.enum(["shippingAddress", "shippingMethod", "internalNote"]),
-    value: z.string().min(1).max(400),
+    field: z.enum([
+      "customerEmail",
+      "shippingAddress",
+      "shippingMethod",
+      "couponCode",
+      "paymentName",
+      "internalNote",
+    ]),
+    value: z.string().max(400),
     expectedRevision: z.number().int().min(1),
     idempotencyKey: z.string().min(1).max(120),
     reason: z.string().min(1).max(240),
@@ -139,11 +149,14 @@ export const inputSchemas = {
       expectedFields: {
         type: "object",
         properties: {
+          customerEmail: { type: "string" },
           shippingAddress: { type: "string" },
           shippingMethod: {
             type: "string",
             enum: ["standard", "express", "pickup"],
           },
+          couponCode: { type: "string" },
+          paymentName: { type: "string" },
           internalNote: { type: "string" },
         },
         additionalProperties: false,
@@ -166,12 +179,19 @@ export const inputSchemas = {
     properties: {
       field: {
         type: "string",
-        enum: ["shippingAddress", "shippingMethod", "internalNote"],
-        description: "One supported order field to change.",
+        enum: [
+          "customerEmail",
+          "shippingAddress",
+          "shippingMethod",
+          "couponCode",
+          "paymentName",
+          "internalNote",
+        ],
+        description: "One supported checkout field to change.",
       },
       value: {
         type: "string",
-        description: "New field value. Shipping method accepts standard, express, or pickup.",
+        description: "New field value. Shipping method accepts standard, express, or pickup; coupon code may be empty.",
       },
       expectedRevision: {
         type: "integer",
@@ -228,4 +248,3 @@ export const inputSchemas = {
     additionalProperties: false,
   },
 } as const;
-

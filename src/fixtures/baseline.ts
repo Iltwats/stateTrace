@@ -6,6 +6,8 @@ export const baselineOrder: Order = {
   customerEmail: "maya.chen@example.com",
   shippingAddress: "18 Cedar Lane, Portland, OR 97205",
   shippingMethod: "standard",
+  couponCode: "WELCOME10",
+  paymentName: "Maya Chen",
   internalNote: "Customer prefers delivery after 3 PM.",
   fulfillmentStatus: "unfulfilled",
   totalCents: 14800,
@@ -33,8 +35,11 @@ export function createBaselineState(): StateTraceState {
     visibleOrder: structuredClone(order),
     committedRevision: 1,
     fieldLastChangedRevision: {
+      customerEmail: 1,
       shippingAddress: 1,
       shippingMethod: 1,
+      couponCode: 1,
+      paymentName: 1,
       internalNote: 1,
     },
     lockedFields: [],
@@ -45,4 +50,3 @@ export function createBaselineState(): StateTraceState {
     nextSequence: 1,
   };
 }
-

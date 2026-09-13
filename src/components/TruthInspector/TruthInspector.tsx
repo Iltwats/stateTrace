@@ -8,8 +8,11 @@ import { useStateTraceStore } from "../../store/useStateTraceStore";
 import { StatusPill } from "../Shared/StatusPill";
 
 const fieldLabels: Record<MutableField, string> = {
+  customerEmail: "email",
   shippingAddress: "address",
   shippingMethod: "shipping",
+  couponCode: "coupon",
+  paymentName: "payment name",
   internalNote: "note",
 };
 

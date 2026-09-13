@@ -19,8 +19,11 @@ function result(
 export function verifyInvariants(state: StateTraceState): InvariantResult[] {
   const pending = getPendingTransactions(state);
   const fields: MutableField[] = [
+    "customerEmail",
     "shippingAddress",
     "shippingMethod",
+    "couponCode",
+    "paymentName",
     "internalNote",
   ];
 
@@ -149,4 +152,3 @@ export function verifyInvariants(state: StateTraceState): InvariantResult[] {
     ),
   ];
 }
-

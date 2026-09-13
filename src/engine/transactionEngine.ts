@@ -99,7 +99,27 @@ function validateFieldValue(field: MutableField, value: FieldValue) {
     return;
   }
 
-  const maxLength = field === "internalNote" ? 400 : 240;
+  if (field === "customerEmail") {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      throw new TransactionEngineError(
+        "INVALID_VALUE",
+        "customerEmail must be a valid email address.",
+      );
+    }
+    return;
+  }
+
+  if (field === "couponCode") {
+    if (trimmed.length > 32) {
+      throw new TransactionEngineError(
+        "INVALID_VALUE",
+        "couponCode must contain at most 32 characters.",
+      );
+    }
+    return;
+  }
+
+  const maxLength = field === "internalNote" ? 400 : field === "paymentName" ? 100 : 240;
   if (!trimmed || trimmed.length > maxLength) {
     throw new TransactionEngineError(
       "INVALID_VALUE",
