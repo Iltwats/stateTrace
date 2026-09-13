@@ -100,6 +100,9 @@ describe("App", () => {
     expect(
       screen.getByRole("link", { name: "StateTrace home" }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Scroll to explore" }),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps the pointer glow out of the FAQ reading area", () => {

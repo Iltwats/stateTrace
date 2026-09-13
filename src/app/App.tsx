@@ -154,7 +154,9 @@ export function App() {
         <header className={`landing-header${landingScrolled ? " is-docked" : ""}`}>
           <a className="landing-brand" href="#landing-top" aria-label="StateTrace home">
             <span className="landing-monogram" aria-hidden="true">ST</span>
-            <span className="landing-brand-name">StateTrace</span>
+            <span className="landing-brand-name" aria-hidden="true">
+              <span>State</span><span>Trace</span>
+            </span>
           </a>
           <WebMCPBadge status={webMCP} onClick={() => setSetupOpen(true)} />
         </header>
@@ -201,10 +203,12 @@ export function App() {
               <span aria-hidden="true">↗</span>
             </button>
           </div>
-          <a className="landing-scroll-cue" href="#product-overview">
-            <span>Scroll to explore</span>
-            <i aria-hidden="true">↓</i>
-          </a>
+          {!landingScrolled ? (
+            <a className="landing-scroll-cue" href="#product-overview">
+              <span>Scroll to explore</span>
+              <i aria-hidden="true">↓</i>
+            </a>
+          ) : null}
         </section>
 
         <section
